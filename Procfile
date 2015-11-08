@@ -1,0 +1,1 @@
+web: java -Dserver.port=$PORT -jar build/libs/driftdirect-0.0.1-SNAPSHOT.jar --spring.config.location=src/main/resources/application-testserver.properties

@@ -15,6 +15,6 @@ import java.lang.reflect.Method;
 public class HelloWorldController {
     @RequestMapping(path = "/greeting", method = RequestMethod.GET)
     public String greeting(@RequestParam(value = "name", defaultValue = "World")String name){
-        return "Hello" + name;
+        return "Buna, Iancu!";
     }
 }

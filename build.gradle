@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        springBootVersion = '1.3.0.RC1'
+        springBootVersion = "1.3.0.RC1"
     }
     repositories {
         mavenCentral()
@@ -12,13 +12,13 @@ buildscript {
     }
 }
 
-apply plugin: 'java'
-apply plugin: 'idea'
-apply plugin: 'spring-boot'
+apply plugin: "java"
+apply plugin: "idea"
+apply plugin: "spring-boot"
 
 jar {
-    baseName = 'driftdirect'
-    version =  '0.0.1-SNAPSHOT'
+    baseName = "driftdirect"
+    version =  "0.0.1-SNAPSHOT"
 }
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -31,10 +31,18 @@ repositories {
 
 
 dependencies {
-    compile("org.springframework.boot:spring-boot-starter-web")
+    compile "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
+    compile "org.springframework.boot:spring-boot-starter-data-jpa:${springBootVersion}"
+    compile "com.h2database:h2"
+    compile "mysql:mysql-connector-java:5.1.37"
+
     testCompile("junit:junit")
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.7'
+    gradleVersion = "2.7"
+}
+
+task stage (dependsOn: ["bootRepackage", "clean"]){
+    bootRepackage.mustRunAfter clean
 }
