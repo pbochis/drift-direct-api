@@ -1,4 +1,4 @@
-package com.driftdirect.web;
+package com.driftdirect.controller;
 
 import com.driftdirect.domain.Championship;
 import com.driftdirect.service.ChampionshipService;
