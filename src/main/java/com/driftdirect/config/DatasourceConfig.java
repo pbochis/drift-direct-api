@@ -52,7 +52,7 @@ public class DatasourceConfig {
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource){
         LocalContainerEntityManagerFactoryBean entityManager = new LocalContainerEntityManagerFactoryBean();
         entityManager.setDataSource(dataSource);
-        entityManager.setPackagesToScan("com.driftdirect");
+        entityManager.setPackagesToScan("com.driftdirect.domain");
         entityManager.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
 
         Properties jpaProperties = new Properties();
