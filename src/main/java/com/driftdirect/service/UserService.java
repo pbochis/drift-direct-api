@@ -33,6 +33,7 @@ public class UserService implements UserDetailsService {
         User user = new User();
         user.setUsername(dto.getUsername());
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        user.setEmail(dto.getEmail());
         user.setEnabled(true);
         return save(user);
     }

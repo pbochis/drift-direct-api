@@ -5,6 +5,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Collection;
 
 /**
@@ -23,10 +24,21 @@ public class User implements UserDetails{
     private String username;
 
     @NotEmpty
+    @Column(name="email", nullable = false)
+    private String email;
+
+    @NotEmpty
     @Column(name = "password", nullable = false)
     private String password;
     private boolean enabled;
-    private boolean expired;
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
     public void setUsername(String username) {
         this.username = username;

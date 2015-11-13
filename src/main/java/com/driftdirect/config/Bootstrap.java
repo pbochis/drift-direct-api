@@ -32,6 +32,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
             UserCreateDTO user = new UserCreateDTO();
             user.setUsername("admin");
             user.setPassword("admin");
+            user.setEmail("email@email.com");
             try{
                 userService.createFromDto(user);
             }
