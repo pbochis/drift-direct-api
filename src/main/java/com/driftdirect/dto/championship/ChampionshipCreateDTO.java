@@ -1,9 +1,15 @@
 package com.driftdirect.dto.championship;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
+import javax.validation.constraints.NotNull;
+
 /**
  * Created by Paul on 11/11/2015.
  */
 public class ChampionshipCreateDTO {
+    @NotNull
+    @NotEmpty
     private String name;
     private String rules;
     private String information;

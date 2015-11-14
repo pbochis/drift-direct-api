@@ -5,4 +5,5 @@ package com.driftdirect.util;
  */
 public class Routes {
     public static final String CHAMPIONSHIP = "/championship";
+    public static final String CHAMPIONSHIP_ID = "/championship/{id}";
 }
