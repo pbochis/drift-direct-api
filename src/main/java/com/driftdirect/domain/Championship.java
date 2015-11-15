@@ -1,9 +1,7 @@
 package com.driftdirect.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.Set;
 
 /**
  * Created by Paul on 11/6/2015.
@@ -22,6 +20,9 @@ public class Championship {
     private String ticketsUrl;
 
     private boolean published;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "championship", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Round> rounds;
 
     public long getId() {
         return id;
@@ -65,6 +66,10 @@ public class Championship {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Set<Round> getRounds() {
+        return rounds;
     }
 
     @Override

@@ -6,4 +6,9 @@ package com.driftdirect.util;
 public class Routes {
     public static final String CHAMPIONSHIP = "/championship";
     public static final String CHAMPIONSHIP_ID = "/championship/{id}";
+    public static final String CHAMPIONSHIP_ID_ROUNDS = "/championship/{id}/rounds";
+
+    public static final String ROUND = "/round";
+    public static final String ROUND_ID = "/round/{id}";
+
 }
