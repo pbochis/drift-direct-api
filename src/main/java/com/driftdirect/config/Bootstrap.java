@@ -52,7 +52,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
             admin.setUsername("admin");
             admin.setPassword("admin");
             admin.setEmail("admin@email.com");
-            userService.createFromDto(judge, new HashSet<>(Arrays.asList(adminRole)));
+            userService.createFromDto(admin, new HashSet<>(Arrays.asList(adminRole)));
 
             ConfigSetting configSetting = new ConfigSetting();
             configSetting.setKey(APPLICATION_INIT);

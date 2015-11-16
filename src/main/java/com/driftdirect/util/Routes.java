@@ -11,4 +11,6 @@ public class Routes {
     public static final String ROUND = "/round";
     public static final String ROUND_ID = "/round/{id}";
 
+    public static final String USER = "/user";
+
 }

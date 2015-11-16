@@ -3,6 +3,7 @@ package com.driftdirect.service;
 import com.driftdirect.domain.user.Role;
 import com.driftdirect.domain.user.User;
 import com.driftdirect.dto.UserCreateDTO;
+import com.driftdirect.dto.UserDTO;
 import com.driftdirect.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -45,6 +46,14 @@ public class UserService implements UserDetailsService {
             throw new UsernameNotFoundException(username);
         }
         return user;
+    }
+
+    public UserDTO convertToDto(User user){
+        UserDTO dto = new UserDTO();
+        dto.setUsername(user.getUsername());
+        dto.setRoles(user.getRoles());
+        dto.setEmail(user.getEmail());
+        return dto;
     }
 
     public User save(User user){
