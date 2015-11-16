@@ -1,4 +1,4 @@
-package com.driftdirect.domain;
+package com.driftdirect.domain.user;
 
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.security.core.GrantedAuthority;
@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
+import java.util.Set;
 
 /**
  * Created by Paul on 11/10/2015.
@@ -32,8 +33,24 @@ public class User implements UserDetails{
     private String password;
     private boolean enabled;
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_role",
+            joinColumns = {@JoinColumn(name = "user_id", nullable = false, updatable = false)},
+            inverseJoinColumns = {@JoinColumn(name = "role_id", nullable = false, updatable = false)}
+    )
+    public Set<Role> roles;
+
     public String getEmail() {
         return email;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 
     public void setEmail(String email) {
@@ -53,8 +70,8 @@ public class User implements UserDetails{
     }
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+    public Collection<Role> getAuthorities() {
+        return roles;
     }
 
     @Override
