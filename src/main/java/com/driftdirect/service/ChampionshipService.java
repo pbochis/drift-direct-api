@@ -32,9 +32,9 @@ public class ChampionshipService extends AbstractBaseService<ChampionshipReposit
     }
 
     @Transactional
-    public ChampionshipDto createFromDto(ChampionshipCreateDTO dto){
+    public Championship createFromDto(ChampionshipCreateDTO dto){
         Championship c = new Championship();
-        return convertToDto(populateAndSave(c, dto));
+        return populateAndSave(c, dto);
     }
 
     @Transactional

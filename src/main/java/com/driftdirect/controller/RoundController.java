@@ -30,7 +30,7 @@ public class RoundController {
     }
 
     @RequestMapping(path = Routes. ROUND, method = RequestMethod.POST)
-    public RoundDto createRound(@RequestBody @Valid RoundCreateDto dto){
+    public Round createFromDto(@RequestBody @Valid RoundCreateDto dto){
         dto.setChampionship(championshipService.findById(dto.getChampionshipId()));
         return roundService.createFromDto(dto);
     }

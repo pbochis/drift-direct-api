@@ -25,11 +25,11 @@ public class RoundService extends AbstractBaseService<RoundRepository, Round> {
     }
 
     @Transactional
-    public RoundDto createFromDto(RoundCreateDto dto){
+    public Round createFromDto(RoundCreateDto dto){
         Round round = new Round();
         round.setName(dto.getName());
         round.setChampionship(dto.getChampionship());
-        return convertToDto(repository.save(round));
+        return repository.save(round);
     }
 
     @Transactional

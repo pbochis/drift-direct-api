@@ -37,13 +37,11 @@ public class ChampionshipController {
         this.championshipService = championshipService;
     }
 
-    @Secured("ROLE_ADMIN")
     @RequestMapping(path = Routes.CHAMPIONSHIP, method = RequestMethod.GET)
     public List<ChampionshipDto> list() {
         return championshipService.findChampionships();
     }
 
-    @Secured("ROLE_JUDGE")
     @RequestMapping(path = "/champ", method = RequestMethod.GET)
     public List<ChampionshipDto> list2() {
         return championshipService.findChampionships();
@@ -51,7 +49,7 @@ public class ChampionshipController {
 
     @RequestMapping(path = Routes.CHAMPIONSHIP, method = RequestMethod.POST)
     public ChampionshipDto createChampionship(@Valid ChampionshipCreateDTO c){
-        return championshipService.createFromDto(c);
+        return championshipService.convertToDto(championshipService.createFromDto(c));
     }
 
     @RequestMapping(path = Routes.CHAMPIONSHIP, method = RequestMethod.PUT)
