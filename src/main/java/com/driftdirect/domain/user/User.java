@@ -15,10 +15,10 @@ import java.util.Set;
 @Entity
 @Table(name = "drift_user")
 public class User implements UserDetails{
-
     @Id
     @GeneratedValue
     private long id;
+
 
     @NotEmpty
     @Column(name = "user_name", nullable = false)
@@ -43,6 +43,14 @@ public class User implements UserDetails{
 
     public String getEmail() {
         return email;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public Set<Role> getRoles() {
@@ -107,7 +115,6 @@ public class User implements UserDetails{
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
                 ", username='" + username + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +

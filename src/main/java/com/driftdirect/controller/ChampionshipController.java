@@ -27,6 +27,7 @@ import java.util.Set;
  */
 
 @RestController
+@RequestMapping(path = Routes.CHAMPIONSHIP)
 public class ChampionshipController {
 
     private ChampionshipService championshipService;
@@ -37,37 +38,35 @@ public class ChampionshipController {
         this.championshipService = championshipService;
     }
 
-    @RequestMapping(path = Routes.CHAMPIONSHIP, method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET)
     public List<ChampionshipDto> list() {
         return championshipService.findChampionships();
     }
 
-    @RequestMapping(path = "/champ", method = RequestMethod.GET)
-    public List<ChampionshipDto> list2() {
-        return championshipService.findChampionships();
-    }
-
-    @RequestMapping(path = Routes.CHAMPIONSHIP, method = RequestMethod.POST)
+    @Secured(Authorities.ROLE_ORGANIZER)
+    @RequestMapping(method = RequestMethod.POST)
     public ChampionshipDto createChampionship(@Valid ChampionshipCreateDTO c){
         return championshipService.convertToDto(championshipService.createFromDto(c));
     }
 
-    @RequestMapping(path = Routes.CHAMPIONSHIP, method = RequestMethod.PUT)
+    @Secured(Authorities.ROLE_ORGANIZER)
+    @RequestMapping(method = RequestMethod.PUT)
     public ChampionshipDto updateChampionship(@Valid ChampionshipUpdateDTO c) throws ObjectNotFoundException {
         return championshipService.update(c);
     }
 
-    @RequestMapping(path = Routes.CHAMPIONSHIP_ID, method = RequestMethod.GET)
+    @RequestMapping(path = Routes.ID, method = RequestMethod.GET)
     public ChampionshipDto getById(@PathVariable Long id) {
         return championshipService.findChampionship(id);
     }
 
-    @RequestMapping(path = Routes.CHAMPIONSHIP_ID, method = RequestMethod.DELETE)
+    @Secured(Authorities.ROLE_ORGANIZER)
+    @RequestMapping(path = Routes.ID, method = RequestMethod.DELETE)
     public void delete(@PathVariable Long id) {
         championshipService.delete(id);
     }
 
-    @RequestMapping(path = Routes.CHAMPIONSHIP_ID_ROUNDS, method = RequestMethod.GET)
+    @RequestMapping(path = Routes.Championship.ROUNDS, method = RequestMethod.GET)
     public List<RoundDto> getChampionshipRounds(@PathVariable Long id){
         return championshipService.championshipRounds(id);
     }

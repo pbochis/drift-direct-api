@@ -7,10 +7,9 @@ import java.util.Set;
  * Created by Paul on 11/6/2015.
  */
 @Entity
-public class Championship {
-
+public class Championship{
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     private long id;
 
     private String name;
@@ -26,6 +25,10 @@ public class Championship {
 
     public long getId() {
         return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getRules() {

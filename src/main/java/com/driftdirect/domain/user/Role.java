@@ -9,21 +9,28 @@ import javax.persistence.*;
  */
 @Entity
 public class Role implements GrantedAuthority{
-
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     private long id;
 
+    private String authority;
+
     public Role(){}
-    public Role(Authorities authorities){
-        this.authority = authorities;
+
+    public Role(String authority){
+        this.authority = authority;
     }
 
-    @Enumerated(value = EnumType.STRING)
-    private Authorities authority;
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     @Override
     public String getAuthority() {
-        return authority.name();
+        return authority;
     }
 }

@@ -2,28 +2,25 @@ package com.driftdirect.domain;
 
 import javax.persistence.*;
 import java.time.ZonedDateTime;
-import java.util.Set;
+import java.util.Date;
 
 /**
- * Created by Paul on 11/14/2015.
+ * Created by Paul on 11/17/2015.
  */
 @Entity
-public class Round{
+public class RoundSchedele {
 
     @Id
     @GeneratedValue
     private long id;
 
-    private String name;
-    private ZonedDateTime startDate;
-    private ZonedDateTime endDate;
+    String name;
+    ZonedDateTime startDate;
+    ZonedDateTime endDate;
 
     @ManyToOne
-    @JoinColumn(name = "championship_id", nullable = false)
-    private Championship championship;
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "round", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<RoundSchedele> scheduele;
+    @JoinColumn(name = "round_id", nullable = false)
+    Round round;
 
     public long getId() {
         return id;
@@ -31,6 +28,14 @@ public class Round{
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public Round getRound() {
+        return round;
+    }
+
+    public void setRound(Round round) {
+        this.round = round;
     }
 
     public String getName() {
@@ -55,18 +60,5 @@ public class Round{
 
     public void setEndDate(ZonedDateTime endDate) {
         this.endDate = endDate;
-    }
-
-    public Championship getChampionship() {
-        return championship;
-    }
-
-    public void setChampionship(Championship championship) {
-        this.championship = championship;
-    }
-
-    @Override
-    public String toString(){
-        return this.name;
     }
 }
