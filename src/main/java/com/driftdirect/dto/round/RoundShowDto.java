@@ -1,50 +1,43 @@
-package com.driftdirect.domain;
+package com.driftdirect.dto.round;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.Date;
+import java.util.List;
 
 /**
- * Created by Paul on 11/17/2015.
+ * Created by Paul on 11/14/2015.
  */
-@Entity
-public class RoundSchedele {
-
-    @Id
-    @GeneratedValue
+public class RoundShowDto {
     private long id;
+    private String name;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
 
-    String name;
-    LocalDateTime startDate;
-    LocalDateTime endDate;
+    private List<RoundScheduleShowDto> schedule;
 
-    @ManyToOne
-    @JoinColumn(name = "round_id", nullable = false)
-    Round round;
+    public List<RoundScheduleShowDto> getSchedule() {
+        return schedule;
+    }
 
-    public long getId() {
-        return id;
+    public void setSchedule(List<RoundScheduleShowDto> schedule) {
+        this.schedule = schedule;
     }
 
     public void setId(long id) {
         this.id = id;
     }
 
-    public Round getRound() {
-        return round;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setRound(Round round) {
-        this.round = round;
+    public long getId() {
+        return id;
     }
 
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public LocalDateTime getStartDate() {

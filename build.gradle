@@ -48,9 +48,12 @@ dependencies {
     compile "mysql:mysql-connector-java:5.1.37"
 
     // security
-compile "org.springframework.security:spring-security-core:${springSecurityVersion}"
+    compile "org.springframework.security:spring-security-core:${springSecurityVersion}"
     compile "org.springframework.security:spring-security-config:${springSecurityVersion}"
     compile "org.springframework.security:spring-security-web:${springSecurityVersion}"
+
+    // jackson mappers
+    compile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.6.3'
 
     testCompile("junit:junit")
 }

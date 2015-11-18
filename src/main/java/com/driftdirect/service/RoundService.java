@@ -2,57 +2,79 @@ package com.driftdirect.service;
 
 import com.driftdirect.domain.Championship;
 import com.driftdirect.domain.Round;
+import com.driftdirect.domain.RoundSchedele;
 import com.driftdirect.dto.round.RoundCreateDto;
-import com.driftdirect.dto.round.RoundDto;
+import com.driftdirect.dto.round.RoundShowDto;
+import com.driftdirect.dto.round.RoundScheduleCreateDto;
 import com.driftdirect.dto.round.RoundUpdateDto;
+import com.driftdirect.mapper.RoundMapper;
+import com.driftdirect.repository.ChampionshipRepository;
 import com.driftdirect.repository.RoundRepository;
+import com.driftdirect.repository.RoundScheduleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.ZonedDateTime;
 import java.util.NoSuchElementException;
 
 /**
  * Created by Paul on 11/14/2015.
  */
+@Transactional
 @Service
-public class RoundService extends AbstractBaseService<RoundRepository, Round> {
-
+public class RoundService {
+    private RoundRepository roundRepository;
+    private ChampionshipRepository championshipRepository;
+    private RoundScheduleRepository roundScheduleRepository;
 
     @Autowired
-    public RoundService(RoundRepository repository){
-        super(repository);
+    public RoundService(RoundRepository roundRepository, ChampionshipRepository championshipRepository, RoundScheduleRepository roundScheduleRepository){
+        this.roundRepository = roundRepository;
+        this.championshipRepository = championshipRepository;
+        this.roundScheduleRepository = roundScheduleRepository;
     }
 
-    @Transactional
     public Round createFromDto(RoundCreateDto dto){
+        Championship championship = championshipRepository.findOne(dto.getChampionshipId());
         Round round = new Round();
         round.setName(dto.getName());
-        round.setChampionship(dto.getChampionship());
-        return repository.save(round);
+        round.setChampionship(championship);
+        return roundRepository.save(round);
     }
 
-    @Transactional
-    public RoundDto update(RoundUpdateDto dto) throws NoSuchElementException {
-        Round round = findById(dto.getId());
-        if (round == null){
-            throw new NoSuchElementException("championship not found");
-        }
-        round.setChampionship(dto.getChampionship());
+    public RoundShowDto update(RoundUpdateDto dto) {
+        Round round = roundRepository.findOne(dto.getId());
+        Championship championship = championshipRepository.findOne(dto.getChampionshipId());
+        round.setChampionship(championship);
         round.setName(dto.getName());
-        return convertToDto(repository.save(round));
+        return RoundMapper.map(roundRepository.save(round));
     }
 
-    public RoundDto findRound(long id){
-        return convertToDto(findById(id));
+    public void addRoundSchedule(Long roundId, RoundScheduleCreateDto dto) {
+        Round round = roundRepository.findOne(roundId);
+        RoundSchedele roundSchedele = new RoundSchedele();
+        roundSchedele.setName(dto.getName());
+        roundSchedele.setStartDate(dto.getStartDate());
+        roundSchedele.setEndDate(dto.getEndDate());
+        roundSchedele.setRound(round);
+        roundScheduleRepository.save(roundSchedele);
+        if (round.getStartDate() == null && round.getEndDate() == null) {
+            round.setStartDate(dto.getStartDate());
+            round.setEndDate(dto.getEndDate());
+        } else if (round.getStartDate() != null && round.getStartDate().isAfter(dto.getStartDate())) {
+            round.setStartDate(dto.getStartDate());
+        } else if (round.getEndDate() != null && round.getEndDate().isBefore(dto.getEndDate())) {
+            round.setEndDate(dto.getEndDate());
+        }
+        roundRepository.save(round);
     }
 
-    public RoundDto convertToDto(Round round){
-        RoundDto dto = new RoundDto();
-        dto.setName(round.getName());
-        dto.setId(round.getId());
-        dto.setStartDate(round.getStartDate());
-        dto.setEndDate(round.getEndDate());
-        return dto;
+    public void delete(Long id){
+        roundRepository.delete(id);
+    }
+
+    public RoundShowDto findRound(long id){
+        return RoundMapper.map(roundRepository.findOne(id));
     }
 }

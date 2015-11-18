@@ -1,20 +1,12 @@
 package com.driftdirect.dto.round;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZonedDateTime;
 
 /**
- * Created by Paul on 11/17/2015.
+ * Created by Paul on 11/18/2015.
  */
-public class RoundScheduleCreateDto {
-
-    @NotNull
-    @Size(min = 2, max = 40)
+public class RoundScheduleShowDto {
     private String name;
     private LocalDateTime startDate;
     private LocalDateTime endDate;

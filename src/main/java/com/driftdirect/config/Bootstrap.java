@@ -6,7 +6,7 @@ import com.driftdirect.domain.user.Authorities;
 import com.driftdirect.domain.user.Role;
 import com.driftdirect.dto.UserCreateDTO;
 import com.driftdirect.dto.championship.ChampionshipCreateDTO;
-import com.driftdirect.dto.championship.ChampionshipDto;
+import com.driftdirect.dto.championship.ChampionshipShowDto;
 import com.driftdirect.dto.round.RoundCreateDto;
 import com.driftdirect.repository.ConfigSettingRepository;
 import com.driftdirect.repository.RoleRepository;
@@ -21,10 +21,8 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 
 /**
  * Created by Paul on 11/10/2015.
@@ -79,10 +77,10 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         dto.setTicketsUrl("www.tickets.com");
         dto.setInformation("This is a drifting championship, mate");
         dto.setRules("These are the rules of drifting");
-        Championship c = championshipService.createFromDto(dto);
+        ChampionshipShowDto c = championshipService.createFromDto(dto);
         RoundCreateDto rc = new RoundCreateDto();
         rc.setName("Round 1");
-        rc.setChampionship(c);
+        rc.setChampionshipId(c.getId());
         roundService.createFromDto(rc);
     }
 

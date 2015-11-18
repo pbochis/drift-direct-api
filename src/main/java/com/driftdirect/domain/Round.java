@@ -1,6 +1,7 @@
 package com.driftdirect.domain;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.Set;
 
@@ -15,8 +16,8 @@ public class Round{
     private long id;
 
     private String name;
-    private ZonedDateTime startDate;
-    private ZonedDateTime endDate;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
 
     @ManyToOne
     @JoinColumn(name = "championship_id", nullable = false)
@@ -41,20 +42,28 @@ public class Round{
         this.name = name;
     }
 
-    public ZonedDateTime getStartDate() {
+    public LocalDateTime getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(ZonedDateTime startDate) {
+    public void setStartDate(LocalDateTime startDate) {
         this.startDate = startDate;
     }
 
-    public ZonedDateTime getEndDate() {
+    public LocalDateTime getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(ZonedDateTime endDate) {
+    public void setEndDate(LocalDateTime endDate) {
         this.endDate = endDate;
+    }
+
+    public Set<RoundSchedele> getScheduele() {
+        return scheduele;
+    }
+
+    public void setScheduele(Set<RoundSchedele> scheduele) {
+        this.scheduele = scheduele;
     }
 
     public Championship getChampionship() {

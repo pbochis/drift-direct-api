@@ -18,16 +18,6 @@ public class RoundCreateDto {
     @NotNull
     private Long championshipId;
 
-    private Championship championship;
-
-    public Championship getChampionship() {
-        return championship;
-    }
-
-    public void setChampionship(Championship championship) {
-        this.championship = championship;
-    }
-
     public String getName() {
         return name;
     }

@@ -1,13 +1,13 @@
 package com.driftdirect.dto.championship;
 
-import com.driftdirect.dto.round.RoundDto;
+import com.driftdirect.dto.round.RoundShowDto;
 
 import java.util.List;
 
 /**
  * Created by Paul on 11/15/2015.
  */
-public class ChampionshipDto {
+public class ChampionshipShowDto {
 
     private long id;
     private String name;
@@ -15,7 +15,7 @@ public class ChampionshipDto {
     private String information;
     private String ticketsUrl;
 
-    private List<RoundDto> rounds;
+    private List<RoundShowDto> rounds;
 
     public long getId() {
         return id;
@@ -57,11 +57,11 @@ public class ChampionshipDto {
         this.ticketsUrl = ticketsUrl;
     }
 
-    public List<RoundDto> getRounds() {
+    public List<RoundShowDto> getRounds() {
         return rounds;
     }
 
-    public void setRounds(List<RoundDto> rounds) {
+    public void setRounds(List<RoundShowDto> rounds) {
         this.rounds = rounds;
     }
 }
