@@ -1,4 +1,4 @@
-package com.driftdirect.dto;
+package com.driftdirect.dto.user;
 
 import com.driftdirect.domain.user.Role;
 
@@ -7,11 +7,11 @@ import java.util.Set;
 /**
  * Created by Paul on 11/16/2015.
  */
-public class UserDTO {
+public class UserShowDto {
     private String username;
     private String email;
 
-    private Set<Role> roles;
+    private Set<String> roles;
 
     public String getUsername() {
         return username;
@@ -29,11 +29,11 @@ public class UserDTO {
         this.email = email;
     }
 
-    public Set<Role> getRoles() {
+    public Set<String> getRoles() {
         return roles;
     }
 
-    public void setRoles(Set<Role> roles) {
+    public void setRoles(Set<String> roles) {
         this.roles = roles;
     }
 }

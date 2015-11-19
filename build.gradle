@@ -35,6 +35,8 @@ dependencies {
     // spring
     compile "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
     compile "org.springframework.boot:spring-boot-starter-data-jpa:${springBootVersion}"
+    compile "org.springframework.boot:spring-boot-starter-mail:${springBootVersion}"
+
 
     // hibernate
     compile "org.hibernate:hibernate-entitymanager:5.0.2.Final"
@@ -52,8 +54,14 @@ dependencies {
     compile "org.springframework.security:spring-security-config:${springSecurityVersion}"
     compile "org.springframework.security:spring-security-web:${springSecurityVersion}"
 
-    // jackson mappers
-    compile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.6.3'
+    // jackson mapper for java 8 time
+    compile "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.6.3"
+
+    compile "org.apache.commons:commons-lang3:3.4"
+    compile "commons-io:commons-io:2.4"
+
+
+
 
     testCompile("junit:junit")
 }

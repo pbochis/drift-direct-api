@@ -20,7 +20,6 @@ public class RoundMapper {
         dto.setStartDate(round.getStartDate());
         dto.setEndDate(round.getEndDate());
         dto.setSchedule(mapSchedule(round.getScheduele()));
-
         return dto;
     }
 

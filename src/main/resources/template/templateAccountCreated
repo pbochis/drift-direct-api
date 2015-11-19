@@ -1,0 +1,9 @@
+<div>
+    An account has been created for you to use <a href="http://www.driftdirect.com" target="_blank">DriftDirect</a> <br>
+    You can log in with the following credentials: <br><br>
+    Username: {0} <br>
+    Password: {1} <br>
+
+    Best regards, <br>
+    The DriftDirect team
+</div>

@@ -1,8 +1,11 @@
-package com.driftdirect.dto;
+package com.driftdirect.dto.user;
 
+import com.driftdirect.domain.user.Role;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Paul on 11/11/2015.
@@ -20,6 +23,16 @@ public class UserCreateDTO {
     @NotNull
     @NotEmpty
     private String email;
+
+    private Set<String> roles;
+
+    public Set<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<String> roles) {
+        this.roles = roles;
+    }
 
     public String getEmail() {
         return email;

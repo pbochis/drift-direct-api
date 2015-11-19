@@ -1,10 +1,9 @@
 package com.driftdirect.config;
 
-import com.driftdirect.domain.Championship;
 import com.driftdirect.domain.ConfigSetting;
 import com.driftdirect.domain.user.Authorities;
 import com.driftdirect.domain.user.Role;
-import com.driftdirect.dto.UserCreateDTO;
+import com.driftdirect.dto.user.UserCreateDTO;
 import com.driftdirect.dto.championship.ChampionshipCreateDTO;
 import com.driftdirect.dto.championship.ChampionshipShowDto;
 import com.driftdirect.dto.round.RoundCreateDto;
@@ -21,6 +20,8 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import javax.mail.MessagingException;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
 
@@ -90,15 +91,27 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
         UserCreateDTO judge = new UserCreateDTO();
         judge.setUsername("judge");
-        judge.setPassword("judge");
-        judge.setEmail("email@email.com");
-        userService.createFromDto(judge, new HashSet<>(Arrays.asList(judgeRole)));
+        judge.setEmail("paul.bochis@gmail.com");
+        judge.setRoles(new HashSet<>(Arrays.asList("ROLE_JUDGE")));
+        try {
+            userService.createFromDto(judge);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         UserCreateDTO admin = new UserCreateDTO();
         admin.setUsername("admin");
-        admin.setPassword("admin");
-        admin.setEmail("admin@email.com");
-        userService.createFromDto(admin, new HashSet<>(Arrays.asList(adminRole)));
+        admin.setEmail("paul.bochis@gmail.com");
+        admin.setRoles(new HashSet<>(Arrays.asList("ROLE_ADMIN")));
+        try {
+            userService.createFromDto(admin);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
