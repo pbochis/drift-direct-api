@@ -91,6 +91,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
         UserCreateDTO judge = new UserCreateDTO();
         judge.setUsername("judge");
+        judge.setPassword("judge");
         judge.setEmail("paul.bochis@gmail.com");
         judge.setRoles(new HashSet<>(Arrays.asList("ROLE_JUDGE")));
         try {
@@ -103,6 +104,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
         UserCreateDTO admin = new UserCreateDTO();
         admin.setUsername("admin");
+        admin.setPassword("admin");
         admin.setEmail("paul.bochis@gmail.com");
         admin.setRoles(new HashSet<>(Arrays.asList("ROLE_ADMIN")));
         try {

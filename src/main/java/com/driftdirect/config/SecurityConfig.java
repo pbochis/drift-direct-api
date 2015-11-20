@@ -1,6 +1,8 @@
 package com.driftdirect.config;
 
 
+import com.driftdirect.repository.UserRepository;
+import com.driftdirect.security.UserDetailsServiceImpl;
 import com.driftdirect.service.UserService;
 import com.driftdirect.util.Routes;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,16 +27,21 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
     @Autowired
-    private UserService userService;
+    private UserRepository userRepository;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userService).passwordEncoder(passwordEncoder());
+        auth.userDetailsService(userDetailsService(userRepository)).passwordEncoder(passwordEncoder());
     }
 
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public UserDetailsService userDetailsService(UserRepository userRepository){
+        return new UserDetailsServiceImpl(userRepository);
     }
 
     @Override

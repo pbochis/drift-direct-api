@@ -3,7 +3,9 @@ package com.driftdirect.dto.user;
 import com.driftdirect.domain.user.Role;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.List;
 import java.util.Set;
 
@@ -17,13 +19,14 @@ public class UserCreateDTO {
     private String username;
 
     @NotNull
-    @NotEmpty
+    @Size(min = 5, max = 12)
     private String password;
 
     @NotNull
     @NotEmpty
     private String email;
 
+    @Size(min = 1)
     private Set<String> roles;
 
     public Set<String> getRoles() {
