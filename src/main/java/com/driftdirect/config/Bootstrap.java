@@ -92,7 +92,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         UserCreateDTO judge = new UserCreateDTO();
         judge.setUsername("judge");
         judge.setPassword("judge");
-        judge.setEmail("paul.bochis@gmail.com");
+        judge.setEmail("paul.bochis@caca.com");
         judge.setRoles(new HashSet<>(Arrays.asList("ROLE_JUDGE")));
         try {
             userService.createFromDto(judge);

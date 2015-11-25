@@ -1,5 +1,7 @@
 package com.driftdirect.domain;
 
+import com.driftdirect.domain.round.Round;
+
 import javax.persistence.*;
 import java.util.Set;
 

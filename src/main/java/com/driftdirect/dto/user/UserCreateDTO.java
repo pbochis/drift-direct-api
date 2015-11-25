@@ -13,9 +13,6 @@ import java.util.Set;
  * Created by Paul on 11/11/2015.
  */
 public class UserCreateDTO {
-
-    @NotNull
-    @NotEmpty
     private String username;
 
     @NotNull
@@ -26,8 +23,33 @@ public class UserCreateDTO {
     @NotEmpty
     private String email;
 
+    @NotNull
+    @Size(min=4, max = 50)
+    private String firstName;
+
+    @NotNull
+    @Size(min=4, max = 50)
+    private String lastName;
+
+
     @Size(min = 1)
     private Set<String> roles;
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
 
     public Set<String> getRoles() {
         return roles;

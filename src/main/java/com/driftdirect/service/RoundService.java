@@ -1,8 +1,8 @@
 package com.driftdirect.service;
 
 import com.driftdirect.domain.Championship;
-import com.driftdirect.domain.Round;
-import com.driftdirect.domain.RoundSchedele;
+import com.driftdirect.domain.round.Round;
+import com.driftdirect.domain.round.RoundScheduleEntry;
 import com.driftdirect.dto.round.RoundCreateDto;
 import com.driftdirect.dto.round.RoundShowDto;
 import com.driftdirect.dto.round.RoundScheduleCreateDto;
@@ -15,8 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.time.ZonedDateTime;
-import java.util.NoSuchElementException;
 
 /**
  * Created by Paul on 11/14/2015.
@@ -53,12 +51,12 @@ public class RoundService {
 
     public void addRoundSchedule(Long roundId, RoundScheduleCreateDto dto) {
         Round round = roundRepository.findOne(roundId);
-        RoundSchedele roundSchedele = new RoundSchedele();
-        roundSchedele.setName(dto.getName());
-        roundSchedele.setStartDate(dto.getStartDate());
-        roundSchedele.setEndDate(dto.getEndDate());
-        roundSchedele.setRound(round);
-        roundScheduleRepository.save(roundSchedele);
+        RoundScheduleEntry roundScheduleEntry = new RoundScheduleEntry();
+        roundScheduleEntry.setName(dto.getName());
+        roundScheduleEntry.setStartDate(dto.getStartDate());
+        roundScheduleEntry.setEndDate(dto.getEndDate());
+        roundScheduleEntry.setRound(round);
+        roundScheduleRepository.save(roundScheduleEntry);
         if (round.getStartDate() == null && round.getEndDate() == null) {
             round.setStartDate(dto.getStartDate());
             round.setEndDate(dto.getEndDate());

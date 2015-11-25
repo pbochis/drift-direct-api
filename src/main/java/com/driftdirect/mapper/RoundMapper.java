@@ -1,7 +1,7 @@
 package com.driftdirect.mapper;
 
-import com.driftdirect.domain.Round;
-import com.driftdirect.domain.RoundSchedele;
+import com.driftdirect.domain.round.Round;
+import com.driftdirect.domain.round.RoundScheduleEntry;
 import com.driftdirect.dto.round.RoundScheduleShowDto;
 import com.driftdirect.dto.round.RoundShowDto;
 
@@ -27,11 +27,11 @@ public class RoundMapper {
         return rounds.stream().map(e -> map(e)).collect(Collectors.toList());
     }
 
-    private static List<RoundScheduleShowDto> mapSchedule(Set<RoundSchedele> schedule){
+    private static List<RoundScheduleShowDto> mapSchedule(Set<RoundScheduleEntry> schedule){
         return schedule.stream().map(e -> map(e)).collect(Collectors.toList());
     }
 
-    private static RoundScheduleShowDto map(RoundSchedele schedule){
+    private static RoundScheduleShowDto map(RoundScheduleEntry schedule){
         RoundScheduleShowDto dto = new RoundScheduleShowDto();
         dto.setName(schedule.getName());
         dto.setEndDate(schedule.getEndDate());

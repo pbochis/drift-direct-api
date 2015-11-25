@@ -1,7 +1,7 @@
 package com.driftdirect.mapper;
 
 import com.driftdirect.domain.Championship;
-import com.driftdirect.domain.Round;
+import com.driftdirect.domain.round.Round;
 import com.driftdirect.dto.championship.ChampionshipShowDto;
 import com.driftdirect.dto.round.RoundShowDto;
 

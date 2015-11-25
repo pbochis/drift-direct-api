@@ -1,5 +1,6 @@
 package com.driftdirect.domain.user;
 
+import com.driftdirect.domain.person.Person;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,13 +26,16 @@ public class User implements UserDetails{
     private String username;
 
     @NotEmpty
-    @Column(name="email", nullable = false)
+    @Column(name="email", nullable = false, unique = true)
     private String email;
 
     @NotEmpty
     @Column(name = "password", nullable = false)
     private String password;
     private boolean enabled;
+
+    @OneToOne
+    private Person person;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -40,6 +44,14 @@ public class User implements UserDetails{
             inverseJoinColumns = {@JoinColumn(name = "role_id", nullable = false, updatable = false)}
     )
     public Set<Role> roles;
+
+    public Person getPerson() {
+        return person;
+    }
+
+    public void setPerson(Person person) {
+        this.person = person;
+    }
 
     public String getEmail() {
         return email;

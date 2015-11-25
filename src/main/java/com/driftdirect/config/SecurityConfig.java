@@ -48,6 +48,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     protected void configure(HttpSecurity http) throws Exception {
         http.
                 authorizeRequests()
+                    .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                     .antMatchers(HttpMethod.GET, Routes.CHAMPIONSHIP).permitAll()
                     .antMatchers(HttpMethod.GET, Routes.CHAMPIONSHIP_ID).permitAll()
                     .anyRequest().authenticated()

@@ -1,8 +1,9 @@
-package com.driftdirect.domain;
+package com.driftdirect.domain.round;
+
+import com.driftdirect.domain.Championship;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 import java.util.Set;
 
 /**
@@ -24,7 +25,7 @@ public class Round{
     private Championship championship;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "round", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<RoundSchedele> scheduele;
+    private Set<RoundScheduleEntry> scheduele;
 
     public long getId() {
         return id;
@@ -58,11 +59,11 @@ public class Round{
         this.endDate = endDate;
     }
 
-    public Set<RoundSchedele> getScheduele() {
+    public Set<RoundScheduleEntry> getScheduele() {
         return scheduele;
     }
 
-    public void setScheduele(Set<RoundSchedele> scheduele) {
+    public void setScheduele(Set<RoundScheduleEntry> scheduele) {
         this.scheduele = scheduele;
     }
 

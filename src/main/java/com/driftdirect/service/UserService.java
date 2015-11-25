@@ -1,9 +1,11 @@
 package com.driftdirect.service;
 
+import com.driftdirect.domain.person.Person;
 import com.driftdirect.domain.user.Role;
 import com.driftdirect.domain.user.User;
 import com.driftdirect.dto.user.UserCreateDTO;
 import com.driftdirect.dto.user.UserShowDto;
+import com.driftdirect.repository.PersonRepository;
 import com.driftdirect.repository.RoleRepository;
 import com.driftdirect.repository.UserRepository;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -21,8 +23,8 @@ import java.util.Set;
  */
 @Service
 public class UserService {
-
     private UserRepository userRepository;
+    private PersonRepository personRepository;
     private RoleRepository roleRepository;
     private BCryptPasswordEncoder passwordEncoder;
     private MailSenderService mailSenderService;
@@ -30,15 +32,25 @@ public class UserService {
     private final String USER_NOTIFY_EMAIL_TEMPLATE = "/template/templateAccountCreated";
 
     @Autowired
-    public UserService(UserRepository userRepository, RoleRepository roleRepository, BCryptPasswordEncoder passwordEncoder, MailSenderService mailSenderService){
+    public UserService(UserRepository userRepository,
+                       PersonRepository personRepository,
+                       RoleRepository roleRepository,
+                       BCryptPasswordEncoder passwordEncoder,
+                       MailSenderService mailSenderService){
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.mailSenderService = mailSenderService;
+        this.personRepository = personRepository;
     }
 
-    public User createFromDto(UserCreateDTO dto) throws MessagingException, IOException {
+    public void createFromDto(UserCreateDTO dto) throws MessagingException, IOException {
+        Person person = new Person();
+        person.setFirstName(dto.getFirstName());
+        person.setLastName(dto.getLastName());
+        person = personRepository.save(person);
         User user = new User();
+        user.setPerson(person);
         user.setUsername(dto.getUsername());
         String password = dto.getPassword();
         if (password == null){
@@ -53,7 +65,7 @@ public class UserService {
         }
         user.setRoles(roles);
         notifyNewUser(user.getEmail(), password);
-        return userRepository.save(user);
+        userRepository.save(user);
     }
 
     private void notifyNewUser(String email, String password) throws MessagingException, IOException {

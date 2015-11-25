@@ -1,15 +1,14 @@
-package com.driftdirect.domain;
+package com.driftdirect.domain.round;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
-import java.util.Date;
 
 /**
  * Created by Paul on 11/17/2015.
  */
 @Entity
-public class RoundSchedele {
+@Table(name = "round_schedule_entry")
+public class RoundScheduleEntry {
 
     @Id
     @GeneratedValue
