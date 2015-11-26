@@ -86,8 +86,9 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
     }
 
     private void initDevUsersAndRoles(){
-        Role adminRole = roleRepository.save(new Role(Authorities.ROLE_ADMIN));
-        Role judgeRole = roleRepository.save(new Role(Authorities.ROLE_JUDGE));
+        Role adminRole = roleRepository.save(new Role(Authorities.ROLE_ADMIN, 0));
+        Role orgRole = roleRepository.save(new Role(Authorities.ROLE_ORGANIZER, 1));
+        Role judgeRole = roleRepository.save(new Role(Authorities.ROLE_JUDGE, 2));
 
         UserCreateDTO judge = new UserCreateDTO();
         judge.setUsername("judge");

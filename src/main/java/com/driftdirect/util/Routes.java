@@ -15,4 +15,8 @@ public class Routes {
     public static final String USER = "/user";
 
     public static final String PERSON = "/person";
+    public static final String PERSON_ID = "/person/{id}";
+
+    public static final String PERSON_DRIVER_DETAILS = "/person/driver";
+
 }
