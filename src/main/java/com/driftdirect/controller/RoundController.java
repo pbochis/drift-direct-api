@@ -8,7 +8,7 @@ import com.driftdirect.dto.round.RoundScheduleCreateDto;
 import com.driftdirect.dto.round.RoundUpdateDto;
 import com.driftdirect.service.ChampionshipService;
 import com.driftdirect.service.RoundService;
-import com.driftdirect.util.Routes;
+import com.driftdirect.util.RestUrls;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
@@ -32,29 +32,29 @@ public class RoundController {
 
 
     @Secured(Authorities.ROLE_ORGANIZER)
-    @RequestMapping(path = Routes.ROUND, method = RequestMethod.POST)
+    @RequestMapping(path = RestUrls.ROUND, method = RequestMethod.POST)
     public Round createFromDto(@RequestBody @Valid RoundCreateDto dto){
         return roundService.createFromDto(dto);
     }
 
     @Secured(Authorities.ROLE_ORGANIZER)
-    @RequestMapping(path = Routes.ROUND, method = RequestMethod.PUT)
+    @RequestMapping(path = RestUrls.ROUND, method = RequestMethod.PUT)
     public RoundShowDto updateRound(@Valid RoundUpdateDto dto) throws NoSuchElementException {
         return roundService.update(dto);
     }
 
     @Secured(Authorities.ROLE_ORGANIZER)
-    @RequestMapping(path = Routes.ROUND_ID, method = RequestMethod.DELETE)
+    @RequestMapping(path = RestUrls.ROUND_ID, method = RequestMethod.DELETE)
     public void delete(@PathVariable Long id) {
         roundService.delete(id);
     }
 
-    @RequestMapping(path = Routes.ROUND_ID, method = RequestMethod.GET)
+    @RequestMapping(path = RestUrls.ROUND_ID, method = RequestMethod.GET)
     public RoundShowDto getById(@PathVariable Long id) {
         return roundService.findRound(id);
     }
 
-    @RequestMapping(path = Routes.ROUND_ID_SHCEDULE, method = RequestMethod.POST)
+    @RequestMapping(path = RestUrls.ROUND_ID_SHCEDULE, method = RequestMethod.POST)
     public void addSchedule(@PathVariable Long id, @Valid @RequestBody RoundScheduleCreateDto rs){
         // [2000,5,15,0,0,0,0] [year, month, day, hour, minute, second, nanosecond]
         roundService.addRoundSchedule(id, rs);

@@ -6,11 +6,10 @@ import com.driftdirect.dto.user.UserShowDto;
 import com.driftdirect.mapper.UserMapper;
 import com.driftdirect.security.SecurityService;
 import com.driftdirect.service.UserService;
-import com.driftdirect.util.Routes;
+import com.driftdirect.util.RestUrls;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -35,12 +34,12 @@ public class UserController {
         this.userService = userService;
     }
 
-    @RequestMapping(value = Routes.USER, method = RequestMethod.GET)
+    @RequestMapping(value = RestUrls.USER, method = RequestMethod.GET)
     public UserShowDto whoAmI(){
         return UserMapper.map(securityService.currentUser());
     }
 
-    @RequestMapping(value = Routes.USER, method = RequestMethod.POST)
+    @RequestMapping(value = RestUrls.USER, method = RequestMethod.POST)
     public ResponseEntity createUser(@Valid @RequestBody UserCreateDTO user) throws MessagingException, IOException {
         User currentUser = securityService.currentUser();
         if (securityService.canCreateUser(currentUser, user.getRoles())){

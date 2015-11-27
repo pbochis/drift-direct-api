@@ -3,7 +3,7 @@ package com.driftdirect.util;
 /**
  * Created by Paul on 11/11/2015.
  */
-public class Routes {
+public class RestUrls {
     public static final String CHAMPIONSHIP = "/championship";
     public static final String CHAMPIONSHIP_ID = "/championship/{id}";
     public static final String CHAMPIONSHIP_ID_ROUNDS = "/championship/{id}/rounds";
@@ -19,4 +19,9 @@ public class Routes {
 
     public static final String PERSON_DRIVER_DETAILS = "/person/driver";
 
+    public static final String SPONSOR = "/sponsor";
+    public static final String SPONSOR_ID = "/sponspor/{id}";
+
+    public static final String TEAM = "/team";
+    public static final String TEAM_ID = "/team/{id}";
 }

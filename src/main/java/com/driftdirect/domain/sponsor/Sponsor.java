@@ -1,8 +1,12 @@
 package com.driftdirect.domain.sponsor;
 
+import com.driftdirect.domain.driver.Team;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import java.util.Set;
 
 /**
  * Created by Paul on 11/26/2015.
