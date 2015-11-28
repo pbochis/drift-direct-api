@@ -11,6 +11,8 @@ import com.driftdirect.util.RestUrls;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,12 +22,9 @@ import java.util.List;
 /**
  * Created by Paul on 11/6/2015.
  */
-
 @RestController
 public class ChampionshipController {
-
     private ChampionshipService championshipService;
-    Logger logger = LoggerFactory.getLogger(ChampionshipController.class);
 
     @Autowired
     public ChampionshipController(ChampionshipService championshipService){
@@ -33,35 +32,37 @@ public class ChampionshipController {
     }
 
     @RequestMapping(path = RestUrls.CHAMPIONSHIP, method = RequestMethod.GET)
-    public List<ChampionshipShowDto> list() {
-        return championshipService.findChampionships();
+    public ResponseEntity<List<ChampionshipShowDto>> list() {
+        return new ResponseEntity<>(championshipService.findChampionships(), HttpStatus.OK);
     }
 
     @Secured(Authorities.ROLE_ORGANIZER)
     @RequestMapping(path = RestUrls.CHAMPIONSHIP, method = RequestMethod.POST)
-    public ChampionshipShowDto createChampionship(@Valid ChampionshipCreateDTO c){
-        return championshipService.createFromDto(c);
+    public ResponseEntity createChampionship(@Valid ChampionshipCreateDTO c){
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @Secured(Authorities.ROLE_ORGANIZER)
     @RequestMapping(path = RestUrls.CHAMPIONSHIP, method = RequestMethod.PUT)
-    public ChampionshipShowDto updateChampionship(@Valid ChampionshipUpdateDTO c) throws ObjectNotFoundException {
-        return championshipService.update(c);
+    public ResponseEntity updateChampionship(@Valid ChampionshipUpdateDTO c) throws ObjectNotFoundException {
+        championshipService.update(c);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @RequestMapping(path = RestUrls.CHAMPIONSHIP_ID, method = RequestMethod.GET)
-    public ChampionshipShowDto getById(@PathVariable Long id) {
-        return championshipService.findChampionship(id);
+    public ResponseEntity<ChampionshipShowDto> getById(@PathVariable Long id) {
+        return new ResponseEntity<>(championshipService.findChampionship(id), HttpStatus.OK);
     }
 
     @Secured(Authorities.ROLE_ORGANIZER)
     @RequestMapping(path = RestUrls.CHAMPIONSHIP_ID, method = RequestMethod.DELETE)
-    public void delete(@PathVariable Long id) {
+    public ResponseEntity delete(@PathVariable Long id) {
         championshipService.delete(id);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @RequestMapping(path = RestUrls.CHAMPIONSHIP_ID_ROUNDS, method = RequestMethod.GET)
-    public List<RoundShowDto> getChampionshipRounds(@PathVariable Long id){
-        return championshipService.championshipRounds(id);
+    public ResponseEntity<List<RoundShowDto>> getChampionshipRounds(@PathVariable Long id){
+        return new ResponseEntity<>(championshipService.championshipRounds(id), HttpStatus.OK);
     }
 }

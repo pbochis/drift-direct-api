@@ -31,17 +31,14 @@ public class ChampionshipService{
         this.championshipRepository = championshipRepository;
     }
 
-    public ChampionshipShowDto createFromDto(ChampionshipCreateDTO dto){
+    public void createFromDto(ChampionshipCreateDTO dto){
         Championship c = new Championship();
-        return ChampionshipMapper.map(populateAndSave(c, dto));
+        populateAndSave(c, dto);
     }
 
-    public ChampionshipShowDto update(ChampionshipUpdateDTO dto) throws ObjectNotFoundException {
+    public void update(ChampionshipUpdateDTO dto) throws ObjectNotFoundException {
         Championship c = championshipRepository.findOne(dto.getId());
-        if (c == null){
-            throw new ObjectNotFoundException("championship not found");
-        }
-        return ChampionshipMapper.map(populateAndSave(c, dto));
+        populateAndSave(c, dto);
     }
 
     public void delete(long id){

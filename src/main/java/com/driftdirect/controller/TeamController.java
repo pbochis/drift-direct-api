@@ -36,7 +36,7 @@ public class TeamController {
         return new ResponseEntity<>(teamService.findById(id), HttpStatus.OK);
     }
 
-    @RequestMapping(path = RestUrls.TEAM_ID, method = RequestMethod.GET)
+    @RequestMapping(path = RestUrls.TEAM_ID, method = RequestMethod.DELETE)
     public ResponseEntity delete(@PathVariable Long id){
         teamService.delete(id);
         return new ResponseEntity(HttpStatus.OK);

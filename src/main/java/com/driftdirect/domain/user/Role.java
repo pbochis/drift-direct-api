@@ -15,21 +15,10 @@ public class Role implements GrantedAuthority{
 
     private String authority;
 
-    private int order;
-
     public Role(){}
 
-    public int getOrder() {
-        return order;
-    }
-
-    public void setOrder(int order) {
-        this.order = order;
-    }
-
-    public Role(String authority, int order){
+    public Role(String authority){
         this.authority = authority;
-        this.order = order;
     }
 
     public long getId() {

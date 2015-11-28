@@ -35,7 +35,7 @@ public class SponsorController {
         return new ResponseEntity<>(sponsorService.findById(id), HttpStatus.OK);
     }
 
-    @RequestMapping(path = RestUrls.SPONSOR_ID, method = RequestMethod.GET)
+    @RequestMapping(path = RestUrls.SPONSOR_ID, method = RequestMethod.DELETE)
     public ResponseEntity delete(@PathVariable Long id){
         sponsorService.delete(id);
         return new ResponseEntity(HttpStatus.OK);

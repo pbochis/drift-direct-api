@@ -10,6 +10,8 @@ import com.driftdirect.service.ChampionshipService;
 import com.driftdirect.service.RoundService;
 import com.driftdirect.util.RestUrls;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,31 +24,31 @@ import java.util.NoSuchElementException;
 @RestController
 public class RoundController {
     private RoundService roundService;
-    private ChampionshipService championshipService;
 
     @Autowired
-    public RoundController(RoundService roundService, ChampionshipService championshipService){
+    public RoundController(RoundService roundService){
         this.roundService = roundService;
-        this.championshipService = championshipService;
     }
-
 
     @Secured(Authorities.ROLE_ORGANIZER)
     @RequestMapping(path = RestUrls.ROUND, method = RequestMethod.POST)
-    public Round createFromDto(@RequestBody @Valid RoundCreateDto dto){
-        return roundService.createFromDto(dto);
+    public ResponseEntity createFromDto(@RequestBody @Valid RoundCreateDto dto){
+        roundService.createFromDto(dto);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @Secured(Authorities.ROLE_ORGANIZER)
     @RequestMapping(path = RestUrls.ROUND, method = RequestMethod.PUT)
-    public RoundShowDto updateRound(@Valid RoundUpdateDto dto) throws NoSuchElementException {
-        return roundService.update(dto);
+    public ResponseEntity updateRound(@Valid RoundUpdateDto dto) throws NoSuchElementException {
+        roundService.update(dto);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @Secured(Authorities.ROLE_ORGANIZER)
     @RequestMapping(path = RestUrls.ROUND_ID, method = RequestMethod.DELETE)
-    public void delete(@PathVariable Long id) {
+    public ResponseEntity delete(@PathVariable Long id) {
         roundService.delete(id);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @RequestMapping(path = RestUrls.ROUND_ID, method = RequestMethod.GET)
@@ -55,9 +57,10 @@ public class RoundController {
     }
 
     @RequestMapping(path = RestUrls.ROUND_ID_SHCEDULE, method = RequestMethod.POST)
-    public void addSchedule(@PathVariable Long id, @Valid @RequestBody RoundScheduleCreateDto rs){
+    public ResponseEntity addSchedule(@PathVariable Long id, @Valid @RequestBody RoundScheduleCreateDto rs){
         // [2000,5,15,0,0,0,0] [year, month, day, hour, minute, second, nanosecond]
         roundService.addRoundSchedule(id, rs);
+        return new ResponseEntity(HttpStatus.OK);
     }
 }
 

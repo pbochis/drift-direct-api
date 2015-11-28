@@ -24,6 +24,7 @@ import javax.mail.MessagingException;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 
 /**
  * Created by Paul on 11/10/2015.
@@ -78,17 +79,24 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         dto.setTicketsUrl("www.tickets.com");
         dto.setInformation("This is a drifting championship, mate");
         dto.setRules("These are the rules of drifting");
-        ChampionshipShowDto c = championshipService.createFromDto(dto);
+        championshipService.createFromDto(dto);
+        dto.setName("DN2Z");
+        championshipService.createFromDto(dto);
+
+        List<ChampionshipShowDto> cs = championshipService.findChampionships();
         RoundCreateDto rc = new RoundCreateDto();
-        rc.setName("Round 1");
-        rc.setChampionshipId(c.getId());
+        rc.setName("C1 - Round 1");
+        rc.setChampionshipId(cs.get(0).getId());
+        roundService.createFromDto(rc);
+        rc.setName("C2 - Round 1");
+        rc.setChampionshipId(cs.get(1).getId());
         roundService.createFromDto(rc);
     }
 
     private void initDevUsersAndRoles(){
-        Role adminRole = roleRepository.save(new Role(Authorities.ROLE_ADMIN, 0));
-        Role orgRole = roleRepository.save(new Role(Authorities.ROLE_ORGANIZER, 1));
-        Role judgeRole = roleRepository.save(new Role(Authorities.ROLE_JUDGE, 2));
+        Role adminRole = roleRepository.save(new Role(Authorities.ROLE_ADMIN));
+        Role orgRole = roleRepository.save(new Role(Authorities.ROLE_ORGANIZER));
+        Role judgeRole = roleRepository.save(new Role(Authorities.ROLE_JUDGE));
 
         UserCreateDTO judge = new UserCreateDTO();
         judge.setUsername("judge");
