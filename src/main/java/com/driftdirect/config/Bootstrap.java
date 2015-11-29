@@ -106,10 +106,10 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         rc.setName("C1 - Round 1");
         rc.setChampionshipId(cs.get(0).getId());
         rc.setLogo((long) 1);
-        roundService.createFromDto(rc);
+        Long id1 = roundService.createFromDto(rc);
         rc.setName("C2 - Round 1");
         rc.setChampionshipId(cs.get(1).getId());
-        roundService.createFromDto(rc);
+        Long id2 = roundService.createFromDto(rc);
     }
 
     private void initDevUsersAndRoles(){

@@ -35,13 +35,13 @@ public class RoundService {
         this.roundScheduleRepository = roundScheduleRepository;
     }
 
-    public void createFromDto(RoundCreateDto dto){
+    public Long createFromDto(RoundCreateDto dto) {
         Championship championship = championshipRepository.findOne(dto.getChampionshipId());
         Round round = new Round();
         round.setName(dto.getName());
         round.setChampionship(championship);
         round.setLogo(fileRepository.findOne(dto.getLogo()));
-        roundRepository.save(round);
+        return roundRepository.save(round).getId();
     }
 
     public RoundShowDto update(RoundUpdateDto dto) {

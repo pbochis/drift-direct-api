@@ -1,7 +1,6 @@
 package com.driftdirect.config;
 
 import com.driftdirect.Application;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.hibernate.cfg.Environment;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
