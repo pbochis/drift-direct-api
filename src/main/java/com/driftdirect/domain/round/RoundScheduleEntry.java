@@ -1,7 +1,8 @@
 package com.driftdirect.domain.round;
 
+import org.joda.time.DateTime;
+
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 /**
  * Created by Paul on 11/17/2015.
@@ -10,17 +11,15 @@ import java.time.LocalDateTime;
 @Table(name = "round_schedule_entry")
 public class RoundScheduleEntry {
 
-    @Id
-    @GeneratedValue
-    private long id;
-
     String name;
-    LocalDateTime startDate;
-    LocalDateTime endDate;
-
+    DateTime startDate;
+    DateTime endDate;
     @ManyToOne
     @JoinColumn(name = "round_id", nullable = false)
     Round round;
+    @Id
+    @GeneratedValue
+    private long id;
 
     public long getId() {
         return id;
@@ -46,19 +45,19 @@ public class RoundScheduleEntry {
         this.name = name;
     }
 
-    public LocalDateTime getStartDate() {
+    public DateTime getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(LocalDateTime startDate) {
+    public void setStartDate(DateTime startDate) {
         this.startDate = startDate;
     }
 
-    public LocalDateTime getEndDate() {
+    public DateTime getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(LocalDateTime endDate) {
+    public void setEndDate(DateTime endDate) {
         this.endDate = endDate;
     }
 }

@@ -48,7 +48,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 authorizeRequests()
                     .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                     .antMatchers(HttpMethod.GET, RestUrls.CHAMPIONSHIP).permitAll()
+                .antMatchers(HttpMethod.GET, RestUrls.CHAMPIONSHIP_SHORT).permitAll()
                     .antMatchers(HttpMethod.GET, RestUrls.CHAMPIONSHIP_ID).permitAll()
+                .antMatchers(HttpMethod.GET, RestUrls.FILE_ID).permitAll()
                     .anyRequest().authenticated()
                 .and().httpBasic().
                 and().csrf().disable();

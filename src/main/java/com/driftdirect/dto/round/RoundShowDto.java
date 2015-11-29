@@ -1,18 +1,17 @@
 package com.driftdirect.dto.round;
 
-import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
-import java.util.Date;
+import org.joda.time.DateTime;
+
 import java.util.List;
 
 /**
- * Created by Paul on 11/14/2015.
+ * Created by Paul on 11/14/2015
  */
 public class RoundShowDto {
     private long id;
     private String name;
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
+    private DateTime startDate;
+    private DateTime endDate;
 
     private List<RoundScheduleShowDto> schedule;
 
@@ -24,35 +23,35 @@ public class RoundShowDto {
         this.schedule = schedule;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public long getId() {
         return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getName() {
         return name;
     }
 
-    public LocalDateTime getStartDate() {
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public DateTime getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(LocalDateTime startDate) {
+    public void setStartDate(DateTime startDate) {
         this.startDate = startDate;
     }
 
-    public LocalDateTime getEndDate() {
+    public DateTime getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(LocalDateTime endDate) {
+    public void setEndDate(DateTime endDate) {
         this.endDate = endDate;
     }
 }

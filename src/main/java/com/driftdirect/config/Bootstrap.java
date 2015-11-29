@@ -1,23 +1,27 @@
 package com.driftdirect.config;
 
 import com.driftdirect.domain.ConfigSetting;
+import com.driftdirect.domain.file.File;
 import com.driftdirect.domain.user.Authorities;
 import com.driftdirect.domain.user.Role;
-import com.driftdirect.dto.user.UserCreateDTO;
 import com.driftdirect.dto.championship.ChampionshipCreateDTO;
 import com.driftdirect.dto.championship.ChampionshipShowDto;
 import com.driftdirect.dto.round.RoundCreateDto;
+import com.driftdirect.dto.user.UserCreateDTO;
 import com.driftdirect.repository.ConfigSettingRepository;
+import com.driftdirect.repository.FileRepository;
 import com.driftdirect.repository.RoleRepository;
 import com.driftdirect.service.ChampionshipService;
 import com.driftdirect.service.RoundService;
 import com.driftdirect.service.UserService;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 import javax.mail.MessagingException;
@@ -40,18 +44,20 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
     private UserService userService;
     private ChampionshipService championshipService;
     private RoundService roundService;
+    private FileRepository fileRepository;
 
     @Autowired
     public Bootstrap(
             ConfigSettingRepository configSettingRepository,RoleRepository roleRepository,
             UserService userService, Environment environment, ChampionshipService championshipService,
-            RoundService roundService){
+            RoundService roundService, FileRepository fileRepository) {
         this.configSettingRepository = configSettingRepository;
         this.roleRepository = roleRepository;
         this.userService = userService;
         this.environment = environment;
         this.championshipService = championshipService;
         this.roundService = roundService;
+        this.fileRepository = fileRepository;
     }
 
     @Override
@@ -69,8 +75,18 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
     }
 
     private void initDevelopementDatabase(){
+        try {
+            ClassPathResource r = new ClassPathResource("/template/cioban.jpg");
+            File f = new File();
+            f.setName(r.getFilename());
+            f.setData(IOUtils.toByteArray(r.getInputStream()));
+            fileRepository.save(f);
+        } catch (IOException e) {
+            System.err.println(e);
+        }
         initDevUsersAndRoles();
         initChampionshipAndRounds();
+
     }
 
     private void initChampionshipAndRounds(){
@@ -79,6 +95,8 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         dto.setTicketsUrl("www.tickets.com");
         dto.setInformation("This is a drifting championship, mate");
         dto.setRules("These are the rules of drifting");
+        dto.setLogo((long) 1);
+        dto.setBackgroundImage((long) 1);
         championshipService.createFromDto(dto);
         dto.setName("DN2Z");
         championshipService.createFromDto(dto);
@@ -87,6 +105,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         RoundCreateDto rc = new RoundCreateDto();
         rc.setName("C1 - Round 1");
         rc.setChampionshipId(cs.get(0).getId());
+        rc.setLogo((long) 1);
         roundService.createFromDto(rc);
         rc.setName("C2 - Round 1");
         rc.setChampionshipId(cs.get(1).getId());

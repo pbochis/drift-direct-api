@@ -2,6 +2,7 @@ package com.driftdirect.mapper;
 
 import com.driftdirect.domain.Championship;
 import com.driftdirect.domain.round.Round;
+import com.driftdirect.dto.championship.ChampionshipShortShowDto;
 import com.driftdirect.dto.championship.ChampionshipShowDto;
 import com.driftdirect.dto.round.RoundShowDto;
 
@@ -27,6 +28,15 @@ public class ChampionshipMapper {
             }
             dto.setRounds(rounds);
         }
+        return dto;
+    }
+
+    public static ChampionshipShortShowDto mapShort(Championship c, Round round) {
+        ChampionshipShortShowDto dto = new ChampionshipShortShowDto();
+        dto.setId(c.getId());
+        dto.setBackgroundImage(c.getBackgroundImage().getId());
+        dto.setLogo(c.getLogo().getId());
+        dto.setNextRound(RoundMapper.mapShort(round));
         return dto;
     }
 

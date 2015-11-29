@@ -4,11 +4,12 @@ import com.driftdirect.domain.Championship;
 import com.driftdirect.domain.round.Round;
 import com.driftdirect.domain.round.RoundScheduleEntry;
 import com.driftdirect.dto.round.RoundCreateDto;
-import com.driftdirect.dto.round.RoundShowDto;
 import com.driftdirect.dto.round.RoundScheduleCreateDto;
+import com.driftdirect.dto.round.RoundShowDto;
 import com.driftdirect.dto.round.RoundUpdateDto;
 import com.driftdirect.mapper.RoundMapper;
 import com.driftdirect.repository.ChampionshipRepository;
+import com.driftdirect.repository.FileRepository;
 import com.driftdirect.repository.RoundRepository;
 import com.driftdirect.repository.RoundScheduleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +26,11 @@ public class RoundService {
     private RoundRepository roundRepository;
     private ChampionshipRepository championshipRepository;
     private RoundScheduleRepository roundScheduleRepository;
-
+    private FileRepository fileRepository;
     @Autowired
-    public RoundService(RoundRepository roundRepository, ChampionshipRepository championshipRepository, RoundScheduleRepository roundScheduleRepository){
+    public RoundService(RoundRepository roundRepository, FileRepository fileRepository, ChampionshipRepository championshipRepository, RoundScheduleRepository roundScheduleRepository) {
         this.roundRepository = roundRepository;
+        this.fileRepository = fileRepository;
         this.championshipRepository = championshipRepository;
         this.roundScheduleRepository = roundScheduleRepository;
     }
@@ -38,6 +40,7 @@ public class RoundService {
         Round round = new Round();
         round.setName(dto.getName());
         round.setChampionship(championship);
+        round.setLogo(fileRepository.findOne(dto.getLogo()));
         roundRepository.save(round);
     }
 

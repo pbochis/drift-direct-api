@@ -3,6 +3,7 @@ package com.driftdirect.service;
 import com.driftdirect.domain.Championship;
 import com.driftdirect.domain.round.Round;
 import com.driftdirect.dto.championship.ChampionshipCreateDTO;
+import com.driftdirect.dto.championship.ChampionshipShortShowDto;
 import com.driftdirect.dto.championship.ChampionshipShowDto;
 import com.driftdirect.dto.championship.ChampionshipUpdateDTO;
 import com.driftdirect.dto.round.RoundShowDto;
@@ -10,6 +11,7 @@ import com.driftdirect.exception.ObjectNotFoundException;
 import com.driftdirect.mapper.ChampionshipMapper;
 import com.driftdirect.mapper.RoundMapper;
 import com.driftdirect.repository.ChampionshipRepository;
+import com.driftdirect.repository.FileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,10 +27,12 @@ import java.util.List;
 @Transactional
 public class ChampionshipService{
     private ChampionshipRepository championshipRepository;
+    private FileRepository fileRepository;
 
     @Autowired
-    public ChampionshipService(ChampionshipRepository championshipRepository){
+    public ChampionshipService(ChampionshipRepository championshipRepository, FileRepository fileRepository) {
         this.championshipRepository = championshipRepository;
+        this.fileRepository = fileRepository;
     }
 
     public void createFromDto(ChampionshipCreateDTO dto){
@@ -66,12 +70,23 @@ public class ChampionshipService{
         return ChampionshipMapper.map(championshipRepository.findOne(id));
     }
 
+    public List<ChampionshipShortShowDto> getShortChampionshipList() {
+        List<Championship> championships = championshipRepository.findAll();
+        List<ChampionshipShortShowDto> dtos = new ArrayList<>();
+        for (Championship c : championships) {
+            dtos.add(ChampionshipMapper.mapShort(c, c.getRounds().get(0)));
+        }
+        return dtos;
+    }
+
     private Championship populateAndSave(Championship c, ChampionshipCreateDTO dto){
         c.setName(dto.getName());
         c.setInformation(dto.getInformation());
         c.setPublished(dto.isPublished());
         c.setRules(dto.getRules());
         c.setTicketsUrl(dto.getTicketsUrl());
+        c.setBackgroundImage(fileRepository.findOne(dto.getBackgroundImage()));
+        c.setLogo(fileRepository.findOne(dto.getLogo()));
         return championshipRepository.save(c);
     }
 }

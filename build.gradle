@@ -54,8 +54,8 @@ dependencies {
     compile "org.springframework.security:spring-security-config:${springSecurityVersion}"
     compile "org.springframework.security:spring-security-web:${springSecurityVersion}"
 
-    // jackson mapper for java 8 time
-    compile "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.6.3"
+    //joda time
+    compile 'joda-time:joda-time:2.9.1'
 
     compile "org.apache.commons:commons-lang3:3.4"
     compile "commons-io:commons-io:2.4"

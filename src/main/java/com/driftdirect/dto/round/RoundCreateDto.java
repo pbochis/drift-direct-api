@@ -1,8 +1,6 @@
 package com.driftdirect.dto.round;
 
 
-import com.driftdirect.domain.Championship;
-
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -17,6 +15,16 @@ public class RoundCreateDto {
 
     @NotNull
     private Long championshipId;
+
+    private Long logo;
+
+    public Long getLogo() {
+        return logo;
+    }
+
+    public void setLogo(Long logo) {
+        this.logo = logo;
+    }
 
     public String getName() {
         return name;

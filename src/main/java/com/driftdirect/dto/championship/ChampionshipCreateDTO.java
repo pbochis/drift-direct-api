@@ -14,7 +14,25 @@ public class ChampionshipCreateDTO {
     private String rules;
     private String information;
     private String ticketsUrl;
+    private Long logo;
+    private Long backgroundImage;
     private boolean published;
+
+    public Long getLogo() {
+        return logo;
+    }
+
+    public void setLogo(Long logo) {
+        this.logo = logo;
+    }
+
+    public Long getBackgroundImage() {
+        return backgroundImage;
+    }
+
+    public void setBackgroundImage(Long backgroundImage) {
+        this.backgroundImage = backgroundImage;
+    }
 
     public String getRules() {
         return rules;

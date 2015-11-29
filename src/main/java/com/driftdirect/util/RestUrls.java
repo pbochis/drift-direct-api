@@ -5,6 +5,7 @@ package com.driftdirect.util;
  */
 public class RestUrls {
     public static final String CHAMPIONSHIP = "/championship";
+    public static final String CHAMPIONSHIP_SHORT = "/championship/short";
     public static final String CHAMPIONSHIP_ID = "/championship/{id}";
     public static final String CHAMPIONSHIP_ID_ROUNDS = "/championship/{id}/rounds";
 
@@ -24,4 +25,7 @@ public class RestUrls {
 
     public static final String TEAM = "/team";
     public static final String TEAM_ID = "/team/{id}";
+
+    public static final String FILE = "/file";
+    public static final String FILE_ID = "/file/{id}";
 }

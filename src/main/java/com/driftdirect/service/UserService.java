@@ -4,7 +4,6 @@ import com.driftdirect.domain.person.Person;
 import com.driftdirect.domain.user.Role;
 import com.driftdirect.domain.user.User;
 import com.driftdirect.dto.user.UserCreateDTO;
-import com.driftdirect.dto.user.UserShowDto;
 import com.driftdirect.repository.PersonRepository;
 import com.driftdirect.repository.RoleRepository;
 import com.driftdirect.repository.UserRepository;
@@ -23,13 +22,12 @@ import java.util.Set;
  */
 @Service
 public class UserService {
+    private final String USER_NOTIFY_EMAIL_TEMPLATE = "/template/templateAccountCreated.html";
     private UserRepository userRepository;
     private PersonRepository personRepository;
     private RoleRepository roleRepository;
     private BCryptPasswordEncoder passwordEncoder;
     private MailSenderService mailSenderService;
-
-    private final String USER_NOTIFY_EMAIL_TEMPLATE = "/template/templateAccountCreated";
 
     @Autowired
     public UserService(UserRepository userRepository,

@@ -8,12 +8,14 @@ import java.util.List;
  * Created by Paul on 11/15/2015.
  */
 public class ChampionshipShowDto {
-
     private long id;
     private String name;
     private String rules;
     private String information;
     private String ticketsUrl;
+
+    private Long backgroundImage;
+    private Long logo;
 
     private List<RoundShowDto> rounds;
 

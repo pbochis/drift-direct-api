@@ -3,6 +3,7 @@ package com.driftdirect.mapper;
 import com.driftdirect.domain.round.Round;
 import com.driftdirect.domain.round.RoundScheduleEntry;
 import com.driftdirect.dto.round.RoundScheduleShowDto;
+import com.driftdirect.dto.round.RoundShortShowDto;
 import com.driftdirect.dto.round.RoundShowDto;
 
 import java.util.List;
@@ -20,6 +21,17 @@ public class RoundMapper {
         dto.setStartDate(round.getStartDate());
         dto.setEndDate(round.getEndDate());
         dto.setSchedule(mapSchedule(round.getScheduele()));
+        return dto;
+    }
+
+    public static RoundShortShowDto mapShort(Round round) {
+        RoundShortShowDto dto = new RoundShortShowDto();
+        dto.setId(round.getId());
+        dto.setName(round.getName());
+        dto.setOrder(3);
+        dto.setLogo(round.getLogo().getId());
+        dto.setStartDate(round.getStartDate());
+        dto.setEndDate(round.getEndDate());
         return dto;
     }
 

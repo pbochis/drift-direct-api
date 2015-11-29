@@ -2,19 +2,21 @@ package com.driftdirect.controller;
 
 import com.driftdirect.domain.user.Authorities;
 import com.driftdirect.dto.championship.ChampionshipCreateDTO;
+import com.driftdirect.dto.championship.ChampionshipShortShowDto;
 import com.driftdirect.dto.championship.ChampionshipShowDto;
 import com.driftdirect.dto.championship.ChampionshipUpdateDTO;
 import com.driftdirect.dto.round.RoundShowDto;
 import com.driftdirect.exception.ObjectNotFoundException;
 import com.driftdirect.service.ChampionshipService;
 import com.driftdirect.util.RestUrls;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -34,6 +36,11 @@ public class ChampionshipController {
     @RequestMapping(path = RestUrls.CHAMPIONSHIP, method = RequestMethod.GET)
     public ResponseEntity<List<ChampionshipShowDto>> list() {
         return new ResponseEntity<>(championshipService.findChampionships(), HttpStatus.OK);
+    }
+
+    @RequestMapping(path = RestUrls.CHAMPIONSHIP_SHORT, method = RequestMethod.GET)
+    public ResponseEntity<List<ChampionshipShortShowDto>> listShort() {
+        return new ResponseEntity<>(championshipService.getShortChampionshipList(), HttpStatus.OK);
     }
 
     @Secured(Authorities.ROLE_ORGANIZER)
@@ -65,4 +72,6 @@ public class ChampionshipController {
     public ResponseEntity<List<RoundShowDto>> getChampionshipRounds(@PathVariable Long id){
         return new ResponseEntity<>(championshipService.championshipRounds(id), HttpStatus.OK);
     }
+
+
 }
