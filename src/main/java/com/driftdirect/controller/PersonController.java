@@ -1,9 +1,6 @@
 package com.driftdirect.controller;
 
-import com.driftdirect.dto.person.DriverDetailsUpdateDto;
-import com.driftdirect.dto.person.PersonCreateDto;
-import com.driftdirect.dto.person.PersonShortShowDto;
-import com.driftdirect.dto.person.PersonUpdateDto;
+import com.driftdirect.dto.person.*;
 import com.driftdirect.service.PersonService;
 import com.driftdirect.util.RestUrls;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +38,12 @@ public class PersonController {
     public ResponseEntity updatePerson(@RequestBody @Valid PersonUpdateDto dto){
         personService.updatePerson(dto);
         return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @RequestMapping(path = RestUrls.PERSON_ID, method = RequestMethod.GET)
+    public ResponseEntity<PersonFullDto> updatePerson(@PathVariable("id") Long id) {
+        System.out.println("********************9");
+        return new ResponseEntity<>(personService.findPerson(id), HttpStatus.OK);
     }
 
     @RequestMapping(path = RestUrls.PERSON_ID, method = RequestMethod.DELETE)

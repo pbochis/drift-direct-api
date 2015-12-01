@@ -1,19 +1,12 @@
-package com.driftdirect.domain.driver;
+package com.driftdirect.dto.person;
 
-import javax.persistence.*;
+import com.driftdirect.dto.team.TeamShowDto;
 
 /**
- * Created by Paul on 11/20/2015.
+ * Created by Paul on 11/30/2015.
  */
-@Entity
-@Table(name = "driver_details")
-public class DriverDetails {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class DriverDetailsDto {
     private long id;
-
-    // Car specifications for the driver.
-    // Think: maybe it's better to make this List<AttributeValue> attributes
     private String make;
     private String model;
     private String engine;
@@ -21,11 +14,9 @@ public class DriverDetails {
     private String suspensionMods;
     private String wheels;
     private String tires;
-    private int horsePower;
     private String other;
-
-    @ManyToOne
-    private Team team;
+    private int horsePower;
+    private TeamShowDto team;
 
     public long getId() {
         return id;
@@ -99,11 +90,11 @@ public class DriverDetails {
         this.other = other;
     }
 
-    public Team getTeam() {
+    public TeamShowDto getTeam() {
         return team;
     }
 
-    public void setTeam(Team team) {
+    public void setTeam(TeamShowDto team) {
         this.team = team;
     }
 

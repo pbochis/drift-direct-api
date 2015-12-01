@@ -1,4 +1,4 @@
-package com.driftdirect.domain;
+package com.driftdirect.domain.championship;
 
 import com.driftdirect.domain.file.File;
 import com.driftdirect.domain.round.Round;
@@ -12,7 +12,7 @@ import java.util.List;
 @Entity
 public class Championship{
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     private String name;
@@ -28,6 +28,7 @@ public class Championship{
     @OneToOne(fetch = FetchType.LAZY)
     private File logo;
 
+    //add list<> drivers and list<> judges
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "championship", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Round> rounds;
 

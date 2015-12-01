@@ -2,10 +2,9 @@ package com.driftdirect.domain.person;
 
 import com.driftdirect.domain.Country;
 import com.driftdirect.domain.driver.DriverDetails;
+import com.driftdirect.domain.file.File;
 
 import javax.persistence.*;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 
 /**
  * Created by Paul on 11/20/2015.
@@ -13,13 +12,15 @@ import javax.validation.constraints.NotNull;
 @Entity
 public class Person {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     private String firstName;
     private String lastName;
     private String telephone;
-
+    //TODO(pbochis): website and birthdate
+//    private String birthDate;
+    private String website;
     @ManyToOne
     private Country country;
 
@@ -28,6 +29,9 @@ public class Person {
 
     @Enumerated(EnumType.STRING)
     private PersonType personType;
+
+    @OneToOne
+    private File profilePicture;
 
     //null when the person.personType != PersonType.Driver
     @OneToOne(optional = true)
@@ -103,6 +107,22 @@ public class Person {
 
     public void setPersonType(PersonType personType) {
         this.personType = personType;
+    }
+
+    public File getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(File profilePicture) {
+        this.profilePicture = profilePicture;
+    }
+
+    public String getWebsite() {
+        return website;
+    }
+
+    public void setWebsite(String website) {
+        this.website = website;
     }
 
     @Override

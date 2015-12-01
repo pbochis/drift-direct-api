@@ -1,8 +1,8 @@
 package com.driftdirect.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import com.driftdirect.domain.file.File;
+
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -11,11 +11,14 @@ import javax.validation.constraints.NotNull;
 @Entity
 public class Country {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @NotNull
     private String name;
+
+    @OneToOne
+    private File flag;
 
     public String getName() {
         return name;
@@ -31,5 +34,13 @@ public class Country {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public File getFlag() {
+        return flag;
+    }
+
+    public void setFlag(File flag) {
+        this.flag = flag;
     }
 }

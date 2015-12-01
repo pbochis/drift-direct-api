@@ -30,6 +30,7 @@ public class SponsorService {
         sponsor.setName(dto.getName());
         sponsor.setEmail(dto.getEmail());
         sponsor.setTelephoneNr(dto.getTelephoneNr());
+        sponsor.setUrl(dto.getUrl());
         sponsorRepository.save(sponsor);
     }
 
@@ -38,6 +39,7 @@ public class SponsorService {
         sponsor.setName(dto.getName());
         sponsor.setTelephoneNr(dto.getTelephoneNr());
         sponsor.setEmail(dto.getEmail());
+        sponsor.setUrl(dto.getUrl());
         sponsorRepository.save(sponsor);
     }
 
@@ -52,5 +54,4 @@ public class SponsorService {
     public void delete(Long id){
         sponsorRepository.delete(id);
     }
-
 }

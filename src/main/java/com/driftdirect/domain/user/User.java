@@ -2,11 +2,9 @@ package com.driftdirect.domain.user;
 
 import com.driftdirect.domain.person.Person;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.Set;
 
@@ -16,27 +14,6 @@ import java.util.Set;
 @Entity
 @Table(name = "drift_user")
 public class User implements UserDetails{
-    @Id
-    @GeneratedValue
-    private long id;
-
-
-    @NotEmpty
-    @Column(name = "user_name", nullable = false, unique = true)
-    private String username;
-
-    @NotEmpty
-    @Column(name="email", nullable = false, unique = true)
-    private String email;
-
-    @NotEmpty
-    @Column(name = "password", nullable = false)
-    private String password;
-    private boolean enabled;
-
-    @OneToOne
-    private Person person;
-
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_role",
@@ -44,6 +21,21 @@ public class User implements UserDetails{
             inverseJoinColumns = {@JoinColumn(name = "role_id", nullable = false, updatable = false)}
     )
     public Set<Role> roles;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+    @NotEmpty
+    @Column(name = "user_name", nullable = false, unique = true)
+    private String username;
+    @NotEmpty
+    @Column(name="email", nullable = false, unique = true)
+    private String email;
+    @NotEmpty
+    @Column(name = "password", nullable = false)
+    private String password;
+    private boolean enabled;
+    @OneToOne
+    private Person person;
 
     public Person getPerson() {
         return person;
@@ -55,6 +47,10 @@ public class User implements UserDetails{
 
     public String getEmail() {
         return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public long getId() {
@@ -73,22 +69,6 @@ public class User implements UserDetails{
         this.roles = roles;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
     @Override
     public Collection<Role> getAuthorities() {
         return roles;
@@ -99,9 +79,17 @@ public class User implements UserDetails{
         return password;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     @Override
     public String getUsername() {
         return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     @Override
@@ -122,6 +110,10 @@ public class User implements UserDetails{
     @Override
     public boolean isEnabled() {
         return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     @Override

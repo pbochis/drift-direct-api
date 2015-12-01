@@ -10,6 +10,7 @@ public class RoundShortShowDto {
     private int order;
     private String name;
     private Long logo;
+    private String roundStatus;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
 
@@ -60,5 +61,13 @@ public class RoundShortShowDto {
 
     public void setLogo(Long logo) {
         this.logo = logo;
+    }
+
+    public String getRoundStatus() {
+        return roundStatus;
+    }
+
+    public void setRoundStatus(String roundStatus) {
+        this.roundStatus = roundStatus;
     }
 }

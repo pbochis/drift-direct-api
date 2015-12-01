@@ -2,23 +2,23 @@ package com.driftdirect.controller;
 
 import com.driftdirect.domain.user.Authorities;
 import com.driftdirect.dto.championship.ChampionshipCreateDTO;
+import com.driftdirect.dto.championship.ChampionshipFullDto;
 import com.driftdirect.dto.championship.ChampionshipShortShowDto;
-import com.driftdirect.dto.championship.ChampionshipShowDto;
 import com.driftdirect.dto.championship.ChampionshipUpdateDTO;
-import com.driftdirect.dto.round.RoundShowDto;
+import com.driftdirect.dto.person.PersonShortShowDto;
+import com.driftdirect.dto.round.RoundShortShowDto;
 import com.driftdirect.exception.ObjectNotFoundException;
 import com.driftdirect.service.ChampionshipService;
 import com.driftdirect.util.RestUrls;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.*;
 import java.util.List;
 
 /**
@@ -34,7 +34,7 @@ public class ChampionshipController {
     }
 
     @RequestMapping(path = RestUrls.CHAMPIONSHIP, method = RequestMethod.GET)
-    public ResponseEntity<List<ChampionshipShowDto>> list() {
+    public ResponseEntity<List<ChampionshipFullDto>> list() {
         return new ResponseEntity<>(championshipService.findChampionships(), HttpStatus.OK);
     }
 
@@ -57,7 +57,7 @@ public class ChampionshipController {
     }
 
     @RequestMapping(path = RestUrls.CHAMPIONSHIP_ID, method = RequestMethod.GET)
-    public ResponseEntity<ChampionshipShowDto> getById(@PathVariable Long id) {
+    public ResponseEntity<ChampionshipFullDto> getById(@PathVariable Long id) {
         return new ResponseEntity<>(championshipService.findChampionship(id), HttpStatus.OK);
     }
 
@@ -69,9 +69,50 @@ public class ChampionshipController {
     }
 
     @RequestMapping(path = RestUrls.CHAMPIONSHIP_ID_ROUNDS, method = RequestMethod.GET)
-    public ResponseEntity<List<RoundShowDto>> getChampionshipRounds(@PathVariable Long id){
+    public ResponseEntity<List<RoundShortShowDto>> getChampionshipRounds(@PathVariable Long id) {
         return new ResponseEntity<>(championshipService.championshipRounds(id), HttpStatus.OK);
     }
 
+    @RequestMapping(path = RestUrls.CHAMPIONSHIP_ID_DRIVERS, method = RequestMethod.GET)
+    public ResponseEntity<List<PersonShortShowDto>> getParticipations(@PathVariable Long id) {
+        return new ResponseEntity<>(championshipService.getDrivers(id), HttpStatus.OK);
+    }
 
+    @RequestMapping(path = "/testTime", method = RequestMethod.GET)
+    public ResponseEntity<DateTime> tryDate() {
+        return new ResponseEntity<DateTime>(DateTime.now(), HttpStatus.OK);
+    }
+
+    @RequestMapping(path = "/testTimeJava", method = RequestMethod.GET)
+    public ResponseEntity<Instant> tryDateJava() {
+        LocalDateTime ldt = LocalDateTime.now();
+//        ZoneId zoneId = ZoneId.of("Romania");
+//        ZoneId nyId = ZoneId.of("America/New_York");
+        ZoneOffset of = ZoneOffset.of("Romania/Cluj-Napoca");
+
+//        ZonedDateTime clujTime = ldt.atZone(zoneId);
+//        ZonedDateTime nyTime = ldt.atZone(nyId);
+        return new ResponseEntity<Instant>(Instant.now(), HttpStatus.OK);
+    }
+
+    @RequestMapping(path = "/testTimeJava", method = RequestMethod.POST)
+    public ResponseEntity<LocalDateTime> postjava(@RequestBody DateTest2 test) {
+        int a = 2;
+        LocalDateTime ldt = LocalDateTime.now();
+        ZoneId zoneId = ZoneId.of("Romania/Cluj-Napoca");
+        ZoneId nyId = ZoneId.of("America/New_York");
+        ZoneOffset of = ZoneOffset.of("Romania/Cluj-Napoca");
+
+        ZonedDateTime clujTime = ldt.atZone(zoneId);
+        ZonedDateTime nyTime = ldt.atZone(nyId);
+        return new ResponseEntity<LocalDateTime>(LocalDateTime.now(), HttpStatus.OK);
+    }
+
+    @RequestMapping(path = "/testTime", method = RequestMethod.POST)
+    public ResponseEntity<DateTime> postDate(@RequestBody DateTest test) {
+        int a = 2;
+        DateTime date = DateTime.now();
+
+        return new ResponseEntity<DateTime>(DateTime.now(), HttpStatus.OK);
+    }
 }

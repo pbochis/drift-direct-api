@@ -5,8 +5,26 @@ package com.driftdirect.dto.person;
  */
 // will be used in lists
 public class PersonShortShowDto {
+    private Long id;
     private String firstName;
     private String lastName;
+    private Long profilePicture;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(Long profilePicture) {
+        this.profilePicture = profilePicture;
+    }
 
     public String getFirstName() {
         return firstName;

@@ -7,8 +7,8 @@ import java.util.List;
 /**
  * Created by Paul on 11/15/2015.
  */
-public class ChampionshipShowDto {
-    private long id;
+public class ChampionshipFullDto {
+    private Long id;
     private String name;
     private String rules;
     private String information;

@@ -1,9 +1,7 @@
-package com.driftdirect.repository;
+package com.driftdirect.repository.championship;
 
-import com.driftdirect.domain.Championship;
+import com.driftdirect.domain.championship.Championship;
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import java.util.List;
 
 /**
  * Created by Paul on 11/6/2015.

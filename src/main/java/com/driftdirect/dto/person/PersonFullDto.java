@@ -1,28 +1,28 @@
 package com.driftdirect.dto.person;
 
+import com.driftdirect.dto.country.CountryShowDto;
+
 /**
- * Created by Paul on 11/21/2015.
+ * Created by Paul on 11/30/2015.
  */
-public class PersonCreateDto {
+public class PersonFullDto {
+    private long id;
     private String firstName;
     private String lastName;
     private String telephone;
-    private Long profilePicture;
-    private Long country;
-
+    private String website;
+    private CountryShowDto country;
     private int yearsExperience;
     private String description;
+    private Long profilePicture;
+    private DriverDetailsDto driverDetails;
 
-    private String personType;
-
-    private DriverDetailsCreateDto driverDetails;
-
-    public DriverDetailsCreateDto getDriverDetails() {
-        return driverDetails;
+    public long getId() {
+        return id;
     }
 
-    public void setDriverDetails(DriverDetailsCreateDto driverDetails) {
-        this.driverDetails = driverDetails;
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getFirstName() {
@@ -49,11 +49,11 @@ public class PersonCreateDto {
         this.telephone = telephone;
     }
 
-    public Long getCountry() {
+    public CountryShowDto getCountry() {
         return country;
     }
 
-    public void setCountry(Long country) {
+    public void setCountry(CountryShowDto country) {
         this.country = country;
     }
 
@@ -73,19 +73,27 @@ public class PersonCreateDto {
         this.description = description;
     }
 
-    public String getPersonType() {
-        return personType;
-    }
-
-    public void setPersonType(String personType) {
-        this.personType = personType;
-    }
-
     public Long getProfilePicture() {
         return profilePicture;
     }
 
     public void setProfilePicture(Long profilePicture) {
         this.profilePicture = profilePicture;
+    }
+
+    public DriverDetailsDto getDriverDetails() {
+        return driverDetails;
+    }
+
+    public void setDriverDetails(DriverDetailsDto driverDetails) {
+        this.driverDetails = driverDetails;
+    }
+
+    public String getWebsite() {
+        return website;
+    }
+
+    public void setWebsite(String website) {
+        this.website = website;
     }
 }

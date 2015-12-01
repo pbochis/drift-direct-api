@@ -9,17 +9,15 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "round_schedule_entry")
 public class RoundScheduleEntry {
-
     String name;
     @ManyToOne
     @JoinColumn(name = "round_id", nullable = false)
     Round round;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
-    @Id
-    @GeneratedValue
-    private long id;
-
     public long getId() {
         return id;
     }

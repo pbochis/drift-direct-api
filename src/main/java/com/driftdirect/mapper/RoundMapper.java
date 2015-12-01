@@ -32,6 +32,7 @@ public class RoundMapper {
         dto.setLogo(round.getLogo().getId());
         dto.setStartDate(round.getStartDate());
         dto.setEndDate(round.getEndDate());
+        dto.setRoundStatus("NEXT");
         return dto;
     }
 

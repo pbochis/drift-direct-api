@@ -15,6 +15,7 @@ public class SponsorMapper {
         dto.setName(sponsor.getName());
         dto.setEmail(sponsor.getEmail());
         dto.setTelephoneNr(sponsor.getTelephoneNr());
+        dto.setUrl(sponsor.getUrl());
         return dto;
     }
 

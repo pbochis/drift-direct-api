@@ -1,6 +1,6 @@
 package com.driftdirect.domain.round;
 
-import com.driftdirect.domain.Championship;
+import com.driftdirect.domain.championship.Championship;
 import com.driftdirect.domain.file.File;
 
 import javax.persistence.*;
@@ -14,7 +14,7 @@ import java.util.Set;
 public class Round{
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     private String name;

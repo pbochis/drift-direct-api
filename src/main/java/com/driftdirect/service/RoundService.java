@@ -1,6 +1,6 @@
 package com.driftdirect.service;
 
-import com.driftdirect.domain.Championship;
+import com.driftdirect.domain.championship.Championship;
 import com.driftdirect.domain.round.Round;
 import com.driftdirect.domain.round.RoundScheduleEntry;
 import com.driftdirect.dto.round.RoundCreateDto;
@@ -8,10 +8,10 @@ import com.driftdirect.dto.round.RoundScheduleCreateDto;
 import com.driftdirect.dto.round.RoundShowDto;
 import com.driftdirect.dto.round.RoundUpdateDto;
 import com.driftdirect.mapper.RoundMapper;
-import com.driftdirect.repository.ChampionshipRepository;
 import com.driftdirect.repository.FileRepository;
 import com.driftdirect.repository.RoundRepository;
 import com.driftdirect.repository.RoundScheduleRepository;
+import com.driftdirect.repository.championship.ChampionshipRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

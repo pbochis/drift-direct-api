@@ -1,11 +1,9 @@
 package com.driftdirect.domain.driver;
 
 import com.driftdirect.domain.sponsor.Sponsor;
-import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,13 +12,6 @@ import java.util.Set;
  */
 @Entity
 public class Team {
-    @Id
-    @GeneratedValue
-    private long id;
-
-    @NotNull
-    private String name;
-
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "team_sponsor",
@@ -28,6 +19,11 @@ public class Team {
             inverseJoinColumns = {@JoinColumn(name = "sponsor_id")}
     )
     Set<Sponsor> sponsors;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+    @NotNull
+    private String name;
 
     public long getId() {
         return id;

@@ -2,8 +2,8 @@ package com.driftdirect.dto.team;
 
 import com.driftdirect.dto.sponsor.SponsorShowDto;
 
-import java.util.Collections;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Paul on 11/26/2015.
@@ -11,7 +11,7 @@ import java.util.Set;
 public class TeamShowDto{
     private Long id;
     private String name;
-    private Set<SponsorShowDto> sponsors;
+    private List<SponsorShowDto> sponsors;
 
     public String getName() {
         return name;
@@ -21,17 +21,17 @@ public class TeamShowDto{
         this.name = name;
     }
 
-    public Set<SponsorShowDto> getSponsors() {
+    public List<SponsorShowDto> getSponsors() {
         return sponsors;
     }
 
-    public void setSponsors(Set<SponsorShowDto> sponsors) {
+    public void setSponsors(List<SponsorShowDto> sponsors) {
         this.sponsors = sponsors;
     }
 
     public void addSponsor(SponsorShowDto dto){
         if (sponsors == null){
-            sponsors = Collections.emptySet();
+            sponsors = new ArrayList<>();
         }
         sponsors.add(dto);
     }

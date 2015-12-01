@@ -42,4 +42,5 @@ public class ChampionshipShortShowDto {
     public void setNextRound(RoundShortShowDto nextRound) {
         this.nextRound = nextRound;
     }
+
 }

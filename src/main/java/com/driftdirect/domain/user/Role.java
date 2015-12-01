@@ -2,7 +2,10 @@ package com.driftdirect.domain.user;
 
 import org.springframework.security.core.GrantedAuthority;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 /**
  * Created by Paul on 11/15/2015.
@@ -10,7 +13,7 @@ import javax.persistence.*;
 @Entity
 public class Role implements GrantedAuthority{
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     private String authority;

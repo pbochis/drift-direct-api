@@ -1,23 +1,28 @@
 package com.driftdirect.service;
 
-import com.driftdirect.domain.Championship;
+import com.driftdirect.domain.championship.Championship;
+import com.driftdirect.domain.championship.ChampionshipParticipationType;
 import com.driftdirect.domain.round.Round;
 import com.driftdirect.dto.championship.ChampionshipCreateDTO;
+import com.driftdirect.dto.championship.ChampionshipFullDto;
 import com.driftdirect.dto.championship.ChampionshipShortShowDto;
-import com.driftdirect.dto.championship.ChampionshipShowDto;
 import com.driftdirect.dto.championship.ChampionshipUpdateDTO;
-import com.driftdirect.dto.round.RoundShowDto;
+import com.driftdirect.dto.person.PersonShortShowDto;
+import com.driftdirect.dto.round.RoundShortShowDto;
 import com.driftdirect.exception.ObjectNotFoundException;
 import com.driftdirect.mapper.ChampionshipMapper;
+import com.driftdirect.mapper.PersonMapper;
 import com.driftdirect.mapper.RoundMapper;
-import com.driftdirect.repository.ChampionshipRepository;
 import com.driftdirect.repository.FileRepository;
+import com.driftdirect.repository.championship.ChampionshipParticipationRepository;
+import com.driftdirect.repository.championship.ChampionshipRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by Paul on 11/6/2015.
@@ -27,12 +32,14 @@ import java.util.List;
 @Transactional
 public class ChampionshipService{
     private ChampionshipRepository championshipRepository;
+    private ChampionshipParticipationRepository championshipParticipationRepository;
     private FileRepository fileRepository;
 
     @Autowired
-    public ChampionshipService(ChampionshipRepository championshipRepository, FileRepository fileRepository) {
+    public ChampionshipService(ChampionshipRepository championshipRepository, ChampionshipParticipationRepository championshipParticipationRepository, FileRepository fileRepository) {
         this.championshipRepository = championshipRepository;
         this.fileRepository = fileRepository;
+        this.championshipParticipationRepository = championshipParticipationRepository;
     }
 
     public void createFromDto(ChampionshipCreateDTO dto){
@@ -49,24 +56,24 @@ public class ChampionshipService{
         championshipRepository.delete(id);
     }
 
-    public List<RoundShowDto> championshipRounds(long id){
+    public List<RoundShortShowDto> championshipRounds(long id) {
         Championship c = championshipRepository.findOne(id);
-        List<RoundShowDto> rounds = new ArrayList<>();
+        List<RoundShortShowDto> rounds = new ArrayList<>();
         for (Round round: c.getRounds()){
-            rounds.add(RoundMapper.map(round));
+            rounds.add(RoundMapper.mapShort(round));
         }
         return rounds;
     }
 
-    public List<ChampionshipShowDto> findChampionships(){
-        List<ChampionshipShowDto> dtos = new ArrayList<>();
+    public List<ChampionshipFullDto> findChampionships() {
+        List<ChampionshipFullDto> dtos = new ArrayList<>();
         for (Championship c: championshipRepository.findAll()){
             dtos.add(ChampionshipMapper.map(c));
         }
         return dtos;
     }
 
-    public ChampionshipShowDto findChampionship(long id){
+    public ChampionshipFullDto findChampionship(long id) {
         return ChampionshipMapper.map(championshipRepository.findOne(id));
     }
 
@@ -88,5 +95,19 @@ public class ChampionshipService{
         c.setBackgroundImage(fileRepository.findOne(dto.getBackgroundImage()));
         c.setLogo(fileRepository.findOne(dto.getLogo()));
         return championshipRepository.save(c);
+    }
+
+    public List<PersonShortShowDto> findParticipations(Long championshipId, ChampionshipParticipationType type) {
+        return championshipParticipationRepository.findParticipations(championshipId, type)
+                .stream()
+                .map(e -> PersonMapper.mapShort(e.getPerson()))
+                .collect(Collectors.toList());
+    }
+
+    public List<PersonShortShowDto> getDrivers(Long id) {
+        return championshipParticipationRepository.findParticipations(id, ChampionshipParticipationType.DRIVER)
+                .stream()
+                .map(e -> PersonMapper.mapShort(e.getPerson()))
+                .collect(Collectors.toList());
     }
 }

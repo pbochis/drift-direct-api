@@ -13,6 +13,15 @@ public class SponsorCreateDto {
     private String name;
     private String email;
     private String telephoneNr;
+    private String url;
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
 
     public String getName() {
         return name;

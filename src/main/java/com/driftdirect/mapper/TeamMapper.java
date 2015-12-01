@@ -14,6 +14,7 @@ public class TeamMapper {
     public static TeamShowDto map(Team team){
         TeamShowDto dto = new TeamShowDto();
         dto.setName(team.getName());
+        dto.setId(team.getId());
         for (Sponsor sponsor: team.getSponsors()){
             dto.addSponsor(SponsorMapper.map(sponsor));
         }

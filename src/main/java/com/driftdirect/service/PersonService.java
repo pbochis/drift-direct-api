@@ -6,10 +6,7 @@ import com.driftdirect.domain.person.Person;
 import com.driftdirect.domain.person.PersonType;
 import com.driftdirect.dto.person.*;
 import com.driftdirect.mapper.PersonMapper;
-import com.driftdirect.repository.CountryRepository;
-import com.driftdirect.repository.DriverDetailsRepository;
-import com.driftdirect.repository.PersonRepository;
-import com.driftdirect.repository.TeamRepository;
+import com.driftdirect.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,13 +22,15 @@ public class PersonService {
     private CountryRepository countryRepository;
     private DriverDetailsRepository driverDetailsRepository;
     private TeamRepository teamRepository;
+    private FileRepository fileRepository;
 
     @Autowired
-    public PersonService(PersonRepository personRepository, CountryRepository countryRepository, TeamRepository teamRepository, DriverDetailsRepository driverDetailsRepository){
+    public PersonService(PersonRepository personRepository, FileRepository fileRepository, CountryRepository countryRepository, TeamRepository teamRepository, DriverDetailsRepository driverDetailsRepository) {
         this.repository = personRepository;
         this.countryRepository = countryRepository;
         this.teamRepository = teamRepository;
         this.driverDetailsRepository = driverDetailsRepository;
+        this.fileRepository = fileRepository;
     }
     public List<PersonShortShowDto> findAll(){
         return repository.findAll().stream().map(PersonMapper::mapShort).collect(Collectors.toList());
@@ -46,6 +45,7 @@ public class PersonService {
         p.setYearsExperience(dto.getYearsExperience());
         p.setDescription(dto.getDescription());
         p.setPersonType(PersonType.valueOf(dto.getPersonType()));
+        p.setProfilePicture(fileRepository.findOne(dto.getProfilePicture()));
         if (p.getPersonType() == PersonType.Driver){
             p.setDriverDetails(createDriverDetails(dto.getDriverDetails()));
         }
@@ -92,6 +92,11 @@ public class PersonService {
         details.setTeam(teamRepository.findOne(dto.getTeam()));
         driverDetailsRepository.save(details);
     }
+
+    public PersonFullDto findPerson(Long id) {
+        return PersonMapper.mapFull(repository.findOne(id));
+    }
+
     public void delete(Long id){
         repository.delete(id);
     }

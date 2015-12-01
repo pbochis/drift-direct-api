@@ -50,6 +50,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                     .antMatchers(HttpMethod.GET, RestUrls.CHAMPIONSHIP).permitAll()
                 .antMatchers(HttpMethod.GET, RestUrls.CHAMPIONSHIP_SHORT).permitAll()
                     .antMatchers(HttpMethod.GET, RestUrls.CHAMPIONSHIP_ID).permitAll()
+                .antMatchers(HttpMethod.GET, RestUrls.CHAMPIONSHIP_ID_ROUNDS).permitAll()
+                .antMatchers(HttpMethod.GET, RestUrls.CHAMPIONSHIP_ID_DRIVERS).permitAll()
+                .antMatchers(HttpMethod.GET, RestUrls.CHAMPIONSHIP_ID_JUDGES).permitAll()
+                .antMatchers(HttpMethod.GET, RestUrls.PERSON_ID).permitAll()
+                .antMatchers(HttpMethod.GET, "/testTime").permitAll()
                 .antMatchers(HttpMethod.GET, RestUrls.FILE_ID).permitAll()
                     .anyRequest().authenticated()
                 .and().httpBasic().
