@@ -1,12 +1,8 @@
 package com.driftdirect.service;
 
 import com.driftdirect.domain.championship.Championship;
-import com.driftdirect.domain.championship.ChampionshipParticipationType;
 import com.driftdirect.domain.round.Round;
-import com.driftdirect.dto.championship.ChampionshipCreateDTO;
-import com.driftdirect.dto.championship.ChampionshipFullDto;
-import com.driftdirect.dto.championship.ChampionshipShortShowDto;
-import com.driftdirect.dto.championship.ChampionshipUpdateDTO;
+import com.driftdirect.dto.championship.*;
 import com.driftdirect.dto.person.PersonShortShowDto;
 import com.driftdirect.dto.round.RoundShortShowDto;
 import com.driftdirect.exception.ObjectNotFoundException;
@@ -14,7 +10,8 @@ import com.driftdirect.mapper.ChampionshipMapper;
 import com.driftdirect.mapper.PersonMapper;
 import com.driftdirect.mapper.RoundMapper;
 import com.driftdirect.repository.FileRepository;
-import com.driftdirect.repository.championship.ChampionshipParticipationRepository;
+import com.driftdirect.repository.championship.ChampionshipDriverParticipationRepository;
+import com.driftdirect.repository.championship.ChampionshipJudgeParticipationRepository;
 import com.driftdirect.repository.championship.ChampionshipRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,14 +29,19 @@ import java.util.stream.Collectors;
 @Transactional
 public class ChampionshipService{
     private ChampionshipRepository championshipRepository;
-    private ChampionshipParticipationRepository championshipParticipationRepository;
+    private ChampionshipDriverParticipationRepository driverParticipationRepository;
+    private ChampionshipJudgeParticipationRepository judgeParticipationRepository;
     private FileRepository fileRepository;
 
     @Autowired
-    public ChampionshipService(ChampionshipRepository championshipRepository, ChampionshipParticipationRepository championshipParticipationRepository, FileRepository fileRepository) {
+    public ChampionshipService(ChampionshipRepository championshipRepository,
+                               ChampionshipDriverParticipationRepository driverParticipationRepository,
+                               ChampionshipJudgeParticipationRepository judgeParticipationRepository,
+                               FileRepository fileRepository) {
         this.championshipRepository = championshipRepository;
         this.fileRepository = fileRepository;
-        this.championshipParticipationRepository = championshipParticipationRepository;
+        this.driverParticipationRepository = driverParticipationRepository;
+        this.judgeParticipationRepository = judgeParticipationRepository;
     }
 
     public void createFromDto(ChampionshipCreateDTO dto){
@@ -97,17 +99,23 @@ public class ChampionshipService{
         return championshipRepository.save(c);
     }
 
-    public List<PersonShortShowDto> findParticipations(Long championshipId, ChampionshipParticipationType type) {
-        return championshipParticipationRepository.findParticipations(championshipId, type)
+    public List<PersonShortShowDto> findDrivers(Long championshipId) {
+        Championship championship = championshipRepository.findOne(championshipId);
+        return championship.getDrivers()
                 .stream()
-                .map(e -> PersonMapper.mapShort(e.getPerson()))
+                .map(e -> PersonMapper.mapShort(e.getDriver()))
                 .collect(Collectors.toList());
     }
 
-    public List<PersonShortShowDto> getDrivers(Long id) {
-        return championshipParticipationRepository.findParticipations(id, ChampionshipParticipationType.DRIVER)
+    public ChampionshipDriverParticipationDto findDriver(Long championshipId, Long driverId) {
+        return ChampionshipMapper.mapDriverParticipation(driverParticipationRepository.findByChampionshipIdAndDriverId(championshipId, driverId));
+    }
+
+    public List<ChampionshipJudgeParticipationDto> findJudges(Long championshipId) {
+        Championship c = championshipRepository.findOne(championshipId);
+        return c.getJudges()
                 .stream()
-                .map(e -> PersonMapper.mapShort(e.getPerson()))
+                .map(ChampionshipMapper::mapJudgeParticipation)
                 .collect(Collectors.toList());
     }
 }

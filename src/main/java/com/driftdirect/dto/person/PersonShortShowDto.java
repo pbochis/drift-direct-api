@@ -8,7 +8,16 @@ public class PersonShortShowDto {
     private Long id;
     private String firstName;
     private String lastName;
+    private String description;
     private Long profilePicture;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     public Long getId() {
         return id;

@@ -9,6 +9,7 @@ public class RestUrls {
     public static final String CHAMPIONSHIP_ID = "/championship/{id}";
     public static final String CHAMPIONSHIP_ID_ROUNDS = "/championship/{id}/rounds";
     public static final String CHAMPIONSHIP_ID_DRIVERS = "/championship/{id}/drivers";
+    public static final String CHAMPIONSHIP_ID_DRIVERS_ID = "/championship/{championshipId}/drivers/{driverId}";
     public static final String CHAMPIONSHIP_ID_JUDGES = "/championship/{id}/judges";
 
     public static final String ROUND = "/round";

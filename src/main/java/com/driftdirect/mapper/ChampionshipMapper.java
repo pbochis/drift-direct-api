@@ -1,11 +1,10 @@
 package com.driftdirect.mapper;
 
 import com.driftdirect.domain.championship.Championship;
-import com.driftdirect.domain.person.Person;
+import com.driftdirect.domain.championship.ChampionshipDriverParticipation;
+import com.driftdirect.domain.championship.ChampionshipJudgeParticipation;
 import com.driftdirect.domain.round.Round;
-import com.driftdirect.dto.championship.ChampionshipDriverParticipation;
-import com.driftdirect.dto.championship.ChampionshipFullDto;
-import com.driftdirect.dto.championship.ChampionshipShortShowDto;
+import com.driftdirect.dto.championship.*;
 import com.driftdirect.dto.round.RoundShowDto;
 
 import java.util.ArrayList;
@@ -33,11 +32,26 @@ public class ChampionshipMapper {
         return dto;
     }
 
-    public static ChampionshipDriverParticipation mapDriverParticipation(Long id, Person person) {
-        ChampionshipDriverParticipation cdp = new ChampionshipDriverParticipation();
-        cdp.setChampionshipId(id);
-        cdp.setDriver(PersonMapper.mapShort(person));
-        return cdp;
+    public static ChampionshipDriverParticipationDto mapDriverParticipation(ChampionshipDriverParticipation participation) {
+        ChampionshipDriverParticipationDto dto = new ChampionshipDriverParticipationDto();
+        dto.setId(participation.getId());
+        dto.setDriver(PersonMapper.mapFull(participation.getDriver()));
+        if (participation.getResults() != null) {
+            ChampionshipDriverParticipationResultsDto results = new ChampionshipDriverParticipationResultsDto();
+            results.setId(participation.getResults().getId());
+            results.setTotalPoints(participation.getResults().getTotalPoints());
+            results.setRank(participation.getResults().getRank());
+            dto.setResults(results);
+        }
+        return dto;
+    }
+
+    public static ChampionshipJudgeParticipationDto mapJudgeParticipation(ChampionshipJudgeParticipation participation) {
+        ChampionshipJudgeParticipationDto dto = new ChampionshipJudgeParticipationDto();
+        dto.setJudge(PersonMapper.mapShort(participation.getJudge()));
+        dto.setId(participation.getId());
+        dto.setJudgeType(participation.getJudgeType().getName());
+        return dto;
     }
 
     public static ChampionshipShortShowDto mapShort(Championship c, Round round) {

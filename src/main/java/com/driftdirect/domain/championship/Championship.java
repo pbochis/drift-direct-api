@@ -32,6 +32,15 @@ public class Championship{
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "championship", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Round> rounds;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "championship", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ChampionshipDriverParticipation> drivers;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "championship", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ChampionshipJudgeParticipation> judges;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "championship", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ChampionshipJudgeType> judgeTypes;
+
     public long getId() {
         return id;
     }
@@ -102,6 +111,30 @@ public class Championship{
 
     public void setLogo(File logo) {
         this.logo = logo;
+    }
+
+    public List<ChampionshipDriverParticipation> getDrivers() {
+        return drivers;
+    }
+
+    public void setDrivers(List<ChampionshipDriverParticipation> drivers) {
+        this.drivers = drivers;
+    }
+
+    public List<ChampionshipJudgeParticipation> getJudges() {
+        return judges;
+    }
+
+    public void setJudges(List<ChampionshipJudgeParticipation> judges) {
+        this.judges = judges;
+    }
+
+    public List<ChampionshipJudgeType> getJudgeTypes() {
+        return judgeTypes;
+    }
+
+    public void setJudgeTypes(List<ChampionshipJudgeType> judgeTypes) {
+        this.judgeTypes = judgeTypes;
     }
 
     @Override

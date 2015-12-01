@@ -1,10 +1,7 @@
 package com.driftdirect.controller;
 
 import com.driftdirect.domain.user.Authorities;
-import com.driftdirect.dto.championship.ChampionshipCreateDTO;
-import com.driftdirect.dto.championship.ChampionshipFullDto;
-import com.driftdirect.dto.championship.ChampionshipShortShowDto;
-import com.driftdirect.dto.championship.ChampionshipUpdateDTO;
+import com.driftdirect.dto.championship.*;
 import com.driftdirect.dto.person.PersonShortShowDto;
 import com.driftdirect.dto.round.RoundShortShowDto;
 import com.driftdirect.exception.ObjectNotFoundException;
@@ -74,8 +71,20 @@ public class ChampionshipController {
     }
 
     @RequestMapping(path = RestUrls.CHAMPIONSHIP_ID_DRIVERS, method = RequestMethod.GET)
-    public ResponseEntity<List<PersonShortShowDto>> getParticipations(@PathVariable Long id) {
-        return new ResponseEntity<>(championshipService.getDrivers(id), HttpStatus.OK);
+    public ResponseEntity<List<PersonShortShowDto>> getDrivers(@PathVariable Long id) {
+        return new ResponseEntity<>(championshipService.findDrivers(id), HttpStatus.OK);
+    }
+
+    @RequestMapping(path = RestUrls.CHAMPIONSHIP_ID_DRIVERS_ID, method = RequestMethod.GET)
+    public ResponseEntity<ChampionshipDriverParticipationDto> getDriver(@PathVariable(value = "championshipId") Long championshipId,
+                                                                        @PathVariable(value = "driverId") Long driverId) {
+        return new ResponseEntity<>(championshipService.findDriver(championshipId, driverId), HttpStatus.OK);
+    }
+
+    @RequestMapping(path = RestUrls.CHAMPIONSHIP_ID_JUDGES, method = RequestMethod.GET)
+    public ResponseEntity<List<ChampionshipJudgeParticipationDto>> getJudges(@PathVariable Long id) {
+        System.out.println("**********************************************************");
+        return new ResponseEntity<>(championshipService.findJudges(id), HttpStatus.OK);
     }
 
     @RequestMapping(path = "/testTime", method = RequestMethod.GET)
@@ -102,7 +111,6 @@ public class ChampionshipController {
         ZoneId zoneId = ZoneId.of("Romania/Cluj-Napoca");
         ZoneId nyId = ZoneId.of("America/New_York");
         ZoneOffset of = ZoneOffset.of("Romania/Cluj-Napoca");
-
         ZonedDateTime clujTime = ldt.atZone(zoneId);
         ZonedDateTime nyTime = ldt.atZone(nyId);
         return new ResponseEntity<LocalDateTime>(LocalDateTime.now(), HttpStatus.OK);
@@ -112,7 +120,6 @@ public class ChampionshipController {
     public ResponseEntity<DateTime> postDate(@RequestBody DateTest test) {
         int a = 2;
         DateTime date = DateTime.now();
-
         return new ResponseEntity<DateTime>(DateTime.now(), HttpStatus.OK);
     }
 }

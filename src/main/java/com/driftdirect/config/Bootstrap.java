@@ -2,9 +2,7 @@ package com.driftdirect.config;
 
 import com.driftdirect.domain.ConfigSetting;
 import com.driftdirect.domain.Country;
-import com.driftdirect.domain.championship.Championship;
-import com.driftdirect.domain.championship.ChampionshipParticipation;
-import com.driftdirect.domain.championship.ChampionshipParticipationType;
+import com.driftdirect.domain.championship.*;
 import com.driftdirect.domain.driver.DriverDetails;
 import com.driftdirect.domain.driver.Team;
 import com.driftdirect.domain.file.File;
@@ -16,8 +14,7 @@ import com.driftdirect.domain.user.Authorities;
 import com.driftdirect.domain.user.Role;
 import com.driftdirect.dto.user.UserCreateDTO;
 import com.driftdirect.repository.*;
-import com.driftdirect.repository.championship.ChampionshipParticipationRepository;
-import com.driftdirect.repository.championship.ChampionshipRepository;
+import com.driftdirect.repository.championship.*;
 import com.driftdirect.service.RoundService;
 import com.driftdirect.service.UserService;
 import org.apache.commons.io.IOUtils;
@@ -54,7 +51,10 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
     private RoundService roundService;
     private FileRepository fileRepository;
     private PersonRepository personRepository;
-    private ChampionshipParticipationRepository championshipParticipationRepository;
+    private ChampionshipDriverParticipationRepository driverParticipationRepository;
+    private ChampionshipJudgeParticipationRepository judgeParticipationRepository;
+    private ChampionshipJudgeTypeRepository judgeTypeRepository;
+    private ChampionshipDriverParticipationResultsRepository resultsRepository;
     private RoundRepository roundRepository;
     @Autowired
     private CountryRepository countryRepository;
@@ -70,7 +70,10 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
             ConfigSettingRepository configSettingRepository,RoleRepository roleRepository,
             UserService userService, Environment environment, ChampionshipRepository championshipService,
             RoundService roundService, FileRepository fileRepository, PersonRepository personRepository,
-            ChampionshipParticipationRepository championshipParticipationRepository,
+            ChampionshipDriverParticipationRepository driverParticipationRepository,
+            ChampionshipJudgeParticipationRepository judgeParticipationRepository,
+            ChampionshipDriverParticipationResultsRepository resultsRepository,
+            ChampionshipJudgeTypeRepository judgeTypeRepository,
             RoundRepository roundRepository) {
         this.configSettingRepository = configSettingRepository;
         this.roleRepository = roleRepository;
@@ -80,8 +83,11 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         this.roundService = roundService;
         this.fileRepository = fileRepository;
         this.personRepository = personRepository;
-        this.championshipParticipationRepository = championshipParticipationRepository;
+        this.driverParticipationRepository = driverParticipationRepository;
+        this.judgeParticipationRepository = judgeParticipationRepository;
         this.roundRepository = roundRepository;
+        this.resultsRepository = resultsRepository;
+        this.judgeTypeRepository = judgeTypeRepository;
     }
 
     @Override
@@ -158,7 +164,19 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         return roundRepository.save(r);
     }
 
-    private Person createDriver(String firstName, String lastName) {
+    private Person createPerson(String name, String description, PersonType personType) {
+        Person person = new Person();
+        person.setFirstName(name.split(" ")[0]);
+        person.setLastName(name.split(" ")[1]);
+        person.setCountry(c);
+        person.setProfilePicture(fCiob);
+        person.setPersonType(personType);
+        person.setYearsExperience(4);
+        person.setDescription(description);
+        return personRepository.save(person);
+    }
+
+    private Person createDriver(String name) {
         DriverDetails d = new DriverDetails();
         d.setModel("GT86");
         d.setMake("Toyota");
@@ -171,16 +189,40 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         d.setHorsePower(1200);
         d.setTeam(t);
         d = driverDetailsRepository.save(d);
-        Person p = new Person();
-        p.setFirstName(firstName);
-        p.setLastName(lastName);
-        p.setCountry(c);
-        p.setProfilePicture(fCiob);
+        Person p = createPerson(name, "conducator auto", PersonType.Driver);
         p.setDriverDetails(d);
-        p.setPersonType(PersonType.Driver);
-        p.setYearsExperience(4);
-        p.setDescription("conducator auto autorizat");
         return personRepository.save(p);
+    }
+
+    private ChampionshipDriverParticipation createDriverParticipation(Person person, Championship championship) {
+        ChampionshipDriverParticipation participation = new ChampionshipDriverParticipation();
+        participation.setDriver(person);
+        participation.setChampionship(championship);
+        return driverParticipationRepository.save(participation);
+    }
+
+    private ChampionshipJudgeType createJudgeType(String name, String description, Championship championship) {
+        ChampionshipJudgeType jdp = new ChampionshipJudgeType();
+        jdp.setName(name);
+        jdp.setDescription(description);
+        jdp.setChampionship(championship);
+        return judgeTypeRepository.save(jdp);
+    }
+
+    private ChampionshipJudgeParticipation createJudgeParticipation(Person person, Championship championship, ChampionshipJudgeType type) {
+        ChampionshipJudgeParticipation participation = new ChampionshipJudgeParticipation();
+        participation.setChampionship(championship);
+        participation.setJudge(person);
+        participation.setJudgeType(type);
+        return judgeParticipationRepository.save(participation);
+    }
+
+    private ChampionshipDriverParticipationResults createResult(ChampionshipDriverParticipation participation, int rank, int points) {
+        ChampionshipDriverParticipationResults result = new ChampionshipDriverParticipationResults();
+        result.setRank(rank);
+        result.setTotalPoints(points);
+        result.setParticipation(participation);
+        return resultsRepository.save(result);
     }
 
     private void initChampionshipAndRounds(){
@@ -191,18 +233,25 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         Round r1 = createRound("Round 1 - C1", c1, f);
         Round r2 = createRound("Round 2 - C2", c2, f);
 
-        Person p1 = createDriver("Vlad", "Iancu");
-        Person p2 = createDriver("Paul", "Bochis");
-        ChampionshipParticipation cp1 = new ChampionshipParticipation();
-        cp1.setPerson(p1);
-        cp1.setChampionship(c1);
-        cp1.setParticipationType(ChampionshipParticipationType.DRIVER);
-        cp1 = championshipParticipationRepository.save(cp1);
-        ChampionshipParticipation cp2 = new ChampionshipParticipation();
-        cp2.setPerson(p2);
-        cp2.setChampionship(c1);
-        cp2.setParticipationType(ChampionshipParticipationType.DRIVER);
-        cp2 = championshipParticipationRepository.save(cp2);
+        Person driver1 = createDriver("Vlad Iancu");
+        Person driver2 = createDriver("Paul Bochis");
+        Person judge1 = createPerson("Diana V", "judeca orice vede", PersonType.Judge);
+        Person judge2 = createPerson("Andra B", "si ea judeca tot ce vede", PersonType.Judge);
+        Person judge3 = createPerson("Ioana f", "asta ii cea mai rea", PersonType.Judge);
+
+        ChampionshipDriverParticipation driverParticipation1 = createDriverParticipation(driver1, c1);
+        ChampionshipDriverParticipation driverParticipation2 = createDriverParticipation(driver2, c1);
+
+        ChampionshipJudgeType type1 = createJudgeType("Angle judge", "judges angle", c1);
+        ChampionshipJudgeType type2 = createJudgeType("Line judge", "judges line", c1);
+        ChampionshipJudgeType type3 = createJudgeType("Speed judge", "judges speed", c1);
+
+        createJudgeParticipation(judge1, c1, type1);
+        createJudgeParticipation(judge2, c1, type2);
+        createJudgeParticipation(judge3, c1, type3);
+
+        createResult(driverParticipation1, 1, 200);
+        createResult(driverParticipation2, 2, 150);
     }
 
     private void initDevUsersAndRoles(){

@@ -8,6 +8,7 @@ import javax.validation.constraints.NotNull;
  * Created by Paul on 11/11/2015.
  */
 public class ChampionshipCreateDTO {
+    //TODO: add List<ChampionshipJudgeTypeCreateDto> to this
     @NotNull
     @NotEmpty
     private String name;
