@@ -18,6 +18,7 @@ import com.driftdirect.repository.championship.*;
 import com.driftdirect.service.RoundService;
 import com.driftdirect.service.UserService;
 import org.apache.commons.io.IOUtils;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -173,6 +174,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         person.setPersonType(personType);
         person.setYearsExperience(4);
         person.setDescription(description);
+        person.setBirthDate(new DateTime(1993, 12, 3, 0, 0));
         return personRepository.save(person);
     }
 

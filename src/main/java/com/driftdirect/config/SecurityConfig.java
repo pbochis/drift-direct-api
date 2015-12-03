@@ -47,18 +47,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
         http.
                 authorizeRequests()
                     .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                    .antMatchers(HttpMethod.GET, RestUrls.CHAMPIONSHIP).permitAll()
-                .antMatchers(HttpMethod.GET, RestUrls.CHAMPIONSHIP_SHORT).permitAll()
-                    .antMatchers(HttpMethod.GET, RestUrls.CHAMPIONSHIP_ID).permitAll()
-                .antMatchers(HttpMethod.GET, RestUrls.CHAMPIONSHIP_ID_ROUNDS).permitAll()
-                .antMatchers(HttpMethod.GET, RestUrls.CHAMPIONSHIP_ID_DRIVERS).permitAll()
-                .antMatchers(HttpMethod.GET, RestUrls.CHAMPIONSHIP_ID_DRIVERS_ID).permitAll()
-                .antMatchers(HttpMethod.GET, RestUrls.CHAMPIONSHIP_ID_JUDGES).permitAll()
-                .antMatchers(HttpMethod.GET, RestUrls.PERSON_ID).permitAll()
+                .antMatchers(HttpMethod.GET,
+                        RestUrls.CHAMPIONSHIP,
+                        RestUrls.CHAMPIONSHIP_SHORT,
+                        RestUrls.CHAMPIONSHIP_ID,
+                        RestUrls.CHAMPIONSHIP_ID_ROUNDS,
+                        RestUrls.CHAMPIONSHIP_ID_DRIVERS,
+                        RestUrls.CHAMPIONSHIP_ID_DRIVERS_ID,
+                        RestUrls.CHAMPIONSHIP_ID_JUDGES,
+                        RestUrls.PERSON_ID,
+                        RestUrls.FILE_ID).permitAll()
                 .antMatchers(HttpMethod.GET, "/testTime").permitAll()
-                .antMatchers(HttpMethod.GET, RestUrls.FILE_ID).permitAll()
                     .anyRequest().authenticated()
-                .and().httpBasic().
-                and().csrf().disable();
+                .and()
+                .httpBasic().
+                and()
+                .csrf().disable();
     }
 }

@@ -3,6 +3,8 @@ package com.driftdirect.domain.person;
 import com.driftdirect.domain.Country;
 import com.driftdirect.domain.driver.DriverDetails;
 import com.driftdirect.domain.file.File;
+import org.hibernate.annotations.Type;
+import org.joda.time.DateTime;
 
 import javax.persistence.*;
 
@@ -19,7 +21,11 @@ public class Person {
     private String lastName;
     private String telephone;
     //TODO(pbochis): website and birthdate
-//    private String birthDate;
+
+    @Column(name = "birth_date")
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+    private DateTime birthDate;
+
     private String website;
     @ManyToOne
     private Country country;
@@ -123,6 +129,14 @@ public class Person {
 
     public void setWebsite(String website) {
         this.website = website;
+    }
+
+    public DateTime getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(DateTime birthDate) {
+        this.birthDate = birthDate;
     }
 
     @Override
