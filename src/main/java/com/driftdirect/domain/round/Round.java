@@ -2,9 +2,10 @@ package com.driftdirect.domain.round;
 
 import com.driftdirect.domain.championship.Championship;
 import com.driftdirect.domain.file.File;
+import org.hibernate.annotations.Type;
+import org.joda.time.DateTime;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.Set;
 
 /**
@@ -19,8 +20,13 @@ public class Round{
 
     private String name;
 
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
+    @Column(name = "start_date")
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+    private DateTime startDate;
+
+    @Column(name = "end_date")
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+    private DateTime endDate;
 
     @OneToOne
     private File logo;
@@ -48,19 +54,19 @@ public class Round{
         this.name = name;
     }
 
-    public LocalDateTime getStartDate() {
+    public DateTime getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(LocalDateTime startDate) {
+    public void setStartDate(DateTime startDate) {
         this.startDate = startDate;
     }
 
-    public LocalDateTime getEndDate() {
+    public DateTime getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(LocalDateTime endDate) {
+    public void setEndDate(DateTime endDate) {
         this.endDate = endDate;
     }
 

@@ -20,7 +20,6 @@ public class Person {
     private String firstName;
     private String lastName;
     private String telephone;
-    //TODO(pbochis): website and birthdate
 
     @Column(name = "birth_date")
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")

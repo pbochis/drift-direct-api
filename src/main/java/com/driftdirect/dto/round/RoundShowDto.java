@@ -1,6 +1,7 @@
 package com.driftdirect.dto.round;
 
-import java.time.LocalDateTime;
+import org.joda.time.DateTime;
+
 import java.util.List;
 
 /**
@@ -9,8 +10,8 @@ import java.util.List;
 public class RoundShowDto {
     private long id;
     private String name;
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
+    private DateTime startDate;
+    private DateTime endDate;
 
     private List<RoundScheduleShowDto> schedule;
 
@@ -38,19 +39,19 @@ public class RoundShowDto {
         this.name = name;
     }
 
-    public LocalDateTime getStartDate() {
+    public DateTime getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(LocalDateTime startDate) {
+    public void setStartDate(DateTime startDate) {
         this.startDate = startDate;
     }
 
-    public LocalDateTime getEndDate() {
+    public DateTime getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(LocalDateTime endDate) {
+    public void setEndDate(DateTime endDate) {
         this.endDate = endDate;
     }
 }

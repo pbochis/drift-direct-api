@@ -30,6 +30,7 @@ public class PersonMapper {
         dto.setYearsExperience(p.getYearsExperience());
         dto.setDescription(p.getDescription());
         dto.setWebsite(p.getWebsite());
+        dto.setBirthDate(p.getBirthDate());
         if (p.getDriverDetails() != null) {
             DriverDetailsDto details = new DriverDetailsDto();
             details.setId(p.getDriverDetails().getId());

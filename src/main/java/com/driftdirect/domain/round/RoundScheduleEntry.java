@@ -1,7 +1,9 @@
 package com.driftdirect.domain.round;
 
+import org.hibernate.annotations.Type;
+import org.joda.time.DateTime;
+
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 /**
  * Created by Paul on 11/17/2015.
@@ -16,8 +18,14 @@ public class RoundScheduleEntry {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
+
+    @Column(name = "start_date")
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+    private DateTime startDate;
+
+    @Column(name = "end_date")
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+    private DateTime endDate;
     public long getId() {
         return id;
     }
@@ -42,19 +50,19 @@ public class RoundScheduleEntry {
         this.name = name;
     }
 
-    public LocalDateTime getStartDate() {
+    public DateTime getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(LocalDateTime startDate) {
+    public void setStartDate(DateTime startDate) {
         this.startDate = startDate;
     }
 
-    public LocalDateTime getEndDate() {
+    public DateTime getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(LocalDateTime endDate) {
+    public void setEndDate(DateTime endDate) {
         this.endDate = endDate;
     }
 }

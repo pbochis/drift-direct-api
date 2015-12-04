@@ -1,6 +1,7 @@
 package com.driftdirect.dto.person;
 
 import com.driftdirect.dto.country.CountryShowDto;
+import org.joda.time.DateTime;
 
 /**
  * Created by Paul on 11/30/2015.
@@ -15,6 +16,7 @@ public class PersonFullDto {
     private int yearsExperience;
     private String description;
     private Long profilePicture;
+    private DateTime birthDate;
     private DriverDetailsDto driverDetails;
 
     public long getId() {
@@ -95,5 +97,13 @@ public class PersonFullDto {
 
     public void setWebsite(String website) {
         this.website = website;
+    }
+
+    public DateTime getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(DateTime birthDate) {
+        this.birthDate = birthDate;
     }
 }

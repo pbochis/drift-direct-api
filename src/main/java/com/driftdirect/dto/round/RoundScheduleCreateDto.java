@@ -1,8 +1,9 @@
 package com.driftdirect.dto.round;
 
+import org.joda.time.DateTime;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.time.LocalDateTime;
 
 /**
  * Created by Paul on 11/17/2015.
@@ -11,8 +12,11 @@ public class RoundScheduleCreateDto {
     @NotNull
     @Size(min = 2, max = 40)
     private String name;
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
+
+    @NotNull
+    private DateTime startDate;
+    @NotNull
+    private DateTime endDate;
 
     public String getName() {
         return name;
@@ -22,19 +26,19 @@ public class RoundScheduleCreateDto {
         this.name = name;
     }
 
-    public LocalDateTime getStartDate() {
+    public DateTime getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(LocalDateTime startDate) {
+    public void setStartDate(DateTime startDate) {
         this.startDate = startDate;
     }
 
-    public LocalDateTime getEndDate() {
+    public DateTime getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(LocalDateTime endDate) {
+    public void setEndDate(DateTime endDate) {
         this.endDate = endDate;
     }
 }
