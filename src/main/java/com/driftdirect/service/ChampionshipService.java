@@ -83,6 +83,7 @@ public class ChampionshipService{
         List<Championship> championships = championshipRepository.findAll();
         List<ChampionshipShortShowDto> dtos = new ArrayList<>();
         for (Championship c : championships) {
+            //TODO: Pleaes fix this shit. It's embarassing
             dtos.add(ChampionshipMapper.mapShort(c, c.getRounds().get(0)));
         }
         return dtos;
@@ -92,7 +93,6 @@ public class ChampionshipService{
         c.setName(dto.getName());
         c.setInformation(dto.getInformation());
         c.setPublished(dto.isPublished());
-        c.setRules(dto.getRules());
         c.setTicketsUrl(dto.getTicketsUrl());
         c.setBackgroundImage(fileRepository.findOne(dto.getBackgroundImage()));
         c.setLogo(fileRepository.findOne(dto.getLogo()));

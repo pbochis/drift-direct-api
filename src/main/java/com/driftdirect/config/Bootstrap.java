@@ -12,6 +12,7 @@ import com.driftdirect.domain.round.Round;
 import com.driftdirect.domain.sponsor.Sponsor;
 import com.driftdirect.domain.user.Authorities;
 import com.driftdirect.domain.user.Role;
+import com.driftdirect.dto.round.RoundScheduleCreateDto;
 import com.driftdirect.dto.user.UserCreateDTO;
 import com.driftdirect.repository.*;
 import com.driftdirect.repository.championship.*;
@@ -151,10 +152,21 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         c.setName(name);
         c.setTicketsUrl("www.tickets.com");
         c.setInformation("This is a drifting championship, mate");
-        c.setRules("These are the rules of drifting");
         c.setLogo(f);
         c.setBackgroundImage(f);
+        ChampionshipRules rules = new ChampionshipRules();
+        rules.setRules("Rules of the championship");
+        rules.setVideoUrl("www.youtube.com");
+        c.setRules(rules);
         return championshipService.save(c);
+    }
+
+    private void createSchedule(Long roundId, String name, DateTime startDate, DateTime endDate) {
+        RoundScheduleCreateDto s = new RoundScheduleCreateDto();
+        s.setName(name);
+        s.setStartDate(startDate);
+        s.setEndDate(endDate);
+        roundService.addRoundSchedule(roundId, s);
     }
 
     private Round createRound(String name, Championship c, File f) {
@@ -162,7 +174,11 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         r.setName(name);
         r.setChampionship(c);
         r.setLogo(f);
-        return roundRepository.save(r);
+        r = roundRepository.save(r);
+        createSchedule(r.getId(), "Registration", new DateTime(2015, 12, 10, 10, 0), new DateTime(2015, 12, 10, 20, 0));
+        createSchedule(r.getId(), "Qualifications", new DateTime(2015, 12, 11, 10, 0), new DateTime(2015, 12, 11, 20, 0));
+        createSchedule(r.getId(), "Playoff", new DateTime(2015, 12, 12, 10, 0), new DateTime(2015, 12, 12, 20, 0));
+        return r;
     }
 
     private Person createPerson(String name, String description, PersonType personType) {
@@ -233,7 +249,8 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         Championship c2 = createChampionship("DN2Z", f);
 
         Round r1 = createRound("Round 1 - C1", c1, f);
-        Round r2 = createRound("Round 2 - C2", c2, f);
+        Round r2 = createRound("Round 2 - C1", c1, f);
+        Round r3 = createRound("Round 1 - C2", c2, f);
 
         Person driver1 = createDriver("Vlad Iancu");
         Person driver2 = createDriver("Paul Bochis");

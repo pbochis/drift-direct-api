@@ -5,9 +5,7 @@ import com.driftdirect.domain.championship.ChampionshipDriverParticipation;
 import com.driftdirect.domain.championship.ChampionshipJudgeParticipation;
 import com.driftdirect.domain.round.Round;
 import com.driftdirect.dto.championship.*;
-import com.driftdirect.dto.round.RoundShowDto;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,16 +17,39 @@ public class ChampionshipMapper {
         ChampionshipFullDto dto = new ChampionshipFullDto();
         dto.setId(c.getId());
         dto.setName(c.getName());
-        dto.setRules(c.getRules());
         dto.setInformation(c.getInformation());
-        dto.setTicketsUrl(dto.getTicketsUrl());
-        List<RoundShowDto> rounds = new ArrayList<>();
-        if (c.getRounds() != null) {
-            for (Round round : c.getRounds()) {
-                rounds.add(RoundMapper.map(round));
-            }
-            dto.setRounds(rounds);
+        dto.setTicketsUrl(c.getTicketsUrl());
+        dto.setBackgroundImage(c.getBackgroundImage().getId());
+        dto.setLogo(c.getLogo().getId());
+        if (c.getRules() != null) {
+            ChampionshipRulesDto rules = new ChampionshipRulesDto();
+            rules.setId(c.getRules().getId());
+            rules.setRules(c.getRules().getRules());
+            rules.setVideoUrl(c.getRules().getVideoUrl());
+            dto.setRules(rules);
         }
+        if (c.getRounds() != null) {
+            dto.setRounds(c.getRounds()
+                    .stream()
+                    .map(RoundMapper::mapShort)
+                    .collect(Collectors.toList()));
+        }
+
+        if (c.getJudges() != null) {
+            dto.setJudges(c.getJudges()
+                    .stream()
+                    .map(ChampionshipMapper::mapJudgeParticipation)
+                    .collect(Collectors.toList()));
+        }
+
+        if (c.getDrivers() != null) {
+            dto.setDrivers(c.getDrivers()
+                    .stream()
+                    .map(e -> PersonMapper.mapShort(e.getDriver()))
+                    .collect(Collectors.toList()));
+        }
+
+        dto.setSponsors(null);
         return dto;
     }
 

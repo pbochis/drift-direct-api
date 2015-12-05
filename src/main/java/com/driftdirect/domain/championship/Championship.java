@@ -16,7 +16,6 @@ public class Championship{
     private long id;
 
     private String name;
-    private String rules;
     private String information;
     //will be a url -> where to buy ticketsUrl
     private String ticketsUrl;
@@ -27,6 +26,9 @@ public class Championship{
 
     @OneToOne(fetch = FetchType.LAZY)
     private File logo;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private ChampionshipRules rules;
 
     //add list<> drivers and list<> judges
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "championship", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -47,14 +49,6 @@ public class Championship{
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public String getRules() {
-        return rules;
-    }
-
-    public void setRules(String rules) {
-        this.rules = rules;
     }
 
     public String getInformation() {
@@ -135,6 +129,14 @@ public class Championship{
 
     public void setJudgeTypes(List<ChampionshipJudgeType> judgeTypes) {
         this.judgeTypes = judgeTypes;
+    }
+
+    public ChampionshipRules getRules() {
+        return rules;
+    }
+
+    public void setRules(ChampionshipRules rules) {
+        this.rules = rules;
     }
 
     @Override
