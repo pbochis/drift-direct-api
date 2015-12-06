@@ -49,7 +49,13 @@ public class ChampionshipMapper {
                     .collect(Collectors.toList()));
         }
 
-        dto.setSponsors(null);
+        if (c.getSponsors() != null) {
+            dto.setSponsors(c.getSponsors()
+                    .stream()
+                    .map(SponsorMapper::map)
+                    .collect(Collectors.toList()));
+        }
+
         return dto;
     }
 

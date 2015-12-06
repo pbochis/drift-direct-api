@@ -2,44 +2,45 @@ package com.driftdirect.domain.championship;
 
 import com.driftdirect.domain.file.File;
 import com.driftdirect.domain.round.Round;
+import com.driftdirect.domain.sponsor.Sponsor;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Paul on 11/6/2015.
  */
 @Entity
 public class Championship{
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "championship_sponsor",
+            joinColumns = {@JoinColumn(name = "championship_id")},
+            inverseJoinColumns = {@JoinColumn(name = "sponsor_id")}
+    )
+    Set<Sponsor> sponsors;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
     private String name;
     private String information;
     //will be a url -> where to buy ticketsUrl
     private String ticketsUrl;
     private boolean published;
-
     @OneToOne(fetch = FetchType.LAZY)
     private File backgroundImage;
-
     @OneToOne(fetch = FetchType.LAZY)
     private File logo;
-
     @OneToOne(cascade = CascadeType.ALL)
     private ChampionshipRules rules;
-
     //add list<> drivers and list<> judges
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "championship", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Round> rounds;
-
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "championship", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChampionshipDriverParticipation> drivers;
-
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "championship", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChampionshipJudgeParticipation> judges;
-
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "championship", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChampionshipJudgeType> judgeTypes;
 
@@ -137,6 +138,14 @@ public class Championship{
 
     public void setRules(ChampionshipRules rules) {
         this.rules = rules;
+    }
+
+    public Set<Sponsor> getSponsors() {
+        return sponsors;
+    }
+
+    public void setSponsors(Set<Sponsor> sponsors) {
+        this.sponsors = sponsors;
     }
 
     @Override

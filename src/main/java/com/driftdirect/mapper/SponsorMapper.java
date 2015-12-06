@@ -12,10 +12,12 @@ import java.util.stream.Collectors;
 public class SponsorMapper {
     public static SponsorShowDto map(Sponsor sponsor){
         SponsorShowDto dto = new SponsorShowDto();
+        dto.setId(sponsor.getId());
         dto.setName(sponsor.getName());
         dto.setEmail(sponsor.getEmail());
         dto.setTelephoneNr(sponsor.getTelephoneNr());
         dto.setUrl(sponsor.getUrl());
+        dto.setLogo(sponsor.getLogo().getId());
         return dto;
     }
 

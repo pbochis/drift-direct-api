@@ -1,9 +1,9 @@
 package com.driftdirect.domain.sponsor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import com.driftdirect.domain.file.File;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 /**
  * Created by Paul on 11/26/2015.
@@ -18,6 +18,10 @@ public class Sponsor {
     private String email;
     private String telephoneNr;
     private String url;
+
+    @OneToOne
+    @NotNull
+    private File logo;
 
     public Long getId() {
         return id;
@@ -57,5 +61,13 @@ public class Sponsor {
 
     public void setTelephoneNr(String telephoneNr) {
         this.telephoneNr = telephoneNr;
+    }
+
+    public File getLogo() {
+        return logo;
+    }
+
+    public void setLogo(File logo) {
+        this.logo = logo;
     }
 }

@@ -10,6 +10,8 @@ public class SponsorShowDto {
     private String telephoneNr;
     private String url;
 
+    private Long logo;
+
     public String getName() {
         return name;
     }
@@ -48,5 +50,13 @@ public class SponsorShowDto {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getLogo() {
+        return logo;
+    }
+
+    public void setLogo(Long logo) {
+        this.logo = logo;
     }
 }

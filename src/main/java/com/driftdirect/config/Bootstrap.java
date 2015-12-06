@@ -41,10 +41,13 @@ import java.util.HashSet;
 public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
     private final String APPLICATION_INIT = "init";
     private final Logger log = LoggerFactory.getLogger(this.getClass());
+
     File fRom;
     File fCiob;
     Country c;
     Team t;
+    Sponsor sponsor;
+
     private Environment environment;
     private ConfigSettingRepository configSettingRepository;
     private RoleRepository roleRepository;
@@ -134,16 +137,17 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         c.setFlag(fRom);
         c = countryRepository.save(c);
 
-        Sponsor s = new Sponsor();
-        s.setName("Sponsor1");
-        s.setEmail("email@default.co");
-        s.setTelephoneNr("0743122132");
-        s.setUrl("www.sponsor.noDomain");
-        s = sponsorRepository.save(s);
+        sponsor = new Sponsor();
+        sponsor.setName("Sponsor1");
+        sponsor.setEmail("email@default.co");
+        sponsor.setTelephoneNr("0743122132");
+        sponsor.setUrl("www.sponsor.noDomain");
+        sponsor.setLogo(fRom);
+        sponsor = sponsorRepository.save(sponsor);
 
         t = new Team();
         t.setName("Team 1");
-        t.setSponsors(new HashSet<>(Arrays.asList(s)));
+        t.setSponsors(new HashSet<>(Arrays.asList(sponsor)));
         t = teamRepository.save(t);
     }
 
@@ -158,6 +162,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         rules.setRules("Rules of the championship");
         rules.setVideoUrl("www.youtube.com");
         c.setRules(rules);
+        c.setSponsors(new HashSet<>(Arrays.asList(sponsor)));
         return championshipService.save(c);
     }
 
