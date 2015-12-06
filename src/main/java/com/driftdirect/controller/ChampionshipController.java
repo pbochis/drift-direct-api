@@ -2,6 +2,7 @@ package com.driftdirect.controller;
 
 import com.driftdirect.domain.user.Authorities;
 import com.driftdirect.dto.championship.*;
+import com.driftdirect.dto.news.NewsCreateDto;
 import com.driftdirect.dto.person.PersonShortShowDto;
 import com.driftdirect.dto.round.RoundShortShowDto;
 import com.driftdirect.exception.ObjectNotFoundException;
@@ -11,10 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -82,9 +80,15 @@ public class ChampionshipController {
         return new ResponseEntity<>(championshipService.findDriver(championshipId, driverId), HttpStatus.OK);
     }
 
+    @RequestMapping(path = RestUrls.CHAMPIONSHIP_ID_NEWS, method = RequestMethod.POST)
+    public ResponseEntity addNews(@PathVariable(value = "id") Long id,
+                                  @RequestBody @Valid NewsCreateDto news) {
+        championshipService.addNews(id, news);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
     @RequestMapping(path = RestUrls.CHAMPIONSHIP_ID_JUDGES, method = RequestMethod.GET)
     public ResponseEntity<List<ChampionshipJudgeParticipationDto>> getJudges(@PathVariable Long id) {
-        System.out.println("**********************************************************");
         return new ResponseEntity<>(championshipService.findJudges(id), HttpStatus.OK);
     }
 }

@@ -1,8 +1,10 @@
 package com.driftdirect.service;
 
 import com.driftdirect.domain.championship.Championship;
+import com.driftdirect.domain.news.News;
 import com.driftdirect.domain.round.Round;
 import com.driftdirect.dto.championship.*;
+import com.driftdirect.dto.news.NewsCreateDto;
 import com.driftdirect.dto.person.PersonShortShowDto;
 import com.driftdirect.dto.round.RoundShortShowDto;
 import com.driftdirect.exception.ObjectNotFoundException;
@@ -117,5 +119,16 @@ public class ChampionshipService{
                 .stream()
                 .map(ChampionshipMapper::mapJudgeParticipation)
                 .collect(Collectors.toList());
+    }
+
+    public void addNews(Long championshipId, NewsCreateDto newsDto) {
+        News news = new News();
+        news.setName(newsDto.getName());
+        news.setDescription(newsDto.getDescrption());
+        news.setUrl(newsDto.getUrl());
+        news.setLogo(fileRepository.findOne(newsDto.getLogo()));
+        Championship c = championshipRepository.findOne(championshipId);
+        c.addNews(news);
+        championshipRepository.save(c);
     }
 }

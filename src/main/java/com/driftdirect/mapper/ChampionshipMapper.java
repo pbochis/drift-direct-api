@@ -56,6 +56,12 @@ public class ChampionshipMapper {
                     .collect(Collectors.toList()));
         }
 
+        if (c.getNews() != null) {
+            dto.setNews(c.getNews()
+                    .stream()
+                    .map(NewsMapper::map)
+                    .collect(Collectors.toList()));
+        }
         return dto;
     }
 

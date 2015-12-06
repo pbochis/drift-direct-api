@@ -1,5 +1,6 @@
 package com.driftdirect.dto.championship;
 
+import com.driftdirect.dto.news.NewsShowDto;
 import com.driftdirect.dto.person.PersonShortShowDto;
 import com.driftdirect.dto.round.RoundShortShowDto;
 import com.driftdirect.dto.sponsor.SponsorShowDto;
@@ -23,16 +24,17 @@ public class ChampionshipFullDto {
     private List<PersonShortShowDto> drivers;
     private List<ChampionshipJudgeParticipationDto> judges;
     private List<SponsorShowDto> sponsors;
+    private List<NewsShowDto> news;
 
     public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -114,5 +116,13 @@ public class ChampionshipFullDto {
 
     public void setSponsors(List<SponsorShowDto> sponsors) {
         this.sponsors = sponsors;
+    }
+
+    public List<NewsShowDto> getNews() {
+        return news;
+    }
+
+    public void setNews(List<NewsShowDto> news) {
+        this.news = news;
     }
 }

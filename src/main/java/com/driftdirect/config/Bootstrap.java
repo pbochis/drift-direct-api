@@ -6,6 +6,7 @@ import com.driftdirect.domain.championship.*;
 import com.driftdirect.domain.driver.DriverDetails;
 import com.driftdirect.domain.driver.Team;
 import com.driftdirect.domain.file.File;
+import com.driftdirect.domain.news.News;
 import com.driftdirect.domain.person.Person;
 import com.driftdirect.domain.person.PersonType;
 import com.driftdirect.domain.round.Round;
@@ -69,6 +70,9 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
     private SponsorRepository sponsorRepository;
     @Autowired
     private DriverDetailsRepository driverDetailsRepository;
+
+    @Autowired
+    private NewsRepository newsRepository;
 
     @Autowired
     public Bootstrap(
@@ -151,6 +155,15 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         t = teamRepository.save(t);
     }
 
+    private News createNews(String name, String description) {
+        News news = new News();
+        news.setName(name);
+        news.setDescription(description);
+        news.setLogo(fCiob);
+        news.setUrl("http://www.google.com");
+        return news;
+    }
+
     private Championship createChampionship(String name, File f) {
         Championship c = new Championship();
         c.setName(name);
@@ -160,9 +173,12 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         c.setBackgroundImage(f);
         ChampionshipRules rules = new ChampionshipRules();
         rules.setRules("Rules of the championship");
-        rules.setVideoUrl("www.youtube.com");
+        rules.setVideoUrl("http://www.youtube.com");
         c.setRules(rules);
-        c.setSponsors(new HashSet<>(Arrays.asList(sponsor)));
+        c.addSponsor(sponsor);
+        c.addNews(createNews("DN1Z underway!", "The championship will start in the first of december following an award celebrating our fellow drivers"));
+        c.addNews(createNews("First round postponed", "Due to bad weather conditions in Arad, Romania the round needs to be postponed 1 week"));
+        c.addNews(createNews("Glory to the winners", "Once again, after a shocking performance Florin Cozmuta takes the win!"));
         return championshipService.save(c);
     }
 
