@@ -13,13 +13,13 @@ public class RoundShowDto {
     private DateTime startDate;
     private DateTime endDate;
 
-    private List<RoundScheduleShowDto> schedule;
+    private List<RoundScheduleEntryShowDto> schedule;
 
-    public List<RoundScheduleShowDto> getSchedule() {
+    public List<RoundScheduleEntryShowDto> getSchedule() {
         return schedule;
     }
 
-    public void setSchedule(List<RoundScheduleShowDto> schedule) {
+    public void setSchedule(List<RoundScheduleEntryShowDto> schedule) {
         this.schedule = schedule;
     }
 

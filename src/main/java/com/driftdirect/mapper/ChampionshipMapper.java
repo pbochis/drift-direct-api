@@ -5,7 +5,10 @@ import com.driftdirect.domain.championship.ChampionshipDriverParticipation;
 import com.driftdirect.domain.championship.ChampionshipJudgeParticipation;
 import com.driftdirect.domain.round.Round;
 import com.driftdirect.dto.championship.*;
+import com.driftdirect.dto.round.RoundShortShowDto;
+import com.driftdirect.dto.round.RoundStatus;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,10 +32,7 @@ public class ChampionshipMapper {
             dto.setRules(rules);
         }
         if (c.getRounds() != null) {
-            dto.setRounds(c.getRounds()
-                    .stream()
-                    .map(RoundMapper::mapShort)
-                    .collect(Collectors.toList()));
+            dto.setRounds(mapRounds(c));
         }
 
         if (c.getJudges() != null) {
@@ -65,6 +65,18 @@ public class ChampionshipMapper {
         return dto;
     }
 
+    private static List<RoundShortShowDto> mapRounds(Championship c) {
+        boolean next = true;
+        List<RoundShortShowDto> rounds = new ArrayList<>();
+        for (Round round : c.getRounds()) {
+            if (round.isEnded()) rounds.add(RoundMapper.mapShort(round, RoundStatus.ENDED));
+            else if (round.isOngoing()) rounds.add(RoundMapper.mapShort(round, RoundStatus.ONGOING));
+            else if (next) rounds.add(RoundMapper.mapShort(round, RoundStatus.NEXT));
+            else rounds.add(RoundMapper.mapShort(round, RoundStatus.FUTURE));
+        }
+        return rounds;
+    }
+
     public static ChampionshipDriverParticipationDto mapDriverParticipation(ChampionshipDriverParticipation participation) {
         ChampionshipDriverParticipationDto dto = new ChampionshipDriverParticipationDto();
         dto.setId(participation.getId());
@@ -87,13 +99,23 @@ public class ChampionshipMapper {
         return dto;
     }
 
-    public static ChampionshipShortShowDto mapShort(Championship c, Round round) {
+    public static ChampionshipShortShowDto mapShort(Championship c) {
         ChampionshipShortShowDto dto = new ChampionshipShortShowDto();
         dto.setId(c.getId());
         dto.setBackgroundImage(c.getBackgroundImage().getId());
         dto.setLogo(c.getLogo().getId());
-        dto.setNextRound(RoundMapper.mapShort(round));
+        dto.setNextRound(getCurrentOrNextRound(c));
         return dto;
+    }
+
+    private static RoundShortShowDto getCurrentOrNextRound(Championship c) {
+        for (Round round : c.getRounds()) {
+            if (round.isOngoing())
+                return RoundMapper.mapShort(round, RoundStatus.ONGOING, c.getRounds().headSet(round).size());
+            if (round.isFuture())
+                return RoundMapper.mapShort(round, RoundStatus.NEXT, c.getRounds().headSet(round).size());
+        }
+        return null;
     }
 
     public List<ChampionshipFullDto> map(List<Championship> championships) {

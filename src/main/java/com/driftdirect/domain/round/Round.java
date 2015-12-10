@@ -2,18 +2,18 @@ package com.driftdirect.domain.round;
 
 import com.driftdirect.domain.championship.Championship;
 import com.driftdirect.domain.file.File;
+import org.hibernate.annotations.SortNatural;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.SortedSet;
 
 /**
  * Created by Paul on 11/14/2015.
  */
 @Entity
-public class Round{
-
+public class Round implements Comparable<Round> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -36,7 +36,8 @@ public class Round{
     private Championship championship;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "round", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<RoundScheduleEntry> scheduele;
+    @SortNatural
+    private SortedSet<RoundScheduleEntry> scheduele;
 
     public long getId() {
         return id;
@@ -70,11 +71,11 @@ public class Round{
         this.endDate = endDate;
     }
 
-    public Set<RoundScheduleEntry> getScheduele() {
+    public SortedSet<RoundScheduleEntry> getScheduele() {
         return scheduele;
     }
 
-    public void setScheduele(Set<RoundScheduleEntry> scheduele) {
+    public void setScheduele(SortedSet<RoundScheduleEntry> scheduele) {
         this.scheduele = scheduele;
     }
 
@@ -97,5 +98,28 @@ public class Round{
     @Override
     public String toString(){
         return this.name;
+    }
+
+    @Override
+    public int compareTo(Round o) {
+        if (id == o.getId()) {
+            return 0;
+        }
+        if (startDate.isBefore(o.getStartDate())) {
+            return -1;
+        }
+        return 1;
+    }
+
+    public boolean isEnded() {
+        return this.endDate.isBefore(DateTime.now());
+    }
+
+    public boolean isOngoing() {
+        return this.startDate.isBefore(DateTime.now()) && this.endDate.isAfter(DateTime.now());
+    }
+
+    public boolean isFuture() {
+        return this.startDate.isAfter(DateTime.now());
     }
 }

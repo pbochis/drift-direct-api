@@ -1,10 +1,10 @@
 package com.driftdirect.controller;
 
 import com.driftdirect.domain.user.Authorities;
+import com.driftdirect.domain.user.User;
 import com.driftdirect.dto.championship.*;
 import com.driftdirect.dto.news.NewsCreateDto;
 import com.driftdirect.dto.person.PersonShortShowDto;
-import com.driftdirect.dto.round.RoundShortShowDto;
 import com.driftdirect.exception.ObjectNotFoundException;
 import com.driftdirect.service.ChampionshipService;
 import com.driftdirect.util.RestUrls;
@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -53,7 +54,7 @@ public class ChampionshipController {
     }
 
     @RequestMapping(path = RestUrls.CHAMPIONSHIP_ID, method = RequestMethod.GET)
-    public ResponseEntity<ChampionshipFullDto> getById(@PathVariable Long id) {
+    public ResponseEntity<ChampionshipFullDto> getById(@PathVariable Long id, @AuthenticationPrincipal User user) {
         return new ResponseEntity<>(championshipService.findChampionship(id), HttpStatus.OK);
     }
 
@@ -64,10 +65,10 @@ public class ChampionshipController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @RequestMapping(path = RestUrls.CHAMPIONSHIP_ID_ROUNDS, method = RequestMethod.GET)
-    public ResponseEntity<List<RoundShortShowDto>> getChampionshipRounds(@PathVariable Long id) {
-        return new ResponseEntity<>(championshipService.championshipRounds(id), HttpStatus.OK);
-    }
+//    @RequestMapping(path = RestUrls.CHAMPIONSHIP_ID_ROUNDS, method = RequestMethod.GET)
+//    public ResponseEntity<List<RoundShortShowDto>> getChampionshipRounds(@PathVariable Long id) {
+//        return new ResponseEntity<>(championshipService.championshipRounds(id), HttpStatus.OK);
+//    }
 
     @RequestMapping(path = RestUrls.CHAMPIONSHIP_ID_DRIVERS, method = RequestMethod.GET)
     public ResponseEntity<List<PersonShortShowDto>> getDrivers(@PathVariable Long id) {

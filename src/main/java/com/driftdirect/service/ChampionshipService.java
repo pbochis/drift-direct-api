@@ -2,15 +2,12 @@ package com.driftdirect.service;
 
 import com.driftdirect.domain.championship.Championship;
 import com.driftdirect.domain.news.News;
-import com.driftdirect.domain.round.Round;
 import com.driftdirect.dto.championship.*;
 import com.driftdirect.dto.news.NewsCreateDto;
 import com.driftdirect.dto.person.PersonShortShowDto;
-import com.driftdirect.dto.round.RoundShortShowDto;
 import com.driftdirect.exception.ObjectNotFoundException;
 import com.driftdirect.mapper.ChampionshipMapper;
 import com.driftdirect.mapper.PersonMapper;
-import com.driftdirect.mapper.RoundMapper;
 import com.driftdirect.repository.FileRepository;
 import com.driftdirect.repository.championship.ChampionshipDriverParticipationRepository;
 import com.driftdirect.repository.championship.ChampionshipJudgeParticipationRepository;
@@ -60,15 +57,6 @@ public class ChampionshipService{
         championshipRepository.delete(id);
     }
 
-    public List<RoundShortShowDto> championshipRounds(long id) {
-        Championship c = championshipRepository.findOne(id);
-        List<RoundShortShowDto> rounds = new ArrayList<>();
-        for (Round round: c.getRounds()){
-            rounds.add(RoundMapper.mapShort(round));
-        }
-        return rounds;
-    }
-
     public List<ChampionshipFullDto> findChampionships() {
         List<ChampionshipFullDto> dtos = new ArrayList<>();
         for (Championship c: championshipRepository.findAll()){
@@ -83,12 +71,10 @@ public class ChampionshipService{
 
     public List<ChampionshipShortShowDto> getShortChampionshipList() {
         List<Championship> championships = championshipRepository.findAll();
-        List<ChampionshipShortShowDto> dtos = new ArrayList<>();
-        for (Championship c : championships) {
-            //TODO: Pleaes fix this shit. It's embarassing
-            dtos.add(ChampionshipMapper.mapShort(c, c.getRounds().get(0)));
-        }
-        return dtos;
+        return championships
+                .stream()
+                .map(ChampionshipMapper::mapShort)
+                .collect(Collectors.toList());
     }
 
     private Championship populateAndSave(Championship c, ChampionshipCreateDTO dto){

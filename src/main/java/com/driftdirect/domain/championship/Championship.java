@@ -4,11 +4,13 @@ import com.driftdirect.domain.file.File;
 import com.driftdirect.domain.news.News;
 import com.driftdirect.domain.round.Round;
 import com.driftdirect.domain.sponsor.Sponsor;
+import org.hibernate.annotations.SortNatural;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
 
 /**
  * Created by Paul on 11/6/2015.
@@ -33,8 +35,9 @@ public class Championship{
     @OneToOne(cascade = CascadeType.ALL)
     private ChampionshipRules rules;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "championship", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Round> rounds;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "championship", cascade = CascadeType.ALL, orphanRemoval = true)
+    @SortNatural
+    private SortedSet<Round> rounds;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "championship", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChampionshipDriverParticipation> drivers;
@@ -96,11 +99,11 @@ public class Championship{
         this.name = name;
     }
 
-    public List<Round> getRounds() {
+    public SortedSet<Round> getRounds() {
         return rounds;
     }
 
-    public void setRounds(List<Round> rounds) {
+    public void setRounds(SortedSet<Round> rounds) {
         this.rounds = rounds;
     }
 

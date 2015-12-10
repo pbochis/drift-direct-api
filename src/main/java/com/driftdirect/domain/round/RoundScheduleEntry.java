@@ -10,7 +10,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "round_schedule_entry")
-public class RoundScheduleEntry {
+public class RoundScheduleEntry implements Comparable<RoundScheduleEntry> {
     String name;
     @ManyToOne
     @JoinColumn(name = "round_id", nullable = false)
@@ -18,7 +18,6 @@ public class RoundScheduleEntry {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
     @Column(name = "start_date")
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     private DateTime startDate;
@@ -65,4 +64,14 @@ public class RoundScheduleEntry {
     public void setEndDate(DateTime endDate) {
         this.endDate = endDate;
     }
+
+    @Override
+    public int compareTo(RoundScheduleEntry o) {
+        if (id == o.id)
+            return 0;
+        if (startDate.isBefore(o.getStartDate()))
+            return -1;
+        return 1;
+    }
 }
+

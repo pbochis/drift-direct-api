@@ -5,7 +5,7 @@ import org.joda.time.DateTime;
 /**
  * Created by Paul on 11/18/2015.
  */
-public class RoundScheduleShowDto {
+public class RoundScheduleEntryShowDto {
     private String name;
     private DateTime startDate;
     private DateTime endDate;

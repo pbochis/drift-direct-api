@@ -190,15 +190,17 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         roundService.addRoundSchedule(roundId, s);
     }
 
-    private Round createRound(String name, Championship c, File f) {
+    private Round createRound(String name, Championship c, File f, DateTime startDate, DateTime endDate) {
         Round r = new Round();
         r.setName(name);
         r.setChampionship(c);
         r.setLogo(f);
+        r.setStartDate(startDate);
+        r.setEndDate(endDate);
         r = roundRepository.save(r);
-        createSchedule(r.getId(), "Registration", new DateTime(2015, 12, 10, 10, 0), new DateTime(2015, 12, 10, 20, 0));
-        createSchedule(r.getId(), "Qualifications", new DateTime(2015, 12, 11, 10, 0), new DateTime(2015, 12, 11, 20, 0));
-        createSchedule(r.getId(), "Playoff", new DateTime(2015, 12, 12, 10, 0), new DateTime(2015, 12, 12, 20, 0));
+//        createSchedule(r.getId(), "Registration", new DateTime(2015, 12, 10, 10, 0), new DateTime(2015, 12, 10, 20, 0));
+//        createSchedule(r.getId(), "Qualifications", new DateTime(2015, 12, 11, 10, 0), new DateTime(2015, 12, 11, 20, 0));
+//        createSchedule(r.getId(), "Playoff", new DateTime(2015, 12, 12, 10, 0), new DateTime(2015, 12, 12, 20, 0));
         return r;
     }
 
@@ -269,9 +271,10 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         Championship c1 = createChampionship("DN1Z", f);
         Championship c2 = createChampionship("DN2Z", f);
 
-        Round r1 = createRound("Round 1 - C1", c1, f);
-        Round r2 = createRound("Round 2 - C1", c1, f);
-        Round r3 = createRound("Round 1 - C2", c2, f);
+        Round r1 = createRound("Round 1 - C1", c1, f, new DateTime(2015, 10, 1, 1, 0), new DateTime(2015, 10, 2, 10, 0));
+        Round r2 = createRound("Round 2 - C1", c1, f, new DateTime(2015, 7, 1, 10, 0), new DateTime(2015, 7, 4, 2, 0));
+        Round r3 = createRound("Round 1 - C2", c1, f, new DateTime(2015, 8, 10, 10, 0), new DateTime(2015, 8, 15, 10, 0));
+        Round r4 = createRound("Round 1 - C2", c2, f, new DateTime(2015, 12, 10, 10, 0), new DateTime(2015, 12, 10, 10, 0));
 
         Person driver1 = createDriver("Vlad Iancu");
         Person driver2 = createDriver("Paul Bochis");
