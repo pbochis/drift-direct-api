@@ -102,7 +102,7 @@ public class Round implements Comparable<Round> {
 
     @Override
     public int compareTo(Round o) {
-        if (id == o.getId()) {
+        if (startDate == null || o.getStartDate() == null) {
             return 0;
         }
         if (startDate.isBefore(o.getStartDate())) {
