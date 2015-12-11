@@ -15,8 +15,7 @@ public class Sponsor {
     private Long id;
 
     private String name;
-    private String email;
-    private String telephoneNr;
+    private String description;
     private String url;
 
     @OneToOne
@@ -47,20 +46,12 @@ public class Sponsor {
         this.name = name;
     }
 
-    public String getEmail() {
-        return email;
+    public String getDescription() {
+        return description;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getTelephoneNr() {
-        return telephoneNr;
-    }
-
-    public void setTelephoneNr(String telephoneNr) {
-        this.telephoneNr = telephoneNr;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public File getLogo() {

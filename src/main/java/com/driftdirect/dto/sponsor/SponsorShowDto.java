@@ -6,8 +6,7 @@ package com.driftdirect.dto.sponsor;
 public class SponsorShowDto {
     private Long id;
     private String name;
-    private String email;
-    private String telephoneNr;
+    private String description;
     private String url;
 
     private Long logo;
@@ -28,28 +27,20 @@ public class SponsorShowDto {
         this.url = url;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getTelephoneNr() {
-        return telephoneNr;
-    }
-
-    public void setTelephoneNr(String telephoneNr) {
-        this.telephoneNr = telephoneNr;
-    }
-
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Long getLogo() {

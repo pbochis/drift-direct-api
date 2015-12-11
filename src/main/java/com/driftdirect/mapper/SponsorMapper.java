@@ -14,8 +14,7 @@ public class SponsorMapper {
         SponsorShowDto dto = new SponsorShowDto();
         dto.setId(sponsor.getId());
         dto.setName(sponsor.getName());
-        dto.setEmail(sponsor.getEmail());
-        dto.setTelephoneNr(sponsor.getTelephoneNr());
+        dto.setDescription(sponsor.getDescription());
         dto.setUrl(sponsor.getUrl());
         dto.setLogo(sponsor.getLogo().getId());
         return dto;

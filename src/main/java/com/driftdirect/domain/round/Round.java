@@ -19,6 +19,7 @@ public class Round implements Comparable<Round> {
     private long id;
 
     private String name;
+    private String ticketsUrl;
 
     @Column(name = "start_date")
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
@@ -95,6 +96,14 @@ public class Round implements Comparable<Round> {
         this.logo = logo;
     }
 
+    public String getTicketsUrl() {
+        return ticketsUrl;
+    }
+
+    public void setTicketsUrl(String ticketsUrl) {
+        this.ticketsUrl = ticketsUrl;
+    }
+
     @Override
     public String toString(){
         return this.name;
@@ -102,6 +111,9 @@ public class Round implements Comparable<Round> {
 
     @Override
     public int compareTo(Round o) {
+        if (id == o.getId()) {
+            return 0;
+        }
         if (startDate == null || o.getStartDate() == null) {
             return 0;
         }

@@ -45,9 +45,12 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
     File fRom;
     File fCiob;
+    File bImg;
     Country c;
     Team t;
-    Sponsor sponsor;
+    Sponsor demon;
+    Sponsor raceTech;
+//    Sponsor demon;
 
     private Environment environment;
     private ConfigSettingRepository configSettingRepository;
@@ -114,25 +117,37 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
     }
 
     private void initDevelopementDatabase(){
-        try {
-            ClassPathResource r = new ClassPathResource("/template/cioban.jpg");
-            fCiob = new File();
-            fCiob.setName(r.getFilename());
-            fCiob.setData(IOUtils.toByteArray(r.getInputStream()));
-            fCiob = fileRepository.save(fCiob);
+        fCiob = saveFile("/img/cioban.jpg");
+        fRom = saveFile("/img/rom.jpg");
+        bImg = saveFile("/img/drift.jpg");
 
-            r = new ClassPathResource("/template/rom.jpg");
-            fRom = new File();
-            fRom.setName(r.getFilename());
-            fRom.setData(IOUtils.toByteArray(r.getInputStream()));
-            fRom = fileRepository.save(fRom);
-
-        } catch (IOException e) {
-            System.err.println(e);
-        }
         initDevUsersAndRoles();
         initOthers();
         initChampionshipAndRounds();
+    }
+
+    private File saveFile(String path) {
+        File f;
+        try {
+            ClassPathResource r = new ClassPathResource(path);
+            f = new File();
+            f.setName(r.getFilename());
+            f.setData(IOUtils.toByteArray(r.getInputStream()));
+            f = fileRepository.save(f);
+            return f;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private Sponsor createSponsor(String name, String description, String url, File logo) {
+        Sponsor s = new Sponsor();
+        s.setName(name);
+        s.setUrl(url);
+        s.setDescription(description);
+        s.setLogo(logo);
+        return sponsorRepository.save(s);
     }
 
     private void initOthers() {
@@ -140,45 +155,41 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         c.setName("Romania");
         c.setFlag(fRom);
         c = countryRepository.save(c);
-
-        sponsor = new Sponsor();
-        sponsor.setName("Sponsor1");
-        sponsor.setEmail("email@default.co");
-        sponsor.setTelephoneNr("0743122132");
-        sponsor.setUrl("www.sponsor.noDomain");
-        sponsor.setLogo(fRom);
-        sponsor = sponsorRepository.save(sponsor);
+        demon = createSponsor("Demon", "Most rad energy drink", "http://www.demonenergy.co.nz/", saveFile("/img/demon.jpg"));
+        raceTech = createSponsor("RaceTech", "Race innovators", "http://racetech.co.nz/shop/index.php?route=common/home", saveFile("/img/racetech.jpg"));
 
         t = new Team();
         t.setName("Team 1");
-        t.setSponsors(new HashSet<>(Arrays.asList(sponsor)));
+        t.setSponsors(new HashSet<>(Arrays.asList(demon)));
         t = teamRepository.save(t);
     }
 
-    private News createNews(String name, String description) {
+    private News createNews(String name, String description, String url, File logo) {
         News news = new News();
         news.setName(name);
         news.setDescription(description);
-        news.setLogo(fCiob);
-        news.setUrl("http://www.google.com");
+        news.setLogo(logo);
+        news.setUrl(url);
         return news;
     }
 
-    private Championship createChampionship(String name, File f) {
+    private Championship createChampionship(String name, File logo, File backgroundImage, Sponsor... sponsors) {
         Championship c = new Championship();
         c.setName(name);
-        c.setTicketsUrl("www.tickets.com");
-        c.setInformation("This is a drifting championship, mate");
-        c.setLogo(f);
-        c.setBackgroundImage(f);
+        c.setTicketsUrl("http://www.d1nz.com");
+        c.setLogo(logo);
+        c.setBackgroundImage(backgroundImage);
         ChampionshipRules rules = new ChampionshipRules();
         rules.setRules("Rules of the championship");
         rules.setVideoUrl("http://www.youtube.com");
         c.setRules(rules);
-        c.addSponsor(sponsor);
-        c.addNews(createNews("DN1Z underway!", "The championship will start in the first of december following an award celebrating our fellow drivers"));
-        c.addNews(createNews("First round postponed", "Due to bad weather conditions in Arad, Romania the round needs to be postponed 1 week"));
-        c.addNews(createNews("Glory to the winners", "Once again, after a shocking performance Florin Cozmuta takes the win!"));
+        c.addNews(createNews("FANGA DAN WINS FIRST MANFEILD DRIFTING TITLE", "A shocking outcome", "http://d1nz.com/d1nz-news/309-fanga-dan-wins-first-manfeild-drifting-title", backgroundImage));
+        c.addNews(createNews("D1 PRO-SPORT: BLAIR GRIBBLE-BOWRING WINS ON DEBUT", "at Manfeild Raceway in Feilding", "http://d1nz.com/d1nz-news/308-d1-pro-sport-blair-gribble-bowring-wins-on-debut", backgroundImage));
+        c.addNews(createNews("WHITTAKER TOPS QUALIFYING AT MANFEILD - DEMON D1NZ ROUND 1 2015", "sponsored by redbull", "http://d1nz.com/d1nz-news/307-whittaker-tops-qualifying-at-manfeild-r1-2015", backgroundImage));
+        if (sponsors != null)
+            for (Sponsor sponsor : sponsors) {
+                c.addSponsor(sponsor);
+            }
         return championshipService.save(c);
     }
 
@@ -190,11 +201,12 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         roundService.addRoundSchedule(roundId, s);
     }
 
-    private Round createRound(String name, Championship c, File f, int year, int month) {
+    private Round createRound(String name, String ticketsUrl, Championship c, File logo, int year, int month) {
         Round r = new Round();
         r.setName(name);
         r.setChampionship(c);
-        r.setLogo(f);
+        r.setLogo(logo);
+        r.setTicketsUrl(ticketsUrl);
         r = roundRepository.save(r);
         createSchedule(r.getId(), "Registration", new DateTime(year, month, 1, 10, 0), new DateTime(year, month, 1, 10, 0));
         createSchedule(r.getId(), "Qualifications", new DateTime(year, month, 2, 10, 0), new DateTime(year, month, 2, 20, 0));
@@ -202,12 +214,12 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         return r;
     }
 
-    private Person createPerson(String name, String description, PersonType personType) {
+    private Person createPerson(String name, String description, File picture, PersonType personType) {
         Person person = new Person();
         person.setFirstName(name.split(" ")[0]);
         person.setLastName(name.split(" ")[1]);
         person.setCountry(c);
-        person.setProfilePicture(fCiob);
+        person.setProfilePicture(picture != null ? picture : fCiob);
         person.setPersonType(personType);
         person.setYearsExperience(4);
         person.setDescription(description);
@@ -215,20 +227,20 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         return personRepository.save(person);
     }
 
-    private Person createDriver(String name) {
+    private Person createDriver(String name, File picture) {
         DriverDetails d = new DriverDetails();
         d.setModel("GT86");
         d.setMake("Toyota");
-        d.setTires("tires");
-        d.setWheels("wheels");
-        d.setOther("oder");
-        d.setEngine("engige");
+        d.setTires("Continental");
+        d.setWheels("Some brand");
+        d.setOther("This guy is super good");
+        d.setEngine("4.2 Petrol Bi-Turbo");
         d.setSteeringAngle("2");
         d.setSuspensionMods("43");
         d.setHorsePower(1200);
         d.setTeam(t);
         d = driverDetailsRepository.save(d);
-        Person p = createPerson(name, "conducator auto", PersonType.Driver);
+        Person p = createPerson(name, "conducator auto", picture, PersonType.Driver);
         p.setDriverDetails(d);
         return personRepository.save(p);
     }
@@ -266,22 +278,20 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
     private void initChampionshipAndRounds(){
         File f = fileRepository.findOne((long) 1);
-        Championship c1 = createChampionship("DN1Z", f);
-        Championship c2 = createChampionship("DN2Z", f);
+        Championship c1 = createChampionship("DN1Z", saveFile("/img/championship_test.png"), bImg, demon, raceTech);
+        Championship c2 = createChampionship("Romania Drift Allstars", saveFile("/img/allstars.jpg"), bImg);
 
-        Round r1 = createRound("Round 1 - C1", c1, f, 2015, 10);
-        Round r2 = createRound("Round 2 - C1", c1, f, 2015, 11);
-        Round r3 = createRound("Round 1 - C2", c1, f, 2016, 1);
-        Round r4 = createRound("Round 1 - C2", c2, f, 2015, 12);
+        Round r1 = createRound("Manfield", "https://www.iticket.co.nz/events/2015/nov/the-demon-energy-d1nz-national-drifting-championship-round-1", c1, saveFile("/img/manfield.jpg"), 2015, 11);
+        Round r2 = createRound("Baypark", "https://www.iticket.co.nz/events/2016/jan/the-demon-energy-d1nz-national-drifting-championship-round-2", c1, saveFile("/img/baypark.jpg"), 2016, 1);
+        Round r4 = createRound("Round 1 - C2", "www.google.com", c2, f, 2016, 12);
 
-        Person driver1 = createDriver("Vlad Iancu");
-        Person driver2 = createDriver("Paul Bochis");
-        Person judge1 = createPerson("Diana V", "judeca orice vede", PersonType.Judge);
-        Person judge2 = createPerson("Andra B", "si ea judeca tot ce vede", PersonType.Judge);
-        Person judge3 = createPerson("Ioana f", "asta ii cea mai rea", PersonType.Judge);
+        Person driver1 = createDriver("Florin Cozmuta", saveFile("/img/kimi.jpg"));
+        Person judge1 = createPerson("Diana V", "Drifitng judge", saveFile("/img/j1.jpg"), PersonType.Judge);
+        Person judge2 = createPerson("Andra B", "Drifting judge", saveFile("/img/j2.jpg"), PersonType.Judge);
+        Person judge3 = createPerson("Ioana f", "Drifting judge", saveFile("/img/j3.jpg"), PersonType.Judge);
 
         ChampionshipDriverParticipation driverParticipation1 = createDriverParticipation(driver1, c1);
-        ChampionshipDriverParticipation driverParticipation2 = createDriverParticipation(driver2, c1);
+//        ChampionshipDriverParticipation driverParticipation2 = createDriverParticipation(driver2, c1);
 
         ChampionshipJudgeType type1 = createJudgeType("Angle judge", "judges angle", c1);
         ChampionshipJudgeType type2 = createJudgeType("Line judge", "judges line", c1);
@@ -292,7 +302,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         createJudgeParticipation(judge3, c1, type3);
 
         createResult(driverParticipation1, 1, 200);
-        createResult(driverParticipation2, 2, 150);
+//        createResult(driverParticipation2, 2, 150);
     }
 
     private void initDevUsersAndRoles(){

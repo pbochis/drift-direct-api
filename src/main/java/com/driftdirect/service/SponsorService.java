@@ -26,10 +26,10 @@ public class SponsorService {
     }
 
     public void createFromDto(SponsorCreateDto dto){
+        //TODO: add file here
         Sponsor sponsor = new Sponsor();
         sponsor.setName(dto.getName());
-        sponsor.setEmail(dto.getEmail());
-        sponsor.setTelephoneNr(dto.getTelephoneNr());
+        sponsor.setDescription(dto.getDescription());
         sponsor.setUrl(dto.getUrl());
         sponsorRepository.save(sponsor);
     }
@@ -37,8 +37,7 @@ public class SponsorService {
     public void update(SponsorUpdateDto dto){
         Sponsor sponsor = sponsorRepository.findOne(dto.getId());
         sponsor.setName(dto.getName());
-        sponsor.setTelephoneNr(dto.getTelephoneNr());
-        sponsor.setEmail(dto.getEmail());
+        sponsor.setDescription(dto.getDescription());
         sponsor.setUrl(dto.getUrl());
         sponsorRepository.save(sponsor);
     }

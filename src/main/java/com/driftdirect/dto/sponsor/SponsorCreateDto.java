@@ -11,8 +11,7 @@ public class SponsorCreateDto {
     @NotNull
     @Length(min=4, max = 50)
     private String name;
-    private String email;
-    private String telephoneNr;
+    private String description;
     private String url;
 
     public String getUrl() {
@@ -31,19 +30,11 @@ public class SponsorCreateDto {
         this.name = name;
     }
 
-    public String getEmail() {
-        return email;
+    public String getDescription() {
+        return description;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getTelephoneNr() {
-        return telephoneNr;
-    }
-
-    public void setTelephoneNr(String telephoneNr) {
-        this.telephoneNr = telephoneNr;
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

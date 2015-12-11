@@ -21,6 +21,7 @@ public class RoundMapper {
         dto.setName(round.getName());
         dto.setStartDate(round.getStartDate());
         dto.setEndDate(round.getEndDate());
+        dto.setTicketsUrl(round.getTicketsUrl());
         dto.setSchedule(mapSchedule(round.getScheduele()));
         return dto;
     }

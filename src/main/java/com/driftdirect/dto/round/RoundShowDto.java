@@ -12,7 +12,7 @@ public class RoundShowDto {
     private String name;
     private DateTime startDate;
     private DateTime endDate;
-
+    private String ticketsUrl;
     private List<RoundScheduleEntryShowDto> schedule;
 
     public List<RoundScheduleEntryShowDto> getSchedule() {
@@ -53,5 +53,13 @@ public class RoundShowDto {
 
     public void setEndDate(DateTime endDate) {
         this.endDate = endDate;
+    }
+
+    public String getTicketsUrl() {
+        return ticketsUrl;
+    }
+
+    public void setTicketsUrl(String ticketsUrl) {
+        this.ticketsUrl = ticketsUrl;
     }
 }

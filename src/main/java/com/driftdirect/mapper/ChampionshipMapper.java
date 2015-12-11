@@ -111,9 +111,9 @@ public class ChampionshipMapper {
     private static RoundShortShowDto getCurrentOrNextRound(Championship c) {
         for (Round round : c.getRounds()) {
             if (round.isOngoing())
-                return RoundMapper.mapShort(round, RoundStatus.ONGOING, c.getRounds().headSet(round).size());
+                return RoundMapper.mapShort(round, RoundStatus.ONGOING, c.getRounds().headSet(round).size() + 1);
             if (round.isFuture())
-                return RoundMapper.mapShort(round, RoundStatus.NEXT, c.getRounds().headSet(round).size());
+                return RoundMapper.mapShort(round, RoundStatus.NEXT, c.getRounds().headSet(round).size() + 1);
         }
         return null;
     }
