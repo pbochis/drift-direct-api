@@ -13,7 +13,8 @@ public class PersonFullDto {
     private String telephone;
     private String website;
     private CountryShowDto country;
-    private int yearsExperience;
+    private DateTime careerStartDate;
+    private String portfolio;
     private String description;
     private Long profilePicture;
     private DateTime birthDate;
@@ -59,12 +60,20 @@ public class PersonFullDto {
         this.country = country;
     }
 
-    public int getYearsExperience() {
-        return yearsExperience;
+    public DateTime getCareerStartDate() {
+        return careerStartDate;
     }
 
-    public void setYearsExperience(int yearsExperience) {
-        this.yearsExperience = yearsExperience;
+    public void setCareerStartDate(DateTime careerStartDate) {
+        this.careerStartDate = careerStartDate;
+    }
+
+    public String getPortfolio() {
+        return portfolio;
+    }
+
+    public void setPortfolio(String portfolio) {
+        this.portfolio = portfolio;
     }
 
     public String getDescription() {

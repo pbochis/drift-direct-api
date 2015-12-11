@@ -221,7 +221,8 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         person.setCountry(c);
         person.setProfilePicture(picture != null ? picture : fCiob);
         person.setPersonType(personType);
-        person.setYearsExperience(4);
+        person.setCareerStartDate(new DateTime(2010, 1,1, 0, 0));
+        person.setPortfolio("Winner of the first d1nz championship");
         person.setDescription(description);
         person.setBirthDate(new DateTime(1993, 12, 3, 0, 0));
         return personRepository.save(person);
@@ -240,7 +241,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         d.setHorsePower(1200);
         d.setTeam(t);
         d = driverDetailsRepository.save(d);
-        Person p = createPerson(name, "conducator auto", picture, PersonType.Driver);
+        Person p = createPerson(name, "A newcommer to the scene, Florin has managed to climb to the top of the charts in a record time. It's a pleasure watching him slide on the road", picture, PersonType.Driver);
         p.setDriverDetails(d);
         return personRepository.save(p);
     }

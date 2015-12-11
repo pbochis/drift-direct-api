@@ -1,5 +1,7 @@
 package com.driftdirect.dto.person;
 
+import org.joda.time.DateTime;
+
 /**
  * Created by Paul on 11/21/2015.
  */
@@ -10,7 +12,8 @@ public class PersonCreateDto {
     private Long profilePicture;
     private Long country;
 
-    private int yearsExperience;
+    private DateTime careerStartDate;
+    private String portfolio;
     private String description;
 
     private String personType;
@@ -57,14 +60,6 @@ public class PersonCreateDto {
         this.country = country;
     }
 
-    public int getYearsExperience() {
-        return yearsExperience;
-    }
-
-    public void setYearsExperience(int yearsExperience) {
-        this.yearsExperience = yearsExperience;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -87,5 +82,21 @@ public class PersonCreateDto {
 
     public void setProfilePicture(Long profilePicture) {
         this.profilePicture = profilePicture;
+    }
+
+    public DateTime getCareerStartDate() {
+        return careerStartDate;
+    }
+
+    public void setCareerStartDate(DateTime careerStartDate) {
+        this.careerStartDate = careerStartDate;
+    }
+
+    public String getPortfolio() {
+        return portfolio;
+    }
+
+    public void setPortfolio(String portfolio) {
+        this.portfolio = portfolio;
     }
 }

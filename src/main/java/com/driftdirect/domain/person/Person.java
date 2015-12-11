@@ -29,8 +29,11 @@ public class Person {
     @ManyToOne
     private Country country;
 
-    private int yearsExperience;
+    @Column(name = "career_start_date")
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+    private DateTime careerStartDate;
     private String description;
+    private String portfolio;
 
     @Enumerated(EnumType.STRING)
     private PersonType personType;
@@ -90,12 +93,20 @@ public class Person {
         this.country = country;
     }
 
-    public int getYearsExperience() {
-        return yearsExperience;
+    public DateTime getCareerStartDate() {
+        return careerStartDate;
     }
 
-    public void setYearsExperience(int yearsExperience) {
-        this.yearsExperience = yearsExperience;
+    public void setCareerStartDate(DateTime careerStartDate) {
+        this.careerStartDate = careerStartDate;
+    }
+
+    public String getPortfolio() {
+        return portfolio;
+    }
+
+    public void setPortfolio(String portfolio) {
+        this.portfolio = portfolio;
     }
 
     public String getDescription() {

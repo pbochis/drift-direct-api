@@ -27,7 +27,8 @@ public class PersonMapper {
         dto.setProfilePicture(p.getProfilePicture().getId());
         dto.setTelephone(p.getTelephone());
         dto.setCountry(CountryMapper.map(p.getCountry()));
-        dto.setYearsExperience(p.getYearsExperience());
+        dto.setCareerStartDate(p.getCareerStartDate());
+        dto.setPortfolio(p.getPortfolio());
         dto.setDescription(p.getDescription());
         dto.setWebsite(p.getWebsite());
         dto.setBirthDate(p.getBirthDate());

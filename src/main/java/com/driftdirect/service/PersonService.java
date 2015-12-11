@@ -42,8 +42,9 @@ public class PersonService {
         p.setLastName(dto.getLastName());
         p.setCountry(countryRepository.findOne(dto.getCountry()));
         p.setTelephone(dto.getTelephone());
-        p.setYearsExperience(dto.getYearsExperience());
+        p.setCareerStartDate(dto.getCareerStartDate());
         p.setDescription(dto.getDescription());
+        p.setPortfolio(dto.getPortfolio());
         p.setPersonType(PersonType.valueOf(dto.getPersonType()));
         p.setProfilePicture(fileRepository.findOne(dto.getProfilePicture()));
         if (p.getPersonType() == PersonType.Driver){
@@ -73,7 +74,8 @@ public class PersonService {
         person.setLastName(dto.getLastName());
         person.setTelephone(dto.getTelephone());
         person.setCountry(countryRepository.findOne(dto.getCountry()));
-        person.setYearsExperience(dto.getYearsExperience());
+        person.setCareerStartDate(dto.getCareerStartDate());
+        person.setPortfolio(dto.getPortfolio());
         person.setDescription(dto.getDescription());
         person.setPersonType(PersonType.valueOf(dto.getPersonType()));
         repository.save(person);
