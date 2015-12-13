@@ -12,6 +12,8 @@ public class TrackCreateDto {
     private String description;
 
     @NotNull
+    private String judgingCriteria;
+    @NotNull
     private Long layout;
 
     private String videoUrl;
@@ -38,5 +40,13 @@ public class TrackCreateDto {
 
     public void setVideoUrl(String videoUrl) {
         this.videoUrl = videoUrl;
+    }
+
+    public String getJudgingCriteria() {
+        return judgingCriteria;
+    }
+
+    public void setJudgingCriteria(String judgingCriteria) {
+        this.judgingCriteria = judgingCriteria;
     }
 }

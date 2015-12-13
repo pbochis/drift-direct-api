@@ -30,6 +30,7 @@ public class RoundMapper {
             track.setDescription(round.getTrack().getDescription());
             track.setLayout(round.getTrack().getLayout().getId());
             track.setVideoUrl(round.getTrack().getVideoUrl());
+            track.setJudgingCriteria(round.getTrack().getJudgingCriteria());
             dto.setTrack(track);
         }
         return dto;

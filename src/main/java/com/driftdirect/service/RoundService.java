@@ -11,9 +11,9 @@ import com.driftdirect.dto.round.RoundUpdateDto;
 import com.driftdirect.dto.round.track.TrackCreateDto;
 import com.driftdirect.mapper.RoundMapper;
 import com.driftdirect.repository.FileRepository;
+import com.driftdirect.repository.championship.ChampionshipRepository;
 import com.driftdirect.repository.round.RoundRepository;
 import com.driftdirect.repository.round.RoundScheduleRepository;
-import com.driftdirect.repository.championship.ChampionshipRepository;
 import com.driftdirect.repository.round.track.TrackLayoutRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -70,6 +70,7 @@ public class RoundService {
         track.setDescription(trackCreateDto.getDescription());
         track.setLayout(fileRepository.findOne(trackCreateDto.getLayout()));
         track.setVideoUrl(trackCreateDto.getVideoUrl());
+        track.setJudgingCriteria(trackCreateDto.getJudgingCriteria());
         track = trackLayoutRepository.save(track);
         round.setTrack(track);
         roundRepository.save(round);

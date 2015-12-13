@@ -16,6 +16,7 @@ public class Track {
 
     private String description;
     private String videoUrl;
+    private String judgingCriteria;
 
     @OneToOne
     private File layout;
@@ -50,5 +51,13 @@ public class Track {
 
     public void setVideoUrl(String videoUrl) {
         this.videoUrl = videoUrl;
+    }
+
+    public String getJudgingCriteria() {
+        return judgingCriteria;
+    }
+
+    public void setJudgingCriteria(String judgingCriteria) {
+        this.judgingCriteria = judgingCriteria;
     }
 }

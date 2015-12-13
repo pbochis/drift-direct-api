@@ -10,14 +10,17 @@ import com.driftdirect.domain.news.News;
 import com.driftdirect.domain.person.Person;
 import com.driftdirect.domain.person.PersonType;
 import com.driftdirect.domain.round.Round;
+import com.driftdirect.domain.round.track.Track;
 import com.driftdirect.domain.sponsor.Sponsor;
 import com.driftdirect.domain.user.Authorities;
 import com.driftdirect.domain.user.Role;
 import com.driftdirect.dto.round.RoundScheduleCreateDto;
+import com.driftdirect.dto.round.track.TrackCreateDto;
 import com.driftdirect.dto.user.UserCreateDTO;
 import com.driftdirect.repository.*;
 import com.driftdirect.repository.championship.*;
 import com.driftdirect.repository.round.RoundRepository;
+import com.driftdirect.repository.round.track.TrackLayoutRepository;
 import com.driftdirect.service.RoundService;
 import com.driftdirect.service.UserService;
 import org.apache.commons.io.IOUtils;
@@ -51,7 +54,6 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
     Team t;
     Sponsor demon;
     Sponsor raceTech;
-//    Sponsor demon;
 
     private Environment environment;
     private ConfigSettingRepository configSettingRepository;
@@ -77,6 +79,9 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
     @Autowired
     private NewsRepository newsRepository;
+
+    @Autowired
+    private TrackLayoutRepository trackLayoutRepository;
 
     @Autowired
     public Bootstrap(
@@ -202,6 +207,15 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         roundService.addRoundSchedule(roundId, s);
     }
 
+    private void addTrack(Round round, File layout, String description, String videoUrl, String judgingCriteria) {
+        TrackCreateDto track = new TrackCreateDto();
+        track.setLayout(layout.getId());
+        track.setDescription(description);
+        track.setVideoUrl(videoUrl);
+        track.setJudgingCriteria(judgingCriteria);
+        roundService.addTrack(round.getId(), track);
+    }
+
     private Round createRound(String name, String ticketsUrl, Championship c, File logo, int year, int month) {
         Round r = new Round();
         r.setName(name);
@@ -284,7 +298,9 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         Championship c2 = createChampionship("Romania Drift Allstars", saveFile("/img/allstars.jpg"), bImg);
 
         Round r1 = createRound("Manfield", "https://www.iticket.co.nz/events/2015/nov/the-demon-energy-d1nz-national-drifting-championship-round-1", c1, saveFile("/img/manfield.jpg"), 2015, 11);
+        addTrack(r1, saveFile("/img/track.png"), "This tack is deadly. People will fall of cliffs", "http://www.youtube.com", "Pass = not dead");
         Round r2 = createRound("Baypark", "https://www.iticket.co.nz/events/2016/jan/the-demon-energy-d1nz-national-drifting-championship-round-2", c1, saveFile("/img/baypark.jpg"), 2016, 1);
+        addTrack(r2, saveFile("/img/track.png"), "This tack is deadly. People will fall of cliffs", "http://www.youtube.com", "Pass = not dead");
         Round r4 = createRound("Round 1 - C2", "www.google.com", c2, f, 2016, 12);
 
         Person driver1 = createDriver("Florin Cozmuta", saveFile("/img/kimi.jpg"));
