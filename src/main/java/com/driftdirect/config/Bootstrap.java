@@ -17,6 +17,7 @@ import com.driftdirect.dto.round.RoundScheduleCreateDto;
 import com.driftdirect.dto.user.UserCreateDTO;
 import com.driftdirect.repository.*;
 import com.driftdirect.repository.championship.*;
+import com.driftdirect.repository.round.RoundRepository;
 import com.driftdirect.service.RoundService;
 import com.driftdirect.service.UserService;
 import org.apache.commons.io.IOUtils;

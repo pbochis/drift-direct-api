@@ -16,6 +16,7 @@ public class RestUrls {
     public static final String ROUND = "/round";
     public static final String ROUND_ID = "/round/{id}";
     public static final String ROUND_ID_SHCEDULE = "/round/{id}/schedule";
+    public static final String ROUND_ID_TRACK = "/round/{id}/track";
 
     public static final String USER = "/user";
 

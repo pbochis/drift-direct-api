@@ -1,4 +1,4 @@
-package com.driftdirect.repository;
+package com.driftdirect.repository.round;
 
 import com.driftdirect.domain.round.Round;
 import org.springframework.data.jpa.repository.JpaRepository;

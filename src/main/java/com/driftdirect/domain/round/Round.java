@@ -2,6 +2,7 @@ package com.driftdirect.domain.round;
 
 import com.driftdirect.domain.championship.Championship;
 import com.driftdirect.domain.file.File;
+import com.driftdirect.domain.round.track.Track;
 import org.hibernate.annotations.SortNatural;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
@@ -29,8 +30,11 @@ public class Round implements Comparable<Round> {
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     private DateTime endDate;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     private File logo;
+
+    @OneToOne(fetch = FetchType.EAGER)
+    private Track track;
 
     @ManyToOne
     @JoinColumn(name = "championship_id", nullable = false)
@@ -102,6 +106,14 @@ public class Round implements Comparable<Round> {
 
     public void setTicketsUrl(String ticketsUrl) {
         this.ticketsUrl = ticketsUrl;
+    }
+
+    public Track getTrack() {
+        return track;
+    }
+
+    public void setTrack(Track track) {
+        this.track = track;
     }
 
     @Override

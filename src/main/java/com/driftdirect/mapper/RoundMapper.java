@@ -6,6 +6,7 @@ import com.driftdirect.dto.round.RoundScheduleEntryShowDto;
 import com.driftdirect.dto.round.RoundShortShowDto;
 import com.driftdirect.dto.round.RoundShowDto;
 import com.driftdirect.dto.round.RoundStatus;
+import com.driftdirect.dto.round.track.TrackDto;
 
 import java.util.List;
 import java.util.Set;
@@ -23,6 +24,14 @@ public class RoundMapper {
         dto.setEndDate(round.getEndDate());
         dto.setTicketsUrl(round.getTicketsUrl());
         dto.setSchedule(mapSchedule(round.getScheduele()));
+        if (round.getTrack() != null){
+            TrackDto track = new TrackDto();
+            track.setId(round.getTrack().getId());
+            track.setDescription(round.getTrack().getDescription());
+            track.setLayout(round.getTrack().getLayout().getId());
+            track.setVideoUrl(round.getTrack().getVideoUrl());
+            dto.setTrack(track);
+        }
         return dto;
     }
 

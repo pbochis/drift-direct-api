@@ -1,5 +1,6 @@
 package com.driftdirect.dto.round;
 
+import com.driftdirect.dto.round.track.TrackDto;
 import org.joda.time.DateTime;
 
 import java.util.List;
@@ -13,6 +14,7 @@ public class RoundShowDto {
     private DateTime startDate;
     private DateTime endDate;
     private String ticketsUrl;
+    private TrackDto track;
     private List<RoundScheduleEntryShowDto> schedule;
 
     public List<RoundScheduleEntryShowDto> getSchedule() {
@@ -61,5 +63,13 @@ public class RoundShowDto {
 
     public void setTicketsUrl(String ticketsUrl) {
         this.ticketsUrl = ticketsUrl;
+    }
+
+    public TrackDto getTrack() {
+        return track;
+    }
+
+    public void setTrack(TrackDto track) {
+        this.track = track;
     }
 }

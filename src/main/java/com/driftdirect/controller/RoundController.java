@@ -1,12 +1,11 @@
 package com.driftdirect.controller;
 
-import com.driftdirect.domain.round.Round;
 import com.driftdirect.domain.user.Authorities;
 import com.driftdirect.dto.round.RoundCreateDto;
 import com.driftdirect.dto.round.RoundShowDto;
 import com.driftdirect.dto.round.RoundScheduleCreateDto;
 import com.driftdirect.dto.round.RoundUpdateDto;
-import com.driftdirect.service.ChampionshipService;
+import com.driftdirect.dto.round.track.TrackCreateDto;
 import com.driftdirect.service.RoundService;
 import com.driftdirect.util.RestUrls;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,8 +57,13 @@ public class RoundController {
 
     @RequestMapping(path = RestUrls.ROUND_ID_SHCEDULE, method = RequestMethod.POST)
     public ResponseEntity addSchedule(@PathVariable Long id, @Valid @RequestBody RoundScheduleCreateDto rs){
-        // [2000,5,15,0,0,0,0] [year, month, day, hour, minute, second, nanosecond]
         roundService.addRoundSchedule(id, rs);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @RequestMapping(path = RestUrls.ROUND_ID_TRACK, method = RequestMethod.POST)
+    public ResponseEntity addTrackLayoiut(@PathVariable Long id, @Valid @RequestBody TrackCreateDto dto){
+        roundService.addTrack(id, dto);
         return new ResponseEntity(HttpStatus.OK);
     }
 }
