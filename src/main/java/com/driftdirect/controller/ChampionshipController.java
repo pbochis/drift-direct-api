@@ -3,10 +3,11 @@ package com.driftdirect.controller;
 import com.driftdirect.domain.user.Authorities;
 import com.driftdirect.domain.user.User;
 import com.driftdirect.dto.championship.*;
+import com.driftdirect.dto.championship.judge.JudgeParticipationDto;
 import com.driftdirect.dto.news.NewsCreateDto;
 import com.driftdirect.dto.person.PersonShortShowDto;
 import com.driftdirect.exception.ObjectNotFoundException;
-import com.driftdirect.service.ChampionshipService;
+import com.driftdirect.service.championship.ChampionshipService;
 import com.driftdirect.util.RestUrls;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -89,7 +90,12 @@ public class ChampionshipController {
     }
 
     @RequestMapping(path = RestUrls.CHAMPIONSHIP_ID_JUDGES, method = RequestMethod.GET)
-    public ResponseEntity<List<ChampionshipJudgeParticipationDto>> getJudges(@PathVariable Long id) {
+    public ResponseEntity<List<JudgeParticipationDto>> getJudges(@PathVariable Long id) {
         return new ResponseEntity<>(championshipService.findJudges(id), HttpStatus.OK);
+    }
+
+    @RequestMapping(path = RestUrls.CHAMPIONSHIP_ID_PUBLISH, method = RequestMethod.POST)
+    public ResponseEntity<Boolean> publish(@PathVariable Long id) {
+        return new ResponseEntity<>(championshipService.publish(id), HttpStatus.OK);
     }
 }

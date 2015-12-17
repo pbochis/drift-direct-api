@@ -1,5 +1,6 @@
 package com.driftdirect.domain.championship;
 
+import com.driftdirect.domain.championship.judge.JudgeParticipation;
 import com.driftdirect.domain.file.File;
 import com.driftdirect.domain.news.News;
 import com.driftdirect.domain.round.Round;
@@ -7,10 +8,7 @@ import com.driftdirect.domain.sponsor.Sponsor;
 import org.hibernate.annotations.SortNatural;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.SortedSet;
+import java.util.*;
 
 /**
  * Created by Paul on 11/6/2015.
@@ -43,10 +41,7 @@ public class Championship{
     private List<ChampionshipDriverParticipation> drivers;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "championship", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ChampionshipJudgeParticipation> judges;
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "championship", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ChampionshipJudgeType> judgeTypes;
+    private List<JudgeParticipation> judges;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -131,20 +126,12 @@ public class Championship{
         this.drivers = drivers;
     }
 
-    public List<ChampionshipJudgeParticipation> getJudges() {
+    public List<JudgeParticipation> getJudges() {
         return judges;
     }
 
-    public void setJudges(List<ChampionshipJudgeParticipation> judges) {
+    public void setJudges(List<JudgeParticipation> judges) {
         this.judges = judges;
-    }
-
-    public List<ChampionshipJudgeType> getJudgeTypes() {
-        return judgeTypes;
-    }
-
-    public void setJudgeTypes(List<ChampionshipJudgeType> judgeTypes) {
-        this.judgeTypes = judgeTypes;
     }
 
     public ChampionshipRules getRules() {
@@ -183,6 +170,13 @@ public class Championship{
             this.news = new HashSet<>();
         }
         this.news.add(news);
+    }
+
+    public void addJudgeParticipation(JudgeParticipation judgeParticipation) {
+        if (this.judges == null) {
+            this.judges = new ArrayList<>();
+        }
+        this.judges.add(judgeParticipation);
     }
 
     @Override

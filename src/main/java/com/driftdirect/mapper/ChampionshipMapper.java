@@ -2,9 +2,10 @@ package com.driftdirect.mapper;
 
 import com.driftdirect.domain.championship.Championship;
 import com.driftdirect.domain.championship.ChampionshipDriverParticipation;
-import com.driftdirect.domain.championship.ChampionshipJudgeParticipation;
+import com.driftdirect.domain.championship.judge.JudgeParticipation;
 import com.driftdirect.domain.round.Round;
 import com.driftdirect.dto.championship.*;
+import com.driftdirect.dto.championship.judge.JudgeParticipationDto;
 import com.driftdirect.dto.round.RoundShortShowDto;
 import com.driftdirect.dto.round.RoundStatus;
 
@@ -91,11 +92,11 @@ public class ChampionshipMapper {
         return dto;
     }
 
-    public static ChampionshipJudgeParticipationDto mapJudgeParticipation(ChampionshipJudgeParticipation participation) {
-        ChampionshipJudgeParticipationDto dto = new ChampionshipJudgeParticipationDto();
+    public static JudgeParticipationDto mapJudgeParticipation(JudgeParticipation participation) {
+        JudgeParticipationDto dto = new JudgeParticipationDto();
         dto.setJudge(PersonMapper.mapShort(participation.getJudge()));
         dto.setId(participation.getId());
-        dto.setJudgeType(participation.getJudgeType().getName());
+        dto.setJudgeType(participation.getTitle());
         return dto;
     }
 

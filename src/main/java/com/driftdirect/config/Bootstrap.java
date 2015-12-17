@@ -2,7 +2,12 @@ package com.driftdirect.config;
 
 import com.driftdirect.domain.ConfigSetting;
 import com.driftdirect.domain.Country;
-import com.driftdirect.domain.championship.*;
+import com.driftdirect.domain.championship.Championship;
+import com.driftdirect.domain.championship.ChampionshipDriverParticipation;
+import com.driftdirect.domain.championship.ChampionshipDriverParticipationResults;
+import com.driftdirect.domain.championship.ChampionshipRules;
+import com.driftdirect.domain.championship.judge.JudgeParticipation;
+import com.driftdirect.domain.championship.judge.JudgeType;
 import com.driftdirect.domain.driver.DriverDetails;
 import com.driftdirect.domain.driver.Team;
 import com.driftdirect.domain.file.File;
@@ -10,7 +15,6 @@ import com.driftdirect.domain.news.News;
 import com.driftdirect.domain.person.Person;
 import com.driftdirect.domain.person.PersonType;
 import com.driftdirect.domain.round.Round;
-import com.driftdirect.domain.round.track.Track;
 import com.driftdirect.domain.sponsor.Sponsor;
 import com.driftdirect.domain.user.Authorities;
 import com.driftdirect.domain.user.Role;
@@ -18,7 +22,10 @@ import com.driftdirect.dto.round.RoundScheduleCreateDto;
 import com.driftdirect.dto.round.track.TrackCreateDto;
 import com.driftdirect.dto.user.UserCreateDTO;
 import com.driftdirect.repository.*;
-import com.driftdirect.repository.championship.*;
+import com.driftdirect.repository.championship.ChampionshipDriverParticipationRepository;
+import com.driftdirect.repository.championship.ChampionshipDriverParticipationResultsRepository;
+import com.driftdirect.repository.championship.ChampionshipRepository;
+import com.driftdirect.repository.championship.judge.JudgeParticipationRepository;
 import com.driftdirect.repository.round.RoundRepository;
 import com.driftdirect.repository.round.track.TrackLayoutRepository;
 import com.driftdirect.service.RoundService;
@@ -64,8 +71,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
     private FileRepository fileRepository;
     private PersonRepository personRepository;
     private ChampionshipDriverParticipationRepository driverParticipationRepository;
-    private ChampionshipJudgeParticipationRepository judgeParticipationRepository;
-    private ChampionshipJudgeTypeRepository judgeTypeRepository;
+    private JudgeParticipationRepository judgeParticipationRepository;
     private ChampionshipDriverParticipationResultsRepository resultsRepository;
     private RoundRepository roundRepository;
     @Autowired
@@ -85,13 +91,12 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
     @Autowired
     public Bootstrap(
-            ConfigSettingRepository configSettingRepository,RoleRepository roleRepository,
+            ConfigSettingRepository configSettingRepository, RoleRepository roleRepository,
             UserService userService, Environment environment, ChampionshipRepository championshipService,
             RoundService roundService, FileRepository fileRepository, PersonRepository personRepository,
             ChampionshipDriverParticipationRepository driverParticipationRepository,
-            ChampionshipJudgeParticipationRepository judgeParticipationRepository,
+            JudgeParticipationRepository judgeParticipationRepository,
             ChampionshipDriverParticipationResultsRepository resultsRepository,
-            ChampionshipJudgeTypeRepository judgeTypeRepository,
             RoundRepository roundRepository) {
         this.configSettingRepository = configSettingRepository;
         this.roleRepository = roleRepository;
@@ -105,7 +110,6 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         this.judgeParticipationRepository = judgeParticipationRepository;
         this.roundRepository = roundRepository;
         this.resultsRepository = resultsRepository;
-        this.judgeTypeRepository = judgeTypeRepository;
     }
 
     @Override
@@ -268,19 +272,12 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         return driverParticipationRepository.save(participation);
     }
 
-    private ChampionshipJudgeType createJudgeType(String name, String description, Championship championship) {
-        ChampionshipJudgeType jdp = new ChampionshipJudgeType();
-        jdp.setName(name);
-        jdp.setDescription(description);
-        jdp.setChampionship(championship);
-        return judgeTypeRepository.save(jdp);
-    }
-
-    private ChampionshipJudgeParticipation createJudgeParticipation(Person person, Championship championship, ChampionshipJudgeType type) {
-        ChampionshipJudgeParticipation participation = new ChampionshipJudgeParticipation();
+    private JudgeParticipation createJudgeParticipation(Person person, Championship championship, JudgeType type) {
+        JudgeParticipation participation = new JudgeParticipation();
         participation.setChampionship(championship);
         participation.setJudge(person);
         participation.setJudgeType(type);
+        //TODO Add points. Please use the service.
         return judgeParticipationRepository.save(participation);
     }
 
@@ -311,13 +308,9 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         ChampionshipDriverParticipation driverParticipation1 = createDriverParticipation(driver1, c1);
 //        ChampionshipDriverParticipation driverParticipation2 = createDriverParticipation(driver2, c1);
 
-        ChampionshipJudgeType type1 = createJudgeType("Angle judge", "judges angle", c1);
-        ChampionshipJudgeType type2 = createJudgeType("Line judge", "judges line", c1);
-        ChampionshipJudgeType type3 = createJudgeType("Speed judge", "judges speed", c1);
-
-        createJudgeParticipation(judge1, c1, type1);
-        createJudgeParticipation(judge2, c1, type2);
-        createJudgeParticipation(judge3, c1, type3);
+        createJudgeParticipation(judge1, c1, JudgeType.LINE);
+        createJudgeParticipation(judge2, c1, JudgeType.ANGLE);
+        createJudgeParticipation(judge3, c1, JudgeType.STYLE);
 
         createResult(driverParticipation1, 1, 200);
 //        createResult(driverParticipation2, 2, 150);

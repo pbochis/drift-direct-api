@@ -1,11 +1,11 @@
-package com.driftdirect.dto.championship;
+package com.driftdirect.dto.championship.judge;
 
 import com.driftdirect.dto.person.PersonShortShowDto;
 
 /**
  * Created by Paul on 12/1/2015.
  */
-public class ChampionshipJudgeParticipationDto {
+public class JudgeParticipationDto {
     private Long id;
     private PersonShortShowDto judge;
     private String judgeType;

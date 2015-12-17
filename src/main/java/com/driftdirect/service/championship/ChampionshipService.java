@@ -1,8 +1,9 @@
-package com.driftdirect.service;
+package com.driftdirect.service.championship;
 
 import com.driftdirect.domain.championship.Championship;
 import com.driftdirect.domain.news.News;
 import com.driftdirect.dto.championship.*;
+import com.driftdirect.dto.championship.judge.JudgeParticipationDto;
 import com.driftdirect.dto.news.NewsCreateDto;
 import com.driftdirect.dto.person.PersonShortShowDto;
 import com.driftdirect.exception.ObjectNotFoundException;
@@ -10,8 +11,8 @@ import com.driftdirect.mapper.ChampionshipMapper;
 import com.driftdirect.mapper.PersonMapper;
 import com.driftdirect.repository.FileRepository;
 import com.driftdirect.repository.championship.ChampionshipDriverParticipationRepository;
-import com.driftdirect.repository.championship.ChampionshipJudgeParticipationRepository;
 import com.driftdirect.repository.championship.ChampionshipRepository;
+import com.driftdirect.repository.championship.judge.JudgeParticipationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,13 +30,13 @@ import java.util.stream.Collectors;
 public class ChampionshipService{
     private ChampionshipRepository championshipRepository;
     private ChampionshipDriverParticipationRepository driverParticipationRepository;
-    private ChampionshipJudgeParticipationRepository judgeParticipationRepository;
+    private JudgeParticipationRepository judgeParticipationRepository;
     private FileRepository fileRepository;
 
     @Autowired
     public ChampionshipService(ChampionshipRepository championshipRepository,
                                ChampionshipDriverParticipationRepository driverParticipationRepository,
-                               ChampionshipJudgeParticipationRepository judgeParticipationRepository,
+                               JudgeParticipationRepository judgeParticipationRepository,
                                FileRepository fileRepository) {
         this.championshipRepository = championshipRepository;
         this.fileRepository = fileRepository;
@@ -99,7 +100,7 @@ public class ChampionshipService{
         return ChampionshipMapper.mapDriverParticipation(driverParticipationRepository.findByChampionshipIdAndDriverId(championshipId, driverId));
     }
 
-    public List<ChampionshipJudgeParticipationDto> findJudges(Long championshipId) {
+    public List<JudgeParticipationDto> findJudges(Long championshipId) {
         Championship c = championshipRepository.findOne(championshipId);
         return c.getJudges()
                 .stream()
@@ -116,5 +117,19 @@ public class ChampionshipService{
         Championship c = championshipRepository.findOne(championshipId);
         c.addNews(news);
         championshipRepository.save(c);
+    }
+
+    public boolean publish(Long championshipId) {
+        Championship championship = championshipRepository.findOne(championshipId);
+        if (championship.getJudges().size() != 3) {
+            return false;
+        }
+        if (championship.getRounds().size() < 1) {
+            return false;
+        }
+        //TODO: add more conditions for this
+        championship.setPublished(true);
+        championshipRepository.save(championship);
+        return true;
     }
 }
