@@ -1,14 +1,12 @@
 package com.driftdirect.domain.championship.judge;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 /**
  * Created by Paul on 12/17/2015.
  */
 @Entity
+@Table(name = "points_allocation")
 public class PointsAllocation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

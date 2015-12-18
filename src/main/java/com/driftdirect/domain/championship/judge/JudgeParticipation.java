@@ -30,8 +30,8 @@ public class JudgeParticipation {
     @Enumerated(EnumType.STRING)
     private JudgeType judgeType;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @Size(min = 1)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<PointsAllocation> pointsAllocations;
 
     @ManyToOne

@@ -38,14 +38,16 @@ public class JudgeParticipationService {
 
     public void checkCanAddJudge(Championship championship, JudgeParticipationCreateDto judgeParticipationCreateDto) throws Exception {
         //TODO: add meaningful exceptions
-        if (championship.getJudges().size() > 2) {
-            throw new Exception("There already are 3 judges");
-        }
         int allocatedPoints = 0;
-        for (JudgeParticipation judge : championship.getJudges()) {
-            allocatedPoints += judge.getMaximumAllocatedPoints();
-            if (judge.getJudgeType().equals(judgeParticipationCreateDto.getJudgeType())) {
-                throw new Exception("Already existis judge of this type");
+        if (championship.getJudges() != null) {
+            if (championship.getJudges().size() > 2) {
+                throw new Exception("There already are 3 judges");
+            }
+            for (JudgeParticipation judge : championship.getJudges()) {
+                allocatedPoints += judge.getMaximumAllocatedPoints();
+                if (judge.getJudgeType().equals(judgeParticipationCreateDto.getJudgeType())) {
+                    throw new Exception("Already existis judge of this type");
+                }
             }
         }
         if (allocatedPoints + judgeParticipationCreateDto.getMaximumAllocatedPoints() > 100) {

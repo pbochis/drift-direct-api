@@ -6,7 +6,6 @@ import com.driftdirect.domain.championship.Championship;
 import com.driftdirect.domain.championship.ChampionshipDriverParticipation;
 import com.driftdirect.domain.championship.ChampionshipDriverParticipationResults;
 import com.driftdirect.domain.championship.ChampionshipRules;
-import com.driftdirect.domain.championship.judge.JudgeParticipation;
 import com.driftdirect.domain.championship.judge.JudgeType;
 import com.driftdirect.domain.driver.DriverDetails;
 import com.driftdirect.domain.driver.Team;
@@ -18,6 +17,8 @@ import com.driftdirect.domain.round.Round;
 import com.driftdirect.domain.sponsor.Sponsor;
 import com.driftdirect.domain.user.Authorities;
 import com.driftdirect.domain.user.Role;
+import com.driftdirect.dto.championship.judge.JudgeParticipationCreateDto;
+import com.driftdirect.dto.championship.judge.PointsAllocationCreateDto;
 import com.driftdirect.dto.round.RoundScheduleCreateDto;
 import com.driftdirect.dto.round.track.TrackCreateDto;
 import com.driftdirect.dto.user.UserCreateDTO;
@@ -30,6 +31,7 @@ import com.driftdirect.repository.round.RoundRepository;
 import com.driftdirect.repository.round.track.TrackLayoutRepository;
 import com.driftdirect.service.RoundService;
 import com.driftdirect.service.UserService;
+import com.driftdirect.service.championship.judge.JudgeParticipationService;
 import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -43,8 +45,10 @@ import org.springframework.stereotype.Component;
 
 import javax.mail.MessagingException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 
 /**
  * Created by Paul on 11/10/2015.
@@ -66,7 +70,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
     private ConfigSettingRepository configSettingRepository;
     private RoleRepository roleRepository;
     private UserService userService;
-    private ChampionshipRepository championshipService;
+    private ChampionshipRepository championshipRepository;
     private RoundService roundService;
     private FileRepository fileRepository;
     private PersonRepository personRepository;
@@ -90,9 +94,11 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
     private TrackLayoutRepository trackLayoutRepository;
 
     @Autowired
+    private JudgeParticipationService judgeParticipationService;
+    @Autowired
     public Bootstrap(
             ConfigSettingRepository configSettingRepository, RoleRepository roleRepository,
-            UserService userService, Environment environment, ChampionshipRepository championshipService,
+            UserService userService, Environment environment, ChampionshipRepository championshipRepository,
             RoundService roundService, FileRepository fileRepository, PersonRepository personRepository,
             ChampionshipDriverParticipationRepository driverParticipationRepository,
             JudgeParticipationRepository judgeParticipationRepository,
@@ -102,7 +108,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         this.roleRepository = roleRepository;
         this.userService = userService;
         this.environment = environment;
-        this.championshipService = championshipService;
+        this.championshipRepository = championshipRepository;
         this.roundService = roundService;
         this.fileRepository = fileRepository;
         this.personRepository = personRepository;
@@ -200,7 +206,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
             for (Sponsor sponsor : sponsors) {
                 c.addSponsor(sponsor);
             }
-        return championshipService.save(c);
+        return championshipRepository.save(c);
     }
 
     private void createSchedule(Long roundId, String name, DateTime startDate, DateTime endDate) {
@@ -272,13 +278,24 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         return driverParticipationRepository.save(participation);
     }
 
-    private JudgeParticipation createJudgeParticipation(Person person, Championship championship, JudgeType type) {
-        JudgeParticipation participation = new JudgeParticipation();
-        participation.setChampionship(championship);
-        participation.setJudge(person);
+
+    private void createJudgeParticipation(Person judge, Championship championship, JudgeType type, Integer... maximumPoints) {
+        List<PointsAllocationCreateDto> pointAllocations = new ArrayList<>();
+        for (Integer maxPoints : maximumPoints) {
+            PointsAllocationCreateDto pointAllocation = new PointsAllocationCreateDto();
+            pointAllocation.setMaxPoints(maxPoints);
+            pointAllocation.setName(type.getTitle().split(" ")[0] + "_" + maxPoints);
+            pointAllocations.add(pointAllocation);
+        }
+        JudgeParticipationCreateDto participation = new JudgeParticipationCreateDto();
+        participation.setJudge(judge.getId());
         participation.setJudgeType(type);
-        //TODO Add points. Please use the service.
-        return judgeParticipationRepository.save(participation);
+        participation.setPointsAllocations(pointAllocations);
+        try {
+            judgeParticipationService.addJudge(championship, participation);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private ChampionshipDriverParticipationResults createResult(ChampionshipDriverParticipation participation, int rank, int points) {
@@ -294,6 +311,9 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         Championship c1 = createChampionship("DN1Z", saveFile("/img/championship_test.png"), bImg, demon, raceTech);
         Championship c2 = createChampionship("Romania Drift Allstars", saveFile("/img/allstars.jpg"), bImg);
 
+        c1.setName("NEW NAME FOL");
+        c1 = championshipRepository.save(c1);
+
         Round r1 = createRound("Manfield", "https://www.iticket.co.nz/events/2015/nov/the-demon-energy-d1nz-national-drifting-championship-round-1", c1, saveFile("/img/manfield.jpg"), 2015, 11);
         addTrack(r1, saveFile("/img/track.png"), "This tack is deadly. People will fall of cliffs", "http://www.youtube.com", "Pass = not dead");
         Round r2 = createRound("Baypark", "https://www.iticket.co.nz/events/2016/jan/the-demon-energy-d1nz-national-drifting-championship-round-2", c1, saveFile("/img/baypark.jpg"), 2016, 1);
@@ -308,9 +328,9 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         ChampionshipDriverParticipation driverParticipation1 = createDriverParticipation(driver1, c1);
 //        ChampionshipDriverParticipation driverParticipation2 = createDriverParticipation(driver2, c1);
 
-        createJudgeParticipation(judge1, c1, JudgeType.LINE);
-        createJudgeParticipation(judge2, c1, JudgeType.ANGLE);
-        createJudgeParticipation(judge3, c1, JudgeType.STYLE);
+        createJudgeParticipation(judge1, c1, JudgeType.LINE, 30, 10);
+        createJudgeParticipation(judge2, c1, JudgeType.ANGLE, 30, 10);
+        createJudgeParticipation(judge3, c1, JudgeType.STYLE, 20);
 
         createResult(driverParticipation1, 1, 200);
 //        createResult(driverParticipation2, 2, 150);

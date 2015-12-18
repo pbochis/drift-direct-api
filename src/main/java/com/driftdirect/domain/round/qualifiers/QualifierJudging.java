@@ -8,6 +8,7 @@ import javax.persistence.*;
  * Created by Paul on 12/15/2015.
  */
 @Entity
+@Table(name = "qualifier_judging")
 public class QualifierJudging {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
