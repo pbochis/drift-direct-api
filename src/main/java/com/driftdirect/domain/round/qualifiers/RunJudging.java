@@ -4,6 +4,7 @@ import com.driftdirect.domain.championship.judge.JudgeParticipation;
 import com.driftdirect.domain.comment.Comment;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,7 +33,7 @@ public class RunJudging {
             name = "run_judging_comment",
             joinColumns = {@JoinColumn(name = "run_judging_id")},
             inverseJoinColumns = {@JoinColumn(name = "comment_id")})
-    private List<Comment> comments;
+    private List<Comment> comments = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -71,6 +72,7 @@ public class RunJudging {
     }
 
     public void setComments(List<Comment> comments) {
-        this.comments = comments;
+        this.comments.clear();
+        this.comments.addAll(comments);
     }
 }

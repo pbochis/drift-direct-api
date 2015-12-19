@@ -17,7 +17,8 @@ import java.util.*;
 public class Championship{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
+
     private String name;
     private String information;
     //will be a url -> where to buy ticketsUrl
@@ -35,13 +36,13 @@ public class Championship{
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "championship", cascade = CascadeType.ALL, orphanRemoval = true)
     @SortNatural
-    private SortedSet<Round> rounds;
+    private SortedSet<Round> rounds = new TreeSet<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "championship", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ChampionshipDriverParticipation> drivers;
+    private List<ChampionshipDriverParticipation> drivers = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "championship", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<JudgeParticipation> judges;
+    private List<JudgeParticipation> judges = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -49,16 +50,16 @@ public class Championship{
             joinColumns = {@JoinColumn(name = "championship_id")},
             inverseJoinColumns = {@JoinColumn(name = "sponsor_id")}
     )
-    private Set<Sponsor> sponsors;
+    private Set<Sponsor> sponsors = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<News> news;
+    private Set<News> news = new HashSet<>();
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -99,7 +100,8 @@ public class Championship{
     }
 
     public void setRounds(SortedSet<Round> rounds) {
-        this.rounds = rounds;
+        this.rounds.clear();
+        this.rounds.addAll(rounds);
     }
 
     public File getBackgroundImage() {
@@ -123,7 +125,8 @@ public class Championship{
     }
 
     public void setDrivers(List<ChampionshipDriverParticipation> drivers) {
-        this.drivers = drivers;
+        this.drivers.clear();
+        this.drivers.addAll(drivers);
     }
 
     public List<JudgeParticipation> getJudges() {
@@ -131,7 +134,8 @@ public class Championship{
     }
 
     public void setJudges(List<JudgeParticipation> judges) {
-        this.judges = judges;
+        this.judges.clear();
+        this.judges.addAll(judges);
     }
 
     public ChampionshipRules getRules() {
@@ -147,7 +151,8 @@ public class Championship{
     }
 
     public void setSponsors(Set<Sponsor> sponsors) {
-        this.sponsors = sponsors;
+        this.sponsors.clear();
+        this.sponsors.addAll(sponsors);
     }
 
     public Set<News> getNews() {
@@ -155,7 +160,8 @@ public class Championship{
     }
 
     public void setNews(Set<News> news) {
-        this.news = news;
+        this.news.clear();
+        this.news.addAll(news);
     }
 
     public void addSponsor(Sponsor sponsor) {

@@ -32,7 +32,7 @@ public class JudgeParticipation {
 
     @Size(min = 1)
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private List<PointsAllocation> pointsAllocations;
+    private List<PointsAllocation> pointsAllocations = new ArrayList<>();
 
     @ManyToOne
     private Championship championship;
@@ -66,7 +66,8 @@ public class JudgeParticipation {
     }
 
     public void setPointsAllocations(List<PointsAllocation> pointsAllocations) {
-        this.pointsAllocations = pointsAllocations;
+        this.pointsAllocations.clear();
+        this.pointsAllocations.addAll(pointsAllocations);
     }
 
     public void addPointsAllocation(PointsAllocation pointsAllocation) {

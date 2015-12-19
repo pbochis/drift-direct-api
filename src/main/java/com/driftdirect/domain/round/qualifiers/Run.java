@@ -1,6 +1,7 @@
 package com.driftdirect.domain.round.qualifiers;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,7 +17,7 @@ public class Run {
     private int points;
 
     @OneToMany
-    private List<RunJudging> judgings;
+    private List<RunJudging> judgings = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -39,6 +40,7 @@ public class Run {
     }
 
     public void setJudgings(List<RunJudging> judgings) {
-        this.judgings = judgings;
+        this.judgings.clear();
+        this.judgings.addAll(judgings);
     }
 }

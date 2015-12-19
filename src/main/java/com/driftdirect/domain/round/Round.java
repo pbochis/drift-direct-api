@@ -9,12 +9,14 @@ import org.joda.time.DateTime;
 
 import javax.persistence.*;
 import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * Created by Paul on 11/14/2015.
  */
 @Entity
 public class Round implements Comparable<Round> {
+    //TODO: TRY UPDATE WITH DTO
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -42,7 +44,7 @@ public class Round implements Comparable<Round> {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "round", cascade = CascadeType.ALL, orphanRemoval = true)
     @SortNatural
-    private SortedSet<RoundScheduleEntry> scheduele;
+    private SortedSet<RoundScheduleEntry> scheduele = new TreeSet<>();
 
     public long getId() {
         return id;
@@ -81,6 +83,7 @@ public class Round implements Comparable<Round> {
     }
 
     public void setScheduele(SortedSet<RoundScheduleEntry> scheduele) {
+        this.scheduele.clear();
         this.scheduele = scheduele;
     }
 

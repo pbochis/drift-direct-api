@@ -307,18 +307,13 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
     }
 
     private void initChampionshipAndRounds(){
-        File f = fileRepository.findOne((long) 1);
         Championship c1 = createChampionship("DN1Z", saveFile("/img/championship_test.png"), bImg, demon, raceTech);
         Championship c2 = createChampionship("Romania Drift Allstars", saveFile("/img/allstars.jpg"), bImg);
-
-        c1.setName("NEW NAME FOL");
-        c1 = championshipRepository.save(c1);
-
         Round r1 = createRound("Manfield", "https://www.iticket.co.nz/events/2015/nov/the-demon-energy-d1nz-national-drifting-championship-round-1", c1, saveFile("/img/manfield.jpg"), 2015, 11);
         addTrack(r1, saveFile("/img/track.png"), "This tack is deadly. People will fall of cliffs", "http://www.youtube.com", "Pass = not dead");
         Round r2 = createRound("Baypark", "https://www.iticket.co.nz/events/2016/jan/the-demon-energy-d1nz-national-drifting-championship-round-2", c1, saveFile("/img/baypark.jpg"), 2016, 1);
         addTrack(r2, saveFile("/img/track.png"), "This tack is deadly. People will fall of cliffs", "http://www.youtube.com", "Pass = not dead");
-        Round r4 = createRound("Round 1 - C2", "www.google.com", c2, f, 2016, 12);
+        Round r4 = createRound("Round 1 - C2", "www.google.com", c2, fCiob, 2016, 12);
 
         Person driver1 = createDriver("Florin Cozmuta", saveFile("/img/kimi.jpg"));
         Person judge1 = createPerson("Diana V", "Drifitng judge", saveFile("/img/j1.jpg"), PersonType.Judge);
