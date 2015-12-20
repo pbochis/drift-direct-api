@@ -1,10 +1,11 @@
 package com.driftdirect.security;
 
+import com.driftdirect.domain.round.Round;
 import com.driftdirect.domain.user.Authorities;
 import com.driftdirect.domain.user.Role;
 import com.driftdirect.domain.user.User;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -12,7 +13,7 @@ import java.util.stream.Collectors;
 /**
  * Created by Paul on 11/25/2015.
  */
-@Component
+@Service
 public class SecurityService {
     public User currentUser(){
         return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -30,6 +31,10 @@ public class SecurityService {
             return false;
         }
         return true;
+    }
+
+    public boolean canRegisterDriver(User user, Round round) {
+        return false;
     }
 
 }

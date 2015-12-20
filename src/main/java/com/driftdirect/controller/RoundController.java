@@ -1,17 +1,20 @@
 package com.driftdirect.controller;
 
 import com.driftdirect.domain.user.Authorities;
+import com.driftdirect.domain.user.User;
 import com.driftdirect.dto.round.RoundCreateDto;
-import com.driftdirect.dto.round.RoundShowDto;
 import com.driftdirect.dto.round.RoundScheduleCreateDto;
+import com.driftdirect.dto.round.RoundShowDto;
 import com.driftdirect.dto.round.RoundUpdateDto;
 import com.driftdirect.dto.round.track.TrackCreateDto;
-import com.driftdirect.service.RoundService;
+import com.driftdirect.service.round.RoundService;
+import com.driftdirect.service.round.qualifier.QualifierService;
 import com.driftdirect.util.RestUrls;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -23,10 +26,12 @@ import java.util.NoSuchElementException;
 @RestController
 public class RoundController {
     private RoundService roundService;
+    private QualifierService qualifierService;
 
     @Autowired
-    public RoundController(RoundService roundService){
+    public RoundController(RoundService roundService, QualifierService qualifierService) {
         this.roundService = roundService;
+        this.qualifierService = qualifierService;
     }
 
     @Secured(Authorities.ROLE_ORGANIZER)
@@ -64,6 +69,15 @@ public class RoundController {
     @RequestMapping(path = RestUrls.ROUND_ID_TRACK, method = RequestMethod.POST)
     public ResponseEntity addTrackLayoiut(@PathVariable Long id, @Valid @RequestBody TrackCreateDto dto){
         roundService.addTrack(id, dto);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @RequestMapping(path = RestUrls.ROUND_ID_REGISTER, method = RequestMethod.POST)
+    public ResponseEntity registerDriver(@PathVariable(value = "roundId") Long roundId,
+                                         @PathVariable(value = "driverId") Long driverId,
+                                         @AuthenticationPrincipal User user) {
+        //securityService.canRegisterDriver(user, round);
+        qualifierService.registerDriver(roundId, driverId);
         return new ResponseEntity(HttpStatus.OK);
     }
 }

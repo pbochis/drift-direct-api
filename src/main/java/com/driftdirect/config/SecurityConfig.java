@@ -55,6 +55,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                         RestUrls.CHAMPIONSHIP_ID_DRIVERS,
                         RestUrls.CHAMPIONSHIP_ID_DRIVERS_ID,
                         RestUrls.CHAMPIONSHIP_ID_JUDGES,
+                        RestUrls.ROUND_ID,
                         RestUrls.PERSON_ID,
                         RestUrls.FILE_ID).permitAll()
                 .antMatchers(HttpMethod.GET, "/testTime").permitAll()

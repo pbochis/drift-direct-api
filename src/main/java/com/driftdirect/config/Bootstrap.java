@@ -29,9 +29,9 @@ import com.driftdirect.repository.championship.ChampionshipRepository;
 import com.driftdirect.repository.championship.judge.JudgeParticipationRepository;
 import com.driftdirect.repository.round.RoundRepository;
 import com.driftdirect.repository.round.track.TrackLayoutRepository;
-import com.driftdirect.service.RoundService;
 import com.driftdirect.service.UserService;
 import com.driftdirect.service.championship.judge.JudgeParticipationService;
+import com.driftdirect.service.round.RoundService;
 import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -226,12 +226,13 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         roundService.addTrack(round.getId(), track);
     }
 
-    private Round createRound(String name, String ticketsUrl, Championship c, File logo, int year, int month) {
+    private Round createRound(String name, String ticketsUrl, String liveStream, Championship c, File logo, int year, int month) {
         Round r = new Round();
         r.setName(name);
         r.setChampionship(c);
         r.setLogo(logo);
         r.setTicketsUrl(ticketsUrl);
+        r.setLiveStream(liveStream);
         r = roundRepository.save(r);
         createSchedule(r.getId(), "Registration", new DateTime(year, month, 1, 10, 0), new DateTime(year, month, 1, 10, 0));
         createSchedule(r.getId(), "Qualifications", new DateTime(year, month, 2, 10, 0), new DateTime(year, month, 2, 20, 0));
@@ -309,11 +310,11 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
     private void initChampionshipAndRounds(){
         Championship c1 = createChampionship("DN1Z", saveFile("/img/championship_test.png"), bImg, demon, raceTech);
         Championship c2 = createChampionship("Romania Drift Allstars", saveFile("/img/allstars.jpg"), bImg);
-        Round r1 = createRound("Manfield", "https://www.iticket.co.nz/events/2015/nov/the-demon-energy-d1nz-national-drifting-championship-round-1", c1, saveFile("/img/manfield.jpg"), 2015, 11);
+        Round r1 = createRound("Manfield", "https://www.iticket.co.nz/events/2015/nov/the-demon-energy-d1nz-national-drifting-championship-round-1", "http://www.twitch.tv/sing_sing", c1, saveFile("/img/manfield.jpg"), 2015, 11);
         addTrack(r1, saveFile("/img/track.png"), "This tack is deadly. People will fall of cliffs", "http://www.youtube.com", "Pass = not dead");
-        Round r2 = createRound("Baypark", "https://www.iticket.co.nz/events/2016/jan/the-demon-energy-d1nz-national-drifting-championship-round-2", c1, saveFile("/img/baypark.jpg"), 2016, 1);
+        Round r2 = createRound("Baypark", "https://www.iticket.co.nz/events/2016/jan/the-demon-energy-d1nz-national-drifting-championship-round-2", null, c1, saveFile("/img/baypark.jpg"), 2016, 1);
         addTrack(r2, saveFile("/img/track.png"), "This tack is deadly. People will fall of cliffs", "http://www.youtube.com", "Pass = not dead");
-        Round r4 = createRound("Round 1 - C2", "www.google.com", c2, fCiob, 2016, 12);
+        Round r4 = createRound("Round 1 - C2", "www.google.com", null, c2, fCiob, 2016, 12);
 
         Person driver1 = createDriver("Florin Cozmuta", saveFile("/img/kimi.jpg"));
         Person judge1 = createPerson("Diana V", "Drifitng judge", saveFile("/img/j1.jpg"), PersonType.Judge);

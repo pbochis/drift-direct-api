@@ -2,12 +2,14 @@ package com.driftdirect.domain.round;
 
 import com.driftdirect.domain.championship.Championship;
 import com.driftdirect.domain.file.File;
+import com.driftdirect.domain.round.qualifiers.Qualifier;
 import com.driftdirect.domain.round.track.Track;
 import org.hibernate.annotations.SortNatural;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -23,6 +25,7 @@ public class Round implements Comparable<Round> {
 
     private String name;
     private String ticketsUrl;
+    private String liveStream;
 
     @Column(name = "start_date")
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
@@ -45,6 +48,9 @@ public class Round implements Comparable<Round> {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "round", cascade = CascadeType.ALL, orphanRemoval = true)
     @SortNatural
     private SortedSet<RoundScheduleEntry> scheduele = new TreeSet<>();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "round", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Qualifier> qualifiers;
 
     public long getId() {
         return id;
@@ -117,6 +123,23 @@ public class Round implements Comparable<Round> {
 
     public void setTrack(Track track) {
         this.track = track;
+    }
+
+    public String getLiveStream() {
+        return liveStream;
+    }
+
+    public void setLiveStream(String liveStream) {
+        this.liveStream = liveStream;
+    }
+
+    public List<Qualifier> getQualifiers() {
+        return qualifiers;
+    }
+
+    public void setQualifiers(List<Qualifier> qualifiers) {
+        this.qualifiers.clear();
+        this.qualifiers.addAll(qualifiers);
     }
 
     @Override

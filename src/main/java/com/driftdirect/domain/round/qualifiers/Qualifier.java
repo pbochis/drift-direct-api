@@ -1,6 +1,7 @@
 package com.driftdirect.domain.round.qualifiers;
 
 import com.driftdirect.domain.person.Person;
+import com.driftdirect.domain.round.Round;
 
 import javax.persistence.*;
 
@@ -8,8 +9,7 @@ import javax.persistence.*;
  * Created by Paul on 12/15/2015.
  */
 @Entity
-@Table(name = "qualifier_judging")
-public class QualifierJudging {
+public class Qualifier {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,6 +20,10 @@ public class QualifierJudging {
     @OneToOne
     private Run secondRun;
     private int finalScore;
+
+    @ManyToOne
+    @JoinColumn(name = "round_id", nullable = false)
+    private Round round;
 
     public Long getId() {
         return id;
@@ -59,5 +63,13 @@ public class QualifierJudging {
 
     public void setFinalScore(int finalScore) {
         this.finalScore = finalScore;
+    }
+
+    public Round getRound() {
+        return round;
+    }
+
+    public void setRound(Round round) {
+        this.round = round;
     }
 }

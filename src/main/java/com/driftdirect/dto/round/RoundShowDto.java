@@ -11,6 +11,7 @@ import java.util.List;
 public class RoundShowDto {
     private long id;
     private String name;
+    private String liveStream;
     private DateTime startDate;
     private DateTime endDate;
     private String ticketsUrl;
@@ -71,5 +72,13 @@ public class RoundShowDto {
 
     public void setTrack(TrackDto track) {
         this.track = track;
+    }
+
+    public String getLiveStream() {
+        return liveStream;
+    }
+
+    public void setLiveStream(String liveStream) {
+        this.liveStream = liveStream;
     }
 }

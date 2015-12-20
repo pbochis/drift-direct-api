@@ -1,4 +1,4 @@
-package com.driftdirect.service;
+package com.driftdirect.service.round;
 
 import com.driftdirect.domain.championship.Championship;
 import com.driftdirect.domain.round.Round;

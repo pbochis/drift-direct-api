@@ -3,6 +3,7 @@ package com.driftdirect.domain.round.track;
 import com.driftdirect.domain.file.File;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 /**
  * Created by Paul on 12/13/2015.
@@ -14,8 +15,10 @@ public class Track {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
     private String description;
     private String videoUrl;
+    @NotNull
     private String judgingCriteria;
 
     @OneToOne

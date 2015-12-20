@@ -20,6 +20,7 @@ public class RoundMapper {
         RoundShowDto dto = new RoundShowDto();
         dto.setId(round.getId());
         dto.setName(round.getName());
+        dto.setLiveStream(round.getLiveStream());
         dto.setStartDate(round.getStartDate());
         dto.setEndDate(round.getEndDate());
         dto.setTicketsUrl(round.getTicketsUrl());
