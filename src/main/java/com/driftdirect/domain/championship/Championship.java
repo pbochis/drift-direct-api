@@ -3,6 +3,7 @@ package com.driftdirect.domain.championship;
 import com.driftdirect.domain.championship.judge.JudgeParticipation;
 import com.driftdirect.domain.file.File;
 import com.driftdirect.domain.news.News;
+import com.driftdirect.domain.person.Person;
 import com.driftdirect.domain.round.Round;
 import com.driftdirect.domain.sponsor.Sponsor;
 import org.hibernate.annotations.SortNatural;
@@ -23,6 +24,10 @@ public class Championship{
     private String information;
     //will be a url -> where to buy ticketsUrl
     private String ticketsUrl;
+
+    @ManyToOne(optional = false)
+    private Person organizer;
+
     private boolean published;
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -183,6 +188,14 @@ public class Championship{
             this.judges = new ArrayList<>();
         }
         this.judges.add(judgeParticipation);
+    }
+
+    public Person getOrganizer() {
+        return organizer;
+    }
+
+    public void setOrganizer(Person organizer) {
+        this.organizer = organizer;
     }
 
     @Override

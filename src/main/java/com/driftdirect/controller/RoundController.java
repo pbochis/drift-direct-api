@@ -7,6 +7,7 @@ import com.driftdirect.dto.round.RoundScheduleCreateDto;
 import com.driftdirect.dto.round.RoundShowDto;
 import com.driftdirect.dto.round.RoundUpdateDto;
 import com.driftdirect.dto.round.track.TrackCreateDto;
+import com.driftdirect.security.SecurityService;
 import com.driftdirect.service.round.RoundService;
 import com.driftdirect.service.round.qualifier.QualifierService;
 import com.driftdirect.util.RestUrls;
@@ -27,16 +28,21 @@ import java.util.NoSuchElementException;
 public class RoundController {
     private RoundService roundService;
     private QualifierService qualifierService;
+    private SecurityService securityService;
 
     @Autowired
-    public RoundController(RoundService roundService, QualifierService qualifierService) {
+    public RoundController(RoundService roundService, QualifierService qualifierService, SecurityService securityService) {
         this.roundService = roundService;
         this.qualifierService = qualifierService;
+        this.securityService = securityService;
     }
 
     @Secured(Authorities.ROLE_ORGANIZER)
     @RequestMapping(path = RestUrls.ROUND, method = RequestMethod.POST)
-    public ResponseEntity createFromDto(@RequestBody @Valid RoundCreateDto dto){
+    public ResponseEntity createFromDto(@RequestBody @Valid RoundCreateDto dto, @AuthenticationPrincipal User currentUser) {
+        if (!securityService.canEditChampionship(currentUser, dto.getChampionshipId())) {
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+        }
         roundService.createFromDto(dto);
         return new ResponseEntity(HttpStatus.OK);
     }
@@ -76,7 +82,9 @@ public class RoundController {
     public ResponseEntity registerDriver(@PathVariable(value = "roundId") Long roundId,
                                          @PathVariable(value = "driverId") Long driverId,
                                          @AuthenticationPrincipal User user) {
-        //securityService.canRegisterDriver(user, round);
+        if (!securityService.canRegisterDriver(user, roundId)) {
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+        }
         qualifierService.registerDriver(roundId, driverId);
         return new ResponseEntity(HttpStatus.OK);
     }

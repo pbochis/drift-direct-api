@@ -2,6 +2,7 @@ package com.driftdirect.service.championship;
 
 import com.driftdirect.domain.championship.Championship;
 import com.driftdirect.domain.news.News;
+import com.driftdirect.domain.user.User;
 import com.driftdirect.dto.championship.*;
 import com.driftdirect.dto.championship.judge.JudgeParticipationDto;
 import com.driftdirect.dto.news.NewsCreateDto;
@@ -44,8 +45,9 @@ public class ChampionshipService{
         this.judgeParticipationRepository = judgeParticipationRepository;
     }
 
-    public void createFromDto(ChampionshipCreateDTO dto){
+    public void createFromDto(ChampionshipCreateDTO dto, User currentUser) {
         Championship c = new Championship();
+        c.setOrganizer(currentUser.getPerson());
         populateAndSave(c, dto);
     }
 

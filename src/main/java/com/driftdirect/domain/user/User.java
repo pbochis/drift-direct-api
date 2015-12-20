@@ -23,7 +23,7 @@ public class User implements UserDetails{
     public Set<Role> roles;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @NotEmpty
     @Column(name = "user_name", nullable = false, unique = true)
     private String username;
@@ -34,7 +34,8 @@ public class User implements UserDetails{
     @Column(name = "password", nullable = false)
     private String password;
     private boolean enabled;
-    @OneToOne
+
+    @OneToOne(fetch = FetchType.EAGER)
     private Person person;
 
     public Person getPerson() {
@@ -53,11 +54,11 @@ public class User implements UserDetails{
         this.email = email;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

@@ -1,12 +1,15 @@
 package com.driftdirect.domain.person;
 
 import com.driftdirect.domain.Country;
+import com.driftdirect.domain.championship.Championship;
 import com.driftdirect.domain.driver.DriverDetails;
 import com.driftdirect.domain.file.File;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.util.List;
 
 /**
  * Created by Paul on 11/20/2015.
@@ -15,9 +18,11 @@ import javax.persistence.*;
 public class Person {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
+    @NotNull
     private String firstName;
+    @NotNull
     private String lastName;
     private String telephone;
 
@@ -45,6 +50,9 @@ public class Person {
     @OneToOne(optional = true)
     private DriverDetails driverDetails;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "organizer")
+    private List<Championship> championships;
+
     public DriverDetails getDriverDetails() {
         return driverDetails;
     }
@@ -53,11 +61,11 @@ public class Person {
         this.driverDetails = driverDetails;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -147,6 +155,14 @@ public class Person {
 
     public void setBirthDate(DateTime birthDate) {
         this.birthDate = birthDate;
+    }
+
+    public List<Championship> getChampionships() {
+        return championships;
+    }
+
+    public void setChampionships(List<Championship> championships) {
+        this.championships = championships;
     }
 
     @Override

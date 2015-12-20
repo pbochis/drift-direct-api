@@ -7,6 +7,7 @@ import com.driftdirect.dto.championship.judge.JudgeParticipationDto;
 import com.driftdirect.dto.news.NewsCreateDto;
 import com.driftdirect.dto.person.PersonShortShowDto;
 import com.driftdirect.exception.ObjectNotFoundException;
+import com.driftdirect.security.SecurityService;
 import com.driftdirect.service.championship.ChampionshipService;
 import com.driftdirect.util.RestUrls;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +26,11 @@ import java.util.List;
 @RestController
 public class ChampionshipController {
     private ChampionshipService championshipService;
-
+    private SecurityService securityService;
     @Autowired
-    public ChampionshipController(ChampionshipService championshipService){
+    public ChampionshipController(ChampionshipService championshipService, SecurityService securityService) {
         this.championshipService = championshipService;
+        this.securityService = securityService;
     }
 
     @RequestMapping(path = RestUrls.CHAMPIONSHIP, method = RequestMethod.GET)
@@ -43,13 +45,17 @@ public class ChampionshipController {
 
     @Secured(Authorities.ROLE_ORGANIZER)
     @RequestMapping(path = RestUrls.CHAMPIONSHIP, method = RequestMethod.POST)
-    public ResponseEntity createChampionship(@Valid ChampionshipCreateDTO c){
+    public ResponseEntity createChampionship(@Valid ChampionshipCreateDTO c, @AuthenticationPrincipal User currentUser) {
+        championshipService.createFromDto(c, currentUser);
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @Secured(Authorities.ROLE_ORGANIZER)
     @RequestMapping(path = RestUrls.CHAMPIONSHIP, method = RequestMethod.PUT)
-    public ResponseEntity updateChampionship(@Valid ChampionshipUpdateDTO c) throws ObjectNotFoundException {
+    public ResponseEntity updateChampionship(@Valid ChampionshipUpdateDTO c, @AuthenticationPrincipal User currentUser) throws ObjectNotFoundException {
+        if (!securityService.canEditChampionship(currentUser, c.getId())) {
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+        }
         championshipService.update(c);
         return new ResponseEntity(HttpStatus.OK);
     }
@@ -61,15 +67,13 @@ public class ChampionshipController {
 
     @Secured(Authorities.ROLE_ORGANIZER)
     @RequestMapping(path = RestUrls.CHAMPIONSHIP_ID, method = RequestMethod.DELETE)
-    public ResponseEntity delete(@PathVariable Long id) {
+    public ResponseEntity delete(@PathVariable Long id, @AuthenticationPrincipal User currentUser) {
+        if (!securityService.canEditChampionship(currentUser, id)) {
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+        }
         championshipService.delete(id);
         return new ResponseEntity(HttpStatus.OK);
     }
-
-//    @RequestMapping(path = RestUrls.CHAMPIONSHIP_ID_ROUNDS, method = RequestMethod.GET)
-//    public ResponseEntity<List<RoundShortShowDto>> getChampionshipRounds(@PathVariable Long id) {
-//        return new ResponseEntity<>(championshipService.championshipRounds(id), HttpStatus.OK);
-//    }
 
     @RequestMapping(path = RestUrls.CHAMPIONSHIP_ID_DRIVERS, method = RequestMethod.GET)
     public ResponseEntity<List<PersonShortShowDto>> getDrivers(@PathVariable Long id) {
@@ -84,7 +88,11 @@ public class ChampionshipController {
 
     @RequestMapping(path = RestUrls.CHAMPIONSHIP_ID_NEWS, method = RequestMethod.POST)
     public ResponseEntity addNews(@PathVariable(value = "id") Long id,
-                                  @RequestBody @Valid NewsCreateDto news) {
+                                  @RequestBody @Valid NewsCreateDto news,
+                                  @AuthenticationPrincipal User currentUser) {
+        if (!securityService.canEditChampionship(currentUser, id)) {
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+        }
         championshipService.addNews(id, news);
         return new ResponseEntity(HttpStatus.OK);
     }
@@ -95,7 +103,10 @@ public class ChampionshipController {
     }
 
     @RequestMapping(path = RestUrls.CHAMPIONSHIP_ID_PUBLISH, method = RequestMethod.POST)
-    public ResponseEntity<Boolean> publish(@PathVariable Long id) {
-        return new ResponseEntity<>(championshipService.publish(id), HttpStatus.OK);
+    public ResponseEntity publish(@PathVariable Long id, @AuthenticationPrincipal User currentUser) {
+        if (!securityService.canEditChampionship(currentUser, id)) {
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+        }
+        return new ResponseEntity(HttpStatus.OK);
     }
 }

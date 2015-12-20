@@ -1,9 +1,11 @@
 package com.driftdirect.security;
 
-import com.driftdirect.domain.round.Round;
+import com.driftdirect.domain.championship.Championship;
 import com.driftdirect.domain.user.Authorities;
 import com.driftdirect.domain.user.Role;
 import com.driftdirect.domain.user.User;
+import com.driftdirect.repository.round.RoundRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,10 @@ import java.util.stream.Collectors;
  */
 @Service
 public class SecurityService {
+
+    @Autowired
+    private RoundRepository roundRepository;
+
     public User currentUser(){
         return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
@@ -33,8 +39,16 @@ public class SecurityService {
         return true;
     }
 
-    public boolean canRegisterDriver(User user, Round round) {
+    public boolean canEditChampionship(User user, Long championshipId) {
+        for (Championship c : user.getPerson().getChampionships()) {
+            if (c.getId().equals(championshipId)) {
+                return true;
+            }
+        }
         return false;
     }
 
+    public boolean canRegisterDriver(User user, Long roundId) {
+        return canEditChampionship(user, roundRepository.findOne(roundId).getChampionship().getId());
+    }
 }
