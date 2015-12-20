@@ -3,7 +3,11 @@ package com.driftdirect.service.championship;
 import com.driftdirect.domain.championship.Championship;
 import com.driftdirect.domain.news.News;
 import com.driftdirect.domain.user.User;
-import com.driftdirect.dto.championship.*;
+import com.driftdirect.dto.championship.ChampionshipCreateDTO;
+import com.driftdirect.dto.championship.ChampionshipFullDto;
+import com.driftdirect.dto.championship.ChampionshipShortShowDto;
+import com.driftdirect.dto.championship.ChampionshipUpdateDTO;
+import com.driftdirect.dto.championship.driver.DriverParticipationDto;
 import com.driftdirect.dto.championship.judge.JudgeParticipationDto;
 import com.driftdirect.dto.news.NewsCreateDto;
 import com.driftdirect.dto.person.PersonShortShowDto;
@@ -11,8 +15,8 @@ import com.driftdirect.exception.ObjectNotFoundException;
 import com.driftdirect.mapper.ChampionshipMapper;
 import com.driftdirect.mapper.PersonMapper;
 import com.driftdirect.repository.FileRepository;
-import com.driftdirect.repository.championship.ChampionshipDriverParticipationRepository;
 import com.driftdirect.repository.championship.ChampionshipRepository;
+import com.driftdirect.repository.championship.driver.DriverParticipationRepository;
 import com.driftdirect.repository.championship.judge.JudgeParticipationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,13 +34,13 @@ import java.util.stream.Collectors;
 @Transactional
 public class ChampionshipService{
     private ChampionshipRepository championshipRepository;
-    private ChampionshipDriverParticipationRepository driverParticipationRepository;
+    private DriverParticipationRepository driverParticipationRepository;
     private JudgeParticipationRepository judgeParticipationRepository;
     private FileRepository fileRepository;
 
     @Autowired
     public ChampionshipService(ChampionshipRepository championshipRepository,
-                               ChampionshipDriverParticipationRepository driverParticipationRepository,
+                               DriverParticipationRepository driverParticipationRepository,
                                JudgeParticipationRepository judgeParticipationRepository,
                                FileRepository fileRepository) {
         this.championshipRepository = championshipRepository;
@@ -98,7 +102,7 @@ public class ChampionshipService{
                 .collect(Collectors.toList());
     }
 
-    public ChampionshipDriverParticipationDto findDriver(Long championshipId, Long driverId) {
+    public DriverParticipationDto findDriver(Long championshipId, Long driverId) {
         return ChampionshipMapper.mapDriverParticipation(driverParticipationRepository.findByChampionshipIdAndDriverId(championshipId, driverId));
     }
 

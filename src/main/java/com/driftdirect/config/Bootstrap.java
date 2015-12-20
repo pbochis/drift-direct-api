@@ -3,9 +3,9 @@ package com.driftdirect.config;
 import com.driftdirect.domain.ConfigSetting;
 import com.driftdirect.domain.Country;
 import com.driftdirect.domain.championship.Championship;
-import com.driftdirect.domain.championship.ChampionshipDriverParticipation;
-import com.driftdirect.domain.championship.ChampionshipDriverParticipationResults;
 import com.driftdirect.domain.championship.ChampionshipRules;
+import com.driftdirect.domain.championship.driver.DriverParticipation;
+import com.driftdirect.domain.championship.driver.DriverParticipationResults;
 import com.driftdirect.domain.championship.judge.JudgeType;
 import com.driftdirect.domain.driver.DriverDetails;
 import com.driftdirect.domain.driver.Team;
@@ -23,9 +23,9 @@ import com.driftdirect.dto.round.RoundScheduleCreateDto;
 import com.driftdirect.dto.round.track.TrackCreateDto;
 import com.driftdirect.dto.user.UserCreateDTO;
 import com.driftdirect.repository.*;
-import com.driftdirect.repository.championship.ChampionshipDriverParticipationRepository;
-import com.driftdirect.repository.championship.ChampionshipDriverParticipationResultsRepository;
 import com.driftdirect.repository.championship.ChampionshipRepository;
+import com.driftdirect.repository.championship.driver.DriverParticipationRepository;
+import com.driftdirect.repository.championship.driver.DriverParticipationResultsRepository;
 import com.driftdirect.repository.championship.judge.JudgeParticipationRepository;
 import com.driftdirect.repository.round.RoundRepository;
 import com.driftdirect.repository.round.track.TrackLayoutRepository;
@@ -74,9 +74,9 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
     private RoundService roundService;
     private FileRepository fileRepository;
     private PersonRepository personRepository;
-    private ChampionshipDriverParticipationRepository driverParticipationRepository;
+    private DriverParticipationRepository driverParticipationRepository;
     private JudgeParticipationRepository judgeParticipationRepository;
-    private ChampionshipDriverParticipationResultsRepository resultsRepository;
+    private DriverParticipationResultsRepository resultsRepository;
     private RoundRepository roundRepository;
     @Autowired
     private CountryRepository countryRepository;
@@ -100,9 +100,9 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
             ConfigSettingRepository configSettingRepository, RoleRepository roleRepository,
             UserService userService, Environment environment, ChampionshipRepository championshipRepository,
             RoundService roundService, FileRepository fileRepository, PersonRepository personRepository,
-            ChampionshipDriverParticipationRepository driverParticipationRepository,
+            DriverParticipationRepository driverParticipationRepository,
             JudgeParticipationRepository judgeParticipationRepository,
-            ChampionshipDriverParticipationResultsRepository resultsRepository,
+            DriverParticipationResultsRepository resultsRepository,
             RoundRepository roundRepository) {
         this.configSettingRepository = configSettingRepository;
         this.roleRepository = roleRepository;
@@ -272,8 +272,8 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         return personRepository.save(p);
     }
 
-    private ChampionshipDriverParticipation createDriverParticipation(Person person, Championship championship) {
-        ChampionshipDriverParticipation participation = new ChampionshipDriverParticipation();
+    private DriverParticipation createDriverParticipation(Person person, Championship championship) {
+        DriverParticipation participation = new DriverParticipation();
         participation.setDriver(person);
         participation.setChampionship(championship);
         return driverParticipationRepository.save(participation);
@@ -299,8 +299,8 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         }
     }
 
-    private ChampionshipDriverParticipationResults createResult(ChampionshipDriverParticipation participation, int rank, int points) {
-        ChampionshipDriverParticipationResults result = new ChampionshipDriverParticipationResults();
+    private DriverParticipationResults createResult(DriverParticipation participation, int rank, int points) {
+        DriverParticipationResults result = new DriverParticipationResults();
         result.setRank(rank);
         result.setTotalPoints(points);
         result.setParticipation(participation);
@@ -321,8 +321,8 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         Person judge2 = createPerson("Andra B", "Drifting judge", saveFile("/img/j2.jpg"), PersonType.Judge);
         Person judge3 = createPerson("Ioana f", "Drifting judge", saveFile("/img/j3.jpg"), PersonType.Judge);
 
-        ChampionshipDriverParticipation driverParticipation1 = createDriverParticipation(driver1, c1);
-//        ChampionshipDriverParticipation driverParticipation2 = createDriverParticipation(driver2, c1);
+        DriverParticipation driverParticipation1 = createDriverParticipation(driver1, c1);
+//        DriverParticipation driverParticipation2 = createDriverParticipation(driver2, c1);
 
         createJudgeParticipation(judge1, c1, JudgeType.LINE, 30, 10);
         createJudgeParticipation(judge2, c1, JudgeType.ANGLE, 30, 10);

@@ -1,14 +1,14 @@
-package com.driftdirect.dto.championship;
+package com.driftdirect.dto.championship.driver;
 
 import com.driftdirect.dto.person.PersonFullDto;
 
 /**
  * Created by Paul on 11/30/2015.
  */
-public class ChampionshipDriverParticipationDto {
+public class DriverParticipationDto {
     private Long id;
     private PersonFullDto driver;
-    private ChampionshipDriverParticipationResultsDto results;
+    private DriverParticipationResultsDto results;
 
     public Long getId() {
         return id;
@@ -26,11 +26,11 @@ public class ChampionshipDriverParticipationDto {
         this.driver = driver;
     }
 
-    public ChampionshipDriverParticipationResultsDto getResults() {
+    public DriverParticipationResultsDto getResults() {
         return results;
     }
 
-    public void setResults(ChampionshipDriverParticipationResultsDto results) {
+    public void setResults(DriverParticipationResultsDto results) {
         this.results = results;
     }
 }

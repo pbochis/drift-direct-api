@@ -1,9 +1,9 @@
-package com.driftdirect.dto.championship;
+package com.driftdirect.dto.championship.driver;
 
 /**
  * Created by Paul on 12/1/2015.
  */
-public class ChampionshipDriverParticipationResultsDto {
+public class DriverParticipationResultsDto {
     private Long id;
     private int rank;
     private int totalPoints;

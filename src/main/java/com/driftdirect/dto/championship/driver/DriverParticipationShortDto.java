@@ -1,11 +1,11 @@
-package com.driftdirect.dto.championship;
+package com.driftdirect.dto.championship.driver;
 
 import com.driftdirect.dto.person.PersonShortShowDto;
 
 /**
  * Created by Paul on 12/1/2015.
  */
-public class ChampionshipDriverParticipationShortDto {
+public class DriverParticipationShortDto {
     private Long id;
     private PersonShortShowDto driver;
 

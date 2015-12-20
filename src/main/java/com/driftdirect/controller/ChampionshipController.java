@@ -2,7 +2,11 @@ package com.driftdirect.controller;
 
 import com.driftdirect.domain.user.Authorities;
 import com.driftdirect.domain.user.User;
-import com.driftdirect.dto.championship.*;
+import com.driftdirect.dto.championship.ChampionshipCreateDTO;
+import com.driftdirect.dto.championship.ChampionshipFullDto;
+import com.driftdirect.dto.championship.ChampionshipShortShowDto;
+import com.driftdirect.dto.championship.ChampionshipUpdateDTO;
+import com.driftdirect.dto.championship.driver.DriverParticipationDto;
 import com.driftdirect.dto.championship.judge.JudgeParticipationDto;
 import com.driftdirect.dto.news.NewsCreateDto;
 import com.driftdirect.dto.person.PersonShortShowDto;
@@ -81,8 +85,8 @@ public class ChampionshipController {
     }
 
     @RequestMapping(path = RestUrls.CHAMPIONSHIP_ID_DRIVERS_ID, method = RequestMethod.GET)
-    public ResponseEntity<ChampionshipDriverParticipationDto> getDriver(@PathVariable(value = "championshipId") Long championshipId,
-                                                                        @PathVariable(value = "driverId") Long driverId) {
+    public ResponseEntity<DriverParticipationDto> getDriver(@PathVariable(value = "championshipId") Long championshipId,
+                                                            @PathVariable(value = "driverId") Long driverId) {
         return new ResponseEntity<>(championshipService.findDriver(championshipId, driverId), HttpStatus.OK);
     }
 

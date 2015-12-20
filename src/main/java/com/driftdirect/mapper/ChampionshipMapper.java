@@ -1,10 +1,14 @@
 package com.driftdirect.mapper;
 
 import com.driftdirect.domain.championship.Championship;
-import com.driftdirect.domain.championship.ChampionshipDriverParticipation;
+import com.driftdirect.domain.championship.driver.DriverParticipation;
 import com.driftdirect.domain.championship.judge.JudgeParticipation;
 import com.driftdirect.domain.round.Round;
-import com.driftdirect.dto.championship.*;
+import com.driftdirect.dto.championship.ChampionshipFullDto;
+import com.driftdirect.dto.championship.ChampionshipRulesDto;
+import com.driftdirect.dto.championship.ChampionshipShortShowDto;
+import com.driftdirect.dto.championship.driver.DriverParticipationDto;
+import com.driftdirect.dto.championship.driver.DriverParticipationResultsDto;
 import com.driftdirect.dto.championship.judge.JudgeParticipationDto;
 import com.driftdirect.dto.round.RoundShortShowDto;
 import com.driftdirect.dto.round.RoundStatus;
@@ -78,12 +82,12 @@ public class ChampionshipMapper {
         return rounds;
     }
 
-    public static ChampionshipDriverParticipationDto mapDriverParticipation(ChampionshipDriverParticipation participation) {
-        ChampionshipDriverParticipationDto dto = new ChampionshipDriverParticipationDto();
+    public static DriverParticipationDto mapDriverParticipation(DriverParticipation participation) {
+        DriverParticipationDto dto = new DriverParticipationDto();
         dto.setId(participation.getId());
         dto.setDriver(PersonMapper.mapFull(participation.getDriver()));
         if (participation.getResults() != null) {
-            ChampionshipDriverParticipationResultsDto results = new ChampionshipDriverParticipationResultsDto();
+            DriverParticipationResultsDto results = new DriverParticipationResultsDto();
             results.setId(participation.getResults().getId());
             results.setTotalPoints(participation.getResults().getTotalPoints());
             results.setRank(participation.getResults().getRank());

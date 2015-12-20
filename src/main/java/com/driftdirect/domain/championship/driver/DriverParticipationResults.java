@@ -1,4 +1,4 @@
-package com.driftdirect.domain.championship;
+package com.driftdirect.domain.championship.driver;
 
 import javax.persistence.*;
 
@@ -7,7 +7,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "championship_driver_participation_results")
-public class ChampionshipDriverParticipationResults {
+public class DriverParticipationResults {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -16,7 +16,7 @@ public class ChampionshipDriverParticipationResults {
     private int totalPoints;
 
     @OneToOne
-    private ChampionshipDriverParticipation participation;
+    private DriverParticipation participation;
 
     public Long getId() {
         return id;
@@ -42,11 +42,11 @@ public class ChampionshipDriverParticipationResults {
         this.totalPoints = totalPoints;
     }
 
-    public ChampionshipDriverParticipation getParticipation() {
+    public DriverParticipation getParticipation() {
         return participation;
     }
 
-    public void setParticipation(ChampionshipDriverParticipation participation) {
+    public void setParticipation(DriverParticipation participation) {
         this.participation = participation;
     }
 }

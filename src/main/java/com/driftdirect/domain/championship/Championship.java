@@ -1,5 +1,6 @@
 package com.driftdirect.domain.championship;
 
+import com.driftdirect.domain.championship.driver.DriverParticipation;
 import com.driftdirect.domain.championship.judge.JudgeParticipation;
 import com.driftdirect.domain.file.File;
 import com.driftdirect.domain.news.News;
@@ -44,7 +45,7 @@ public class Championship{
     private SortedSet<Round> rounds = new TreeSet<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "championship", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ChampionshipDriverParticipation> drivers = new ArrayList<>();
+    private List<DriverParticipation> drivers = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "championship", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<JudgeParticipation> judges = new ArrayList<>();
@@ -125,11 +126,11 @@ public class Championship{
         this.logo = logo;
     }
 
-    public List<ChampionshipDriverParticipation> getDrivers() {
+    public List<DriverParticipation> getDrivers() {
         return drivers;
     }
 
-    public void setDrivers(List<ChampionshipDriverParticipation> drivers) {
+    public void setDrivers(List<DriverParticipation> drivers) {
         this.drivers.clear();
         this.drivers.addAll(drivers);
     }

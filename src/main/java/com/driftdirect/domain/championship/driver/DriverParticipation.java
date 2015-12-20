@@ -1,5 +1,6 @@
-package com.driftdirect.domain.championship;
+package com.driftdirect.domain.championship.driver;
 
+import com.driftdirect.domain.championship.Championship;
 import com.driftdirect.domain.person.Person;
 
 import javax.persistence.*;
@@ -9,7 +10,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "championship_driver_participation")
-public class ChampionshipDriverParticipation {
+public class DriverParticipation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,7 +22,7 @@ public class ChampionshipDriverParticipation {
     private Championship championship;
 
     @OneToOne(orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "participation")
-    private ChampionshipDriverParticipationResults results;
+    private DriverParticipationResults results;
 
     public Long getId() {
         return id;
@@ -47,11 +48,11 @@ public class ChampionshipDriverParticipation {
         this.championship = championship;
     }
 
-    public ChampionshipDriverParticipationResults getResults() {
+    public DriverParticipationResults getResults() {
         return results;
     }
 
-    public void setResults(ChampionshipDriverParticipationResults results) {
+    public void setResults(DriverParticipationResults results) {
         this.results = results;
     }
 }
