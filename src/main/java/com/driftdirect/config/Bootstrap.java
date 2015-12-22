@@ -17,6 +17,7 @@ import com.driftdirect.domain.round.Round;
 import com.driftdirect.domain.sponsor.Sponsor;
 import com.driftdirect.domain.user.Authorities;
 import com.driftdirect.domain.user.Role;
+import com.driftdirect.domain.user.User;
 import com.driftdirect.dto.championship.judge.JudgeParticipationCreateDto;
 import com.driftdirect.dto.championship.judge.PointsAllocationCreateDto;
 import com.driftdirect.dto.round.RoundScheduleCreateDto;
@@ -65,6 +66,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
     Team t;
     Sponsor demon;
     Sponsor raceTech;
+    User organizer;
 
     private Environment environment;
     private ConfigSettingRepository configSettingRepository;
@@ -199,6 +201,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         rules.setRules("Rules of the championship");
         rules.setVideoUrl("http://www.youtube.com");
         c.setRules(rules);
+        c.setOrganizer(organizer.getPerson());
         c.addNews(createNews("FANGA DAN WINS FIRST MANFEILD DRIFTING TITLE", "A shocking outcome", "http://d1nz.com/d1nz-news/309-fanga-dan-wins-first-manfeild-drifting-title", backgroundImage));
         c.addNews(createNews("D1 PRO-SPORT: BLAIR GRIBBLE-BOWRING WINS ON DEBUT", "at Manfeild Raceway in Feilding", "http://d1nz.com/d1nz-news/308-d1-pro-sport-blair-gribble-bowring-wins-on-debut", backgroundImage));
         c.addNews(createNews("WHITTAKER TOPS QUALIFYING AT MANFEILD - DEMON D1NZ ROUND 1 2015", "sponsored by redbull", "http://d1nz.com/d1nz-news/307-whittaker-tops-qualifying-at-manfeild-r1-2015", backgroundImage));
@@ -321,14 +324,14 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         Person judge2 = createPerson("Andra B", "Drifting judge", saveFile("/img/j2.jpg"), PersonType.Judge);
         Person judge3 = createPerson("Ioana f", "Drifting judge", saveFile("/img/j3.jpg"), PersonType.Judge);
 
-        DriverParticipation driverParticipation1 = createDriverParticipation(driver1, c1);
+//        DriverParticipation driverParticipation1 = createDriverParticipation(driver1, c1);
 //        DriverParticipation driverParticipation2 = createDriverParticipation(driver2, c1);
 
         createJudgeParticipation(judge1, c1, JudgeType.LINE, 30, 10);
         createJudgeParticipation(judge2, c1, JudgeType.ANGLE, 30, 10);
         createJudgeParticipation(judge3, c1, JudgeType.STYLE, 20);
 
-        createResult(driverParticipation1, 1, 200);
+//        createResult(driverParticipation1, 1, 200);
 //        createResult(driverParticipation2, 2, 150);
     }
 
@@ -340,6 +343,8 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         UserCreateDTO judge = new UserCreateDTO();
         judge.setUsername("judge");
         judge.setPassword("judge");
+        judge.setFirstName("Judge");
+        judge.setLastName("Drifting");
         judge.setEmail("paul.bochis@caca.com");
         judge.setRoles(new HashSet<>(Arrays.asList("ROLE_JUDGE")));
         try {
@@ -350,13 +355,31 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
             e.printStackTrace();
         }
 
+        UserCreateDTO organizer = new UserCreateDTO();
+        organizer.setUsername("org");
+        organizer.setPassword("org");
+        organizer.setEmail("paul.bochis@asd.com");
+        organizer.setFirstName("Flo");
+        organizer.setLastName("Coz");
+        organizer.setRoles(new HashSet<>(Arrays.asList(Authorities.ROLE_ORGANIZER)));
+        try {
+            this.organizer = userService.createFromDto(organizer);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         UserCreateDTO admin = new UserCreateDTO();
         admin.setUsername("admin");
         admin.setPassword("admin");
+        admin.setFirstName("App");
+        admin.setLastName("Admin");
         admin.setEmail("paul.bochis@gmail.com");
         admin.setRoles(new HashSet<>(Arrays.asList("ROLE_ADMIN")));
         try {
             userService.createFromDto(admin);
+            int a = 2;
         } catch (MessagingException e) {
             e.printStackTrace();
         } catch (IOException e) {

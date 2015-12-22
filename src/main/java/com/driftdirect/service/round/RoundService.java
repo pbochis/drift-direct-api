@@ -9,7 +9,7 @@ import com.driftdirect.dto.round.RoundScheduleCreateDto;
 import com.driftdirect.dto.round.RoundShowDto;
 import com.driftdirect.dto.round.RoundUpdateDto;
 import com.driftdirect.dto.round.track.TrackCreateDto;
-import com.driftdirect.mapper.RoundMapper;
+import com.driftdirect.mapper.round.RoundMapper;
 import com.driftdirect.repository.FileRepository;
 import com.driftdirect.repository.championship.ChampionshipRepository;
 import com.driftdirect.repository.round.RoundRepository;

@@ -20,6 +20,8 @@ public class RestUrls {
     public static final String ROUND_ID_TRACK = "/round/{id}/track";
     public static final String ROUND_ID_REGISTER = "/round/{roundId}/register/{driverId}";
 
+    public static final String QUALIFIER_ID = "/qualifier/{id}";
+
     public static final String USER = "/user";
 
     public static final String PERSON = "/person";

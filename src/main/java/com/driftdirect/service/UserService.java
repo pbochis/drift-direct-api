@@ -42,7 +42,7 @@ public class UserService {
         this.personRepository = personRepository;
     }
 
-    public void createFromDto(UserCreateDTO dto) throws MessagingException, IOException {
+    public User createFromDto(UserCreateDTO dto) throws MessagingException, IOException {
         Person person = new Person();
         person.setFirstName(dto.getFirstName());
         person.setLastName(dto.getLastName());
@@ -63,7 +63,7 @@ public class UserService {
         }
         user.setRoles(roles);
         notifyNewUser(user.getEmail(), password);
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
     private void notifyNewUser(String email, String password) throws MessagingException, IOException {

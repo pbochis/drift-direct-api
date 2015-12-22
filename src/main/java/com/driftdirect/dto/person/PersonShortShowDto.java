@@ -1,5 +1,8 @@
 package com.driftdirect.dto.person;
 
+import com.driftdirect.dto.person.driver.DriverDetailsShortShowDto;
+import org.joda.time.DateTime;
+
 /**
  * Created by Paul on 11/23/2015.
  */
@@ -8,8 +11,12 @@ public class PersonShortShowDto {
     private Long id;
     private String firstName;
     private String lastName;
+    private String nick;
+    private DateTime birthDate;
     private String description;
     private Long profilePicture;
+
+    private DriverDetailsShortShowDto driverDetails;
 
     public String getDescription() {
         return description;
@@ -49,5 +56,29 @@ public class PersonShortShowDto {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getNick() {
+        return nick;
+    }
+
+    public void setNick(String nick) {
+        this.nick = nick;
+    }
+
+    public DateTime getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(DateTime birthDate) {
+        this.birthDate = birthDate;
+    }
+
+    public DriverDetailsShortShowDto getDriverDetails() {
+        return driverDetails;
+    }
+
+    public void setDriverDetails(DriverDetailsShortShowDto driverDetails) {
+        this.driverDetails = driverDetails;
     }
 }

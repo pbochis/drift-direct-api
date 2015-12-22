@@ -1,4 +1,4 @@
-package com.driftdirect.dto.person;
+package com.driftdirect.dto.person.driver;
 
 import com.driftdirect.dto.team.TeamShowDto;
 

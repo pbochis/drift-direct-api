@@ -26,7 +26,9 @@ public class RunJudging {
 
     @ManyToOne
     private JudgeParticipation judge;
-    private int points;
+
+    @OneToMany
+    private List<AwardedPoints> awardedPoints = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -59,12 +61,13 @@ public class RunJudging {
         this.judge = judge;
     }
 
-    public int getPoints() {
-        return points;
+    public List<AwardedPoints> getAwardedPoints() {
+        return awardedPoints;
     }
 
-    public void setPoints(int points) {
-        this.points = points;
+    public void setAwardedPoints(List<AwardedPoints> awardedPoints) {
+        this.awardedPoints.clear();
+        this.awardedPoints.addAll(awardedPoints);
     }
 
     public List<Comment> getComments() {
@@ -74,5 +77,13 @@ public class RunJudging {
     public void setComments(List<Comment> comments) {
         this.comments.clear();
         this.comments.addAll(comments);
+    }
+
+    public int getTotalPoints(){
+        int totalPoints = 0;
+        for (AwardedPoints points: this.awardedPoints){
+            totalPoints += points.getAwardedPoints();
+        }
+        return totalPoints;
     }
 }

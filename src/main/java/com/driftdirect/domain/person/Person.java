@@ -24,6 +24,7 @@ public class Person {
     private String firstName;
     @NotNull
     private String lastName;
+    private String nick;
     private String telephone;
 
     @Column(name = "birth_date")
@@ -50,7 +51,7 @@ public class Person {
     @OneToOne(optional = true)
     private DriverDetails driverDetails;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "organizer")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "organizer")
     private List<Championship> championships;
 
     public DriverDetails getDriverDetails() {
@@ -163,6 +164,14 @@ public class Person {
 
     public void setChampionships(List<Championship> championships) {
         this.championships = championships;
+    }
+
+    public String getNick() {
+        return nick;
+    }
+
+    public void setNick(String nick) {
+        this.nick = nick;
     }
 
     @Override

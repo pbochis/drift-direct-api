@@ -1,6 +1,7 @@
 package com.driftdirect.dto.person;
 
 import com.driftdirect.dto.country.CountryShowDto;
+import com.driftdirect.dto.person.driver.DriverDetailsDto;
 import org.joda.time.DateTime;
 
 /**

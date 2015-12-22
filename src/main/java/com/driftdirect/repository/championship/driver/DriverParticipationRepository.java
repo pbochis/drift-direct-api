@@ -10,9 +10,9 @@ import org.springframework.data.repository.query.Param;
  */
 public interface DriverParticipationRepository extends JpaRepository<DriverParticipation, Long> {
 
-    @Query("Select p From DriverParticipation p " +
-            "JOIN p.championship c " +
-            "JOIN p.driver d WHERE d.id=:driverId and c.id=:championshipId")
+    @Query("Select participation From DriverParticipation participation " +
+            "JOIN participation.championship championship " +
+            "JOIN participation.driver driver WHERE driver.id=:driverId and championship.id=:championshipId")
     public DriverParticipation findByChampionshipIdAndDriverId(@Param(value = "championshipId") Long championshipId,
                                                                @Param(value = "driverId") Long driverId);
 }

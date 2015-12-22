@@ -1,5 +1,6 @@
 package com.driftdirect.dto.round;
 
+import com.driftdirect.dto.round.qualifier.QualifierShortDto;
 import com.driftdirect.dto.round.track.TrackDto;
 import org.joda.time.DateTime;
 
@@ -17,6 +18,16 @@ public class RoundShowDto {
     private String ticketsUrl;
     private TrackDto track;
     private List<RoundScheduleEntryShowDto> schedule;
+
+    private List<QualifierShortDto> qualifiers;
+
+    public List<QualifierShortDto> getQualifiers() {
+        return qualifiers;
+    }
+
+    public void setQualifiers(List<QualifierShortDto> qualifiers) {
+        this.qualifiers = qualifiers;
+    }
 
     public List<RoundScheduleEntryShowDto> getSchedule() {
         return schedule;

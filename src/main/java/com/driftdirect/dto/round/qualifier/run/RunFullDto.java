@@ -1,23 +1,16 @@
-package com.driftdirect.domain.round.qualifiers;
+package com.driftdirect.dto.round.qualifier.run;
 
-import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Paul on 12/15/2015.
+ * Created by Paul on 12/21/2015.
  */
-@Entity
-public class Run {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class RunFullDto {
     private Long id;
-
     private float entrySpeed;
     private int totalPoints;
 
-    @OneToMany
-    private List<RunJudging> judgings = new ArrayList<>();
+    private List<RunJudgingDto> judgings;
 
     public Long getId() {
         return id;
@@ -35,20 +28,19 @@ public class Run {
         this.entrySpeed = entrySpeed;
     }
 
-    public List<RunJudging> getJudgings() {
-        return judgings;
-    }
-
-    public void setJudgings(List<RunJudging> judgings) {
-        this.judgings.clear();
-        this.judgings.addAll(judgings);
-    }
-
     public int getTotalPoints() {
         return totalPoints;
     }
 
     public void setTotalPoints(int totalPoints) {
         this.totalPoints = totalPoints;
+    }
+
+    public List<RunJudgingDto> getJudgings() {
+        return judgings;
+    }
+
+    public void setJudgings(List<RunJudgingDto> judgings) {
+        this.judgings = judgings;
     }
 }
