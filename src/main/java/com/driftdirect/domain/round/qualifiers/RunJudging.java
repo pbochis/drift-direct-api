@@ -13,10 +13,8 @@ import java.util.List;
 @Entity
 @Table(name = "run_judging")
 public class RunJudging {
-    // entry speed e judge 3(angle)
-    // judge 3(angle) trebuie sa aiba chestiile alea -> pointsAllocation
-    // raman 3 tipuri de judge. Singura chestie flexibila e nr de puncte per judge (30 - 10 de la line judge)
-    // 
+    // TODO: entry speed e judge 3(angle)
+    //
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,7 +25,7 @@ public class RunJudging {
     @ManyToOne
     private JudgeParticipation judge;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<AwardedPoints> awardedPoints = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -70,6 +68,10 @@ public class RunJudging {
         this.awardedPoints.addAll(awardedPoints);
     }
 
+    public void addAwardedPoints(AwardedPoints awardedPoints) {
+        this.awardedPoints.add(awardedPoints);
+    }
+
     public List<Comment> getComments() {
         return comments;
     }
@@ -79,6 +81,9 @@ public class RunJudging {
         this.comments.addAll(comments);
     }
 
+    public void addComment(Comment comment) {
+        this.comments.add(comment);
+    }
     public int getTotalPoints(){
         int totalPoints = 0;
         for (AwardedPoints points: this.awardedPoints){

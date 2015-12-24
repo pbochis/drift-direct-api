@@ -2,6 +2,8 @@ package com.driftdirect.dto.championship.judge;
 
 import com.driftdirect.dto.person.PersonShortShowDto;
 
+import java.util.List;
+
 /**
  * Created by Paul on 12/1/2015.
  */
@@ -9,6 +11,8 @@ public class JudgeParticipationDto {
     private Long id;
     private PersonShortShowDto judge;
     private String judgeType;
+
+    private List<PointsAllocationDto> pointsAllocations;
 
     public Long getId() {
         return id;
@@ -32,5 +36,13 @@ public class JudgeParticipationDto {
 
     public void setJudgeType(String judgeType) {
         this.judgeType = judgeType;
+    }
+
+    public List<PointsAllocationDto> getPointsAllocations() {
+        return pointsAllocations;
+    }
+
+    public void setPointsAllocations(List<PointsAllocationDto> pointsAllocations) {
+        this.pointsAllocations = pointsAllocations;
     }
 }

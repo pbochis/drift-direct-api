@@ -13,6 +13,7 @@ public class SponsorCreateDto {
     private String name;
     private String description;
     private String url;
+    private Long logo;
 
     public String getUrl() {
         return url;
@@ -36,5 +37,13 @@ public class SponsorCreateDto {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Long getLogo() {
+        return logo;
+    }
+
+    public void setLogo(Long logo) {
+        this.logo = logo;
     }
 }

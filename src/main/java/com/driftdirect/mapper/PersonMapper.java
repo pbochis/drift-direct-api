@@ -1,9 +1,9 @@
 package com.driftdirect.mapper;
 
 import com.driftdirect.domain.person.Person;
-import com.driftdirect.dto.person.driver.DriverDetailsDto;
 import com.driftdirect.dto.person.PersonFullDto;
 import com.driftdirect.dto.person.PersonShortShowDto;
+import com.driftdirect.dto.person.driver.DriverDetailsDto;
 import com.driftdirect.dto.person.driver.DriverDetailsShortShowDto;
 
 /**
@@ -19,6 +19,9 @@ public class PersonMapper {
         dto.setProfilePicture(person.getProfilePicture().getId());
         dto.setNick(person.getNick());
         dto.setBirthDate(person.getBirthDate());
+        if (person.getCountry() != null) {
+            dto.setCountry(person.getCountry().getFlag().getId());
+        }
         if (person.getDriverDetails() != null){
             DriverDetailsShortShowDto driverDetails = new DriverDetailsShortShowDto();
             driverDetails.setId(person.getDriverDetails().getId());

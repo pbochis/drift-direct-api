@@ -6,7 +6,9 @@ import com.driftdirect.domain.championship.Championship;
 import com.driftdirect.domain.championship.ChampionshipRules;
 import com.driftdirect.domain.championship.driver.DriverParticipation;
 import com.driftdirect.domain.championship.driver.DriverParticipationResults;
+import com.driftdirect.domain.championship.judge.JudgeParticipation;
 import com.driftdirect.domain.championship.judge.JudgeType;
+import com.driftdirect.domain.championship.judge.PointsAllocation;
 import com.driftdirect.domain.driver.DriverDetails;
 import com.driftdirect.domain.driver.Team;
 import com.driftdirect.domain.file.File;
@@ -14,13 +16,17 @@ import com.driftdirect.domain.news.News;
 import com.driftdirect.domain.person.Person;
 import com.driftdirect.domain.person.PersonType;
 import com.driftdirect.domain.round.Round;
+import com.driftdirect.domain.round.qualifiers.Qualifier;
 import com.driftdirect.domain.sponsor.Sponsor;
 import com.driftdirect.domain.user.Authorities;
 import com.driftdirect.domain.user.Role;
 import com.driftdirect.domain.user.User;
 import com.driftdirect.dto.championship.judge.JudgeParticipationCreateDto;
 import com.driftdirect.dto.championship.judge.PointsAllocationCreateDto;
+import com.driftdirect.dto.comment.CommentCreateDto;
 import com.driftdirect.dto.round.RoundScheduleCreateDto;
+import com.driftdirect.dto.round.qualifier.run.AwardedPointsCreateDto;
+import com.driftdirect.dto.round.qualifier.run.RunJudgingCreateDto;
 import com.driftdirect.dto.round.track.TrackCreateDto;
 import com.driftdirect.dto.user.UserCreateDTO;
 import com.driftdirect.repository.*;
@@ -33,6 +39,7 @@ import com.driftdirect.repository.round.track.TrackLayoutRepository;
 import com.driftdirect.service.UserService;
 import com.driftdirect.service.championship.judge.JudgeParticipationService;
 import com.driftdirect.service.round.RoundService;
+import com.driftdirect.service.round.qualifier.QualifierService;
 import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -94,6 +101,9 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
     @Autowired
     private TrackLayoutRepository trackLayoutRepository;
+
+    @Autowired
+    private QualifierService qualifierService;
 
     @Autowired
     private JudgeParticipationService judgeParticipationService;
@@ -320,71 +330,90 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         Round r4 = createRound("Round 1 - C2", "www.google.com", null, c2, fCiob, 2016, 12);
 
         Person driver1 = createDriver("Florin Cozmuta", saveFile("/img/kimi.jpg"));
+
         Person judge1 = createPerson("Diana V", "Drifitng judge", saveFile("/img/j1.jpg"), PersonType.Judge);
-        Person judge2 = createPerson("Andra B", "Drifting judge", saveFile("/img/j2.jpg"), PersonType.Judge);
-        Person judge3 = createPerson("Ioana f", "Drifting judge", saveFile("/img/j3.jpg"), PersonType.Judge);
-
-//        DriverParticipation driverParticipation1 = createDriverParticipation(driver1, c1);
-//        DriverParticipation driverParticipation2 = createDriverParticipation(driver2, c1);
-
+        createUser("line", "line", "judge@judge.org", Authorities.ROLE_JUDGE, judge1.getId());
         createJudgeParticipation(judge1, c1, JudgeType.LINE, 30, 10);
+
+        Person judge2 = createPerson("Andra B", "Drifting judge", saveFile("/img/j2.jpg"), PersonType.Judge);
+        createUser("angle", "angle", "judge@angle.org", Authorities.ROLE_JUDGE, judge2.getId());
         createJudgeParticipation(judge2, c1, JudgeType.ANGLE, 30, 10);
+
+        Person judge3 = createPerson("Ioana f", "Drifting judge", saveFile("/img/j3.jpg"), PersonType.Judge);
+        createUser("style", "style", "judge@style.org", Authorities.ROLE_JUDGE, judge3.getId());
         createJudgeParticipation(judge3, c1, JudgeType.STYLE, 20);
 
-//        createResult(driverParticipation1, 1, 200);
-//        createResult(driverParticipation2, 2, 150);
+        Qualifier qualifier = qualifierService.registerDriver(r1.getId(), driver1.getId());
+//        for (JudgeParticipation jp : c1.getJudges()) {
+//            submitRunJudging(qualifier, jp);
+//        }
     }
 
-    private void initDevUsersAndRoles(){
+    private void submitRunJudging(Qualifier qualifier, JudgeParticipation judge) {
+        RunJudgingCreateDto dto = new RunJudgingCreateDto();
+        List<AwardedPointsCreateDto> awardedPoints = new ArrayList<>();
+        for (PointsAllocation allocation : judge.getPointsAllocations()) {
+            AwardedPointsCreateDto points = new AwardedPointsCreateDto();
+            points.setAwardedPoints(allocation.getMaxPoints() - 5);
+            points.setPointsAllocation(allocation.getId());
+            awardedPoints.add(points);
+        }
+        dto.setAwardedPoints(awardedPoints);
+        List<CommentCreateDto> comments = new ArrayList<>();
+        comments.add(createComment("Good run", true));
+        comments.add(createComment("Slow run", false));
+        dto.setComments(comments);
+        qualifierService.submitRunJudging(qualifier.getId(), qualifier.getFirstRun().getId(), dto, judge.getJudge());
+    }
+
+    private CommentCreateDto createComment(String comment, boolean positive) {
+        CommentCreateDto dto = new CommentCreateDto();
+        dto.setComment(comment);
+        dto.setPositive(positive);
+        return dto;
+    }
+
+    private User createUser(String userName, String password, String email, String role, Long personId) {
+        UserCreateDTO user = new UserCreateDTO();
+        user.setUsername(userName);
+        user.setPassword(password);
+        user.setEmail(email);
+        user.setRoles(new HashSet<>(Arrays.asList(role)));
+        try {
+            return userService.createFromDto(user, personId);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private User createUser(String userName, String password, String firstName, String lastName, String email, String role) {
+        UserCreateDTO user = new UserCreateDTO();
+        user.setUsername(userName);
+        user.setPassword(password);
+        user.setEmail(email);
+        user.setRoles(new HashSet<>(Arrays.asList(role)));
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        try {
+            return userService.createFromDto(user);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private void initDevUsersAndRoles() {
         Role adminRole = roleRepository.save(new Role(Authorities.ROLE_ADMIN));
         Role orgRole = roleRepository.save(new Role(Authorities.ROLE_ORGANIZER));
         Role judgeRole = roleRepository.save(new Role(Authorities.ROLE_JUDGE));
 
-        UserCreateDTO judge = new UserCreateDTO();
-        judge.setUsername("judge");
-        judge.setPassword("judge");
-        judge.setFirstName("Judge");
-        judge.setLastName("Drifting");
-        judge.setEmail("paul.bochis@caca.com");
-        judge.setRoles(new HashSet<>(Arrays.asList("ROLE_JUDGE")));
-        try {
-            userService.createFromDto(judge);
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        UserCreateDTO organizer = new UserCreateDTO();
-        organizer.setUsername("org");
-        organizer.setPassword("org");
-        organizer.setEmail("paul.bochis@asd.com");
-        organizer.setFirstName("Flo");
-        organizer.setLastName("Coz");
-        organizer.setRoles(new HashSet<>(Arrays.asList(Authorities.ROLE_ORGANIZER)));
-        try {
-            this.organizer = userService.createFromDto(organizer);
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        UserCreateDTO admin = new UserCreateDTO();
-        admin.setUsername("admin");
-        admin.setPassword("admin");
-        admin.setFirstName("App");
-        admin.setLastName("Admin");
-        admin.setEmail("paul.bochis@gmail.com");
-        admin.setRoles(new HashSet<>(Arrays.asList("ROLE_ADMIN")));
-        try {
-            userService.createFromDto(admin);
-            int a = 2;
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        createUser("judge", "judge", "Judge", "drifting", "paul.caca@caca.com", "ROLE_JUDGE");
+        this.organizer = createUser("org", "org", "Flo", "Coz", "paul.asdca@caca.com", Authorities.ROLE_ORGANIZER);
+        createUser("admin", "admin", "Flo", "Coz", "paul.cafds@caca.com", Authorities.ROLE_ADMIN);
     }
-
 }

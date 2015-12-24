@@ -103,4 +103,12 @@ public class JudgeParticipation {
         }
         return points;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof JudgeParticipation)) {
+            return false;
+        }
+        return ((JudgeParticipation) obj).getId().equals(this.id);
+    }
 }

@@ -21,6 +21,7 @@ public class RestUrls {
     public static final String ROUND_ID_REGISTER = "/round/{roundId}/register/{driverId}";
 
     public static final String QUALIFIER_ID = "/qualifier/{id}";
+    public static final String QUALIFIER_ID_SUBMIT = "/qualifier/{id}/submit/run/{runId}";
 
     public static final String USER = "/user";
 

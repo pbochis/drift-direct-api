@@ -5,6 +5,7 @@ import com.driftdirect.dto.sponsor.SponsorCreateDto;
 import com.driftdirect.dto.sponsor.SponsorShowDto;
 import com.driftdirect.dto.sponsor.SponsorUpdateDto;
 import com.driftdirect.mapper.SponsorMapper;
+import com.driftdirect.repository.FileRepository;
 import com.driftdirect.repository.SponsorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,18 +20,20 @@ import java.util.List;
 @Transactional
 public class SponsorService {
     private SponsorRepository sponsorRepository;
+    private FileRepository fileRepository;
 
     @Autowired
-    public SponsorService(SponsorRepository sponsorRepository){
+    public SponsorService(SponsorRepository sponsorRepository, FileRepository fileRepository) {
         this.sponsorRepository = sponsorRepository;
+        this.fileRepository = fileRepository;
     }
 
     public void createFromDto(SponsorCreateDto dto){
-        //TODO: add file here
         Sponsor sponsor = new Sponsor();
         sponsor.setName(dto.getName());
         sponsor.setDescription(dto.getDescription());
         sponsor.setUrl(dto.getUrl());
+        sponsor.setLogo(fileRepository.findOne(dto.getLogo()));
         sponsorRepository.save(sponsor);
     }
 

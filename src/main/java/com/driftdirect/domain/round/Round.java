@@ -18,7 +18,6 @@ import java.util.TreeSet;
  */
 @Entity
 public class Round implements Comparable<Round> {
-    //TODO: TRY UPDATE WITH DTO
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;

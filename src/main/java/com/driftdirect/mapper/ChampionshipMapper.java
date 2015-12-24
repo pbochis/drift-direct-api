@@ -3,6 +3,7 @@ package com.driftdirect.mapper;
 import com.driftdirect.domain.championship.Championship;
 import com.driftdirect.domain.championship.driver.DriverParticipation;
 import com.driftdirect.domain.championship.judge.JudgeParticipation;
+import com.driftdirect.domain.championship.judge.PointsAllocation;
 import com.driftdirect.domain.round.Round;
 import com.driftdirect.dto.championship.ChampionshipFullDto;
 import com.driftdirect.dto.championship.ChampionshipRulesDto;
@@ -10,6 +11,7 @@ import com.driftdirect.dto.championship.ChampionshipShortShowDto;
 import com.driftdirect.dto.championship.driver.DriverParticipationDto;
 import com.driftdirect.dto.championship.driver.DriverParticipationResultsDto;
 import com.driftdirect.dto.championship.judge.JudgeParticipationDto;
+import com.driftdirect.dto.championship.judge.PointsAllocationDto;
 import com.driftdirect.dto.round.RoundShortShowDto;
 import com.driftdirect.dto.round.RoundStatus;
 import com.driftdirect.mapper.round.RoundMapper;
@@ -102,6 +104,18 @@ public class ChampionshipMapper {
         dto.setJudge(PersonMapper.mapShort(participation.getJudge()));
         dto.setId(participation.getId());
         dto.setJudgeType(participation.getTitle());
+        dto.setPointsAllocations(participation.getPointsAllocations()
+                .stream()
+                .map(ChampionshipMapper::mapPointsAllocation)
+                .collect(Collectors.toList()));
+        return dto;
+    }
+
+    public static PointsAllocationDto mapPointsAllocation(PointsAllocation pointsAllocation) {
+        PointsAllocationDto dto = new PointsAllocationDto();
+        dto.setId(pointsAllocation.getId());
+        dto.setName(pointsAllocation.getName());
+        dto.setMaxPoints(pointsAllocation.getMaxPoints());
         return dto;
     }
 

@@ -15,6 +15,7 @@ public class PersonShortShowDto {
     private DateTime birthDate;
     private String description;
     private Long profilePicture;
+    private Long country;
 
     private DriverDetailsShortShowDto driverDetails;
 
@@ -80,5 +81,13 @@ public class PersonShortShowDto {
 
     public void setDriverDetails(DriverDetailsShortShowDto driverDetails) {
         this.driverDetails = driverDetails;
+    }
+
+    public Long getCountry() {
+        return country;
+    }
+
+    public void setCountry(Long country) {
+        this.country = country;
     }
 }

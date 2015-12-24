@@ -16,7 +16,7 @@ public class Run {
     private float entrySpeed;
     private int totalPoints;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<RunJudging> judgings = new ArrayList<>();
 
     public Long getId() {
@@ -42,6 +42,14 @@ public class Run {
     public void setJudgings(List<RunJudging> judgings) {
         this.judgings.clear();
         this.judgings.addAll(judgings);
+    }
+
+    public void addJudging(RunJudging runJudging) {
+        this.judgings.add(runJudging);
+    }
+
+    public void addPoints(int points) {
+        this.totalPoints += points;
     }
 
     public int getTotalPoints() {

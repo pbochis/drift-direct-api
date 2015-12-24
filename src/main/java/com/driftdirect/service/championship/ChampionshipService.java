@@ -1,6 +1,7 @@
 package com.driftdirect.service.championship;
 
 import com.driftdirect.domain.championship.Championship;
+import com.driftdirect.domain.championship.driver.DriverParticipation;
 import com.driftdirect.domain.news.News;
 import com.driftdirect.domain.user.User;
 import com.driftdirect.dto.championship.ChampionshipCreateDTO;
@@ -103,7 +104,8 @@ public class ChampionshipService{
     }
 
     public DriverParticipationDto findDriver(Long championshipId, Long driverId) {
-        return ChampionshipMapper.mapDriverParticipation(driverParticipationRepository.findByChampionshipIdAndDriverId(championshipId, driverId));
+        DriverParticipation part = driverParticipationRepository.findByChampionshipIdAndDriverId(championshipId, driverId);
+        return ChampionshipMapper.mapDriverParticipation(part);
     }
 
     public List<JudgeParticipationDto> findJudges(Long championshipId) {

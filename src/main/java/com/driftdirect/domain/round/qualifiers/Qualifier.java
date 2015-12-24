@@ -15,10 +15,11 @@ public class Qualifier {
     private Long id;
     @ManyToOne
     private Person driver;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Run firstRun;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Run secondRun;
+
     private int finalScore;
 
     @ManyToOne

@@ -1,16 +1,18 @@
 package com.driftdirect.controller;
 
-import com.driftdirect.domain.round.qualifiers.Qualifier;
+import com.driftdirect.domain.user.Authorities;
+import com.driftdirect.domain.user.User;
 import com.driftdirect.dto.round.qualifier.QualifierFullDto;
+import com.driftdirect.dto.round.qualifier.run.RunJudgingCreateDto;
+import com.driftdirect.security.SecurityService;
 import com.driftdirect.service.round.qualifier.QualifierService;
 import com.driftdirect.util.RestUrls;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Created by Paul on 12/22/2015.
@@ -18,14 +20,29 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class QualifierController {
     private QualifierService qualifierService;
+    private SecurityService securityService;
 
     @Autowired
-    public QualifierController(QualifierService qualifierService){
+    public QualifierController(QualifierService qualifierService, SecurityService securityService) {
         this.qualifierService = qualifierService;
+        this.securityService = securityService;
     }
 
     @RequestMapping(value = RestUrls.QUALIFIER_ID, method = RequestMethod.GET)
     public ResponseEntity<QualifierFullDto> getQualifier(@PathVariable Long id){
         return new ResponseEntity<QualifierFullDto>(qualifierService.findQualifier(id), HttpStatus.OK);
+    }
+
+    @Secured(Authorities.ROLE_JUDGE)
+    @RequestMapping(value = RestUrls.QUALIFIER_ID_SUBMIT, method = RequestMethod.POST)
+    public ResponseEntity submitFirstRunJudging(@PathVariable(value = "id") Long id,
+                                                @PathVariable(value = "runId") Long runId,
+                                                @RequestBody RunJudgingCreateDto runJudging,
+                                                @AuthenticationPrincipal User currentUser) {
+        if (!securityService.canJudgeQualifier(currentUser, id)) {
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+        }
+        qualifierService.submitRunJudging(id, runId, runJudging, currentUser.getPerson());
+        return new ResponseEntity(HttpStatus.OK);
     }
 }

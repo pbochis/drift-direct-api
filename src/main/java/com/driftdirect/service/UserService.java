@@ -42,11 +42,20 @@ public class UserService {
         this.personRepository = personRepository;
     }
 
+    public User createFromDto(UserCreateDTO dto, Long personId) throws IOException, MessagingException {
+        Person person = personRepository.findOne(personId);
+        return createUser(dto, person);
+    }
+
     public User createFromDto(UserCreateDTO dto) throws MessagingException, IOException {
         Person person = new Person();
         person.setFirstName(dto.getFirstName());
         person.setLastName(dto.getLastName());
         person = personRepository.save(person);
+        return createUser(dto, person);
+    }
+
+    private User createUser(UserCreateDTO dto, Person person) throws IOException, MessagingException {
         User user = new User();
         user.setPerson(person);
         user.setUsername(dto.getUsername());
@@ -64,6 +73,7 @@ public class UserService {
         user.setRoles(roles);
         notifyNewUser(user.getEmail(), password);
         return userRepository.save(user);
+
     }
 
     private void notifyNewUser(String email, String password) throws MessagingException, IOException {

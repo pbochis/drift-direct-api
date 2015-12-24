@@ -1,11 +1,9 @@
 package com.driftdirect.mapper.round.qualifier;
 
-import com.driftdirect.domain.championship.judge.PointsAllocation;
 import com.driftdirect.domain.round.qualifiers.AwardedPoints;
 import com.driftdirect.domain.round.qualifiers.Qualifier;
 import com.driftdirect.domain.round.qualifiers.Run;
 import com.driftdirect.domain.round.qualifiers.RunJudging;
-import com.driftdirect.dto.championship.judge.PointsAllocationDto;
 import com.driftdirect.dto.round.qualifier.QualifierFullDto;
 import com.driftdirect.dto.round.qualifier.QualifierShortDto;
 import com.driftdirect.dto.round.qualifier.run.AwardedPointsDto;
@@ -14,7 +12,6 @@ import com.driftdirect.dto.round.qualifier.run.RunJudgingDto;
 import com.driftdirect.mapper.ChampionshipMapper;
 import com.driftdirect.mapper.PersonMapper;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,12 +22,8 @@ public class QualifierMapper {
 
     private static void mapInternal(QualifierShortDto dto, Qualifier qualifier){
         dto.setId(qualifier.getId());
-        dto.setFirstName(qualifier.getDriver().getFirstName());
-        dto.setLastName(qualifier.getDriver().getLastName());
-        dto.setNick(qualifier.getDriver().getNick());
+        dto.setDriver(PersonMapper.mapShort(qualifier.getDriver()));
         dto.setPoints(qualifier.getFinalScore() > 0 ? qualifier.getFinalScore() : null);
-        dto.setProfilePicture(qualifier.getDriver().getProfilePicture().getId());
-        dto.setCountry(qualifier.getDriver().getCountry().getFlag().getId());
     }
 
     public static QualifierFullDto mapFull(Qualifier qualifier){
@@ -74,15 +67,7 @@ public class QualifierMapper {
         AwardedPointsDto dto = new AwardedPointsDto();
         dto.setId(awardedPoints.getId());
         dto.setAwardedPoints(awardedPoints.getAwardedPoints());
-        dto.setPointsAllocation(mapPointsAllocation(awardedPoints.getAllocation()));
-        return dto;
-    }
-
-    private static PointsAllocationDto mapPointsAllocation(PointsAllocation pointsAllocation){
-        PointsAllocationDto dto = new PointsAllocationDto();
-        dto.setId(pointsAllocation.getId());
-        dto.setName(pointsAllocation.getName());
-        dto.setMaxPoints(pointsAllocation.getMaxPoints());
+        dto.setPointsAllocation(ChampionshipMapper.mapPointsAllocation(awardedPoints.getAllocation()));
         return dto;
     }
 
