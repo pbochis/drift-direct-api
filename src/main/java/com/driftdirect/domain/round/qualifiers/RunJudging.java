@@ -13,8 +13,6 @@ import java.util.List;
 @Entity
 @Table(name = "run_judging")
 public class RunJudging {
-    // TODO: entry speed e judge 3(angle)
-    //
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

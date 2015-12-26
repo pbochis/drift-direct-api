@@ -11,6 +11,7 @@ import com.driftdirect.dto.round.qualifier.run.RunFullDto;
 import com.driftdirect.dto.round.qualifier.run.RunJudgingDto;
 import com.driftdirect.mapper.ChampionshipMapper;
 import com.driftdirect.mapper.PersonMapper;
+import com.driftdirect.mapper.comment.CommentMapper;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -60,6 +61,10 @@ public class QualifierMapper {
                 .collect(Collectors.toList())
         );
         dto.setJudgeParticipation(ChampionshipMapper.mapJudgeParticipation(runJudging.getJudge()));
+        dto.setComments(runJudging.getComments()
+                .stream()
+                .map(CommentMapper::map)
+                .collect(Collectors.toList()));
         return dto;
     }
 
