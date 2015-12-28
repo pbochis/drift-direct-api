@@ -74,7 +74,6 @@ public class UserService {
         }else{
             user.setUsername(dto.getEmail());
         }
-        user.setUsername(dto.getUsername());
         String password = dto.getPassword();
         if (password == null){
             password = RandomStringUtils.random(8, true, true);
@@ -83,8 +82,8 @@ public class UserService {
         user.setEmail(dto.getEmail());
         user.setEnabled(true);
         Set<Role> roles = new HashSet<>();
-        for (String role: dto.getRoles()){
-            roles.add(roleRepository.findRoleByAuthority(role));
+        for (Long role: dto.getRoles()){
+            roles.add(roleRepository.findOne(role));
         }
         user.setRoles(roles);
         notifyNewUser(user.getEmail(), password);

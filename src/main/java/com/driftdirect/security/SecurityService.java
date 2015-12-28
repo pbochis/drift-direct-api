@@ -5,6 +5,7 @@ import com.driftdirect.domain.round.qualifiers.Qualifier;
 import com.driftdirect.domain.user.Authorities;
 import com.driftdirect.domain.user.Role;
 import com.driftdirect.domain.user.User;
+import com.driftdirect.repository.RoleRepository;
 import com.driftdirect.repository.round.RoundRepository;
 import com.driftdirect.repository.round.qualifier.QualifierRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -28,11 +30,17 @@ public class SecurityService {
     @Autowired
     private QualifierRepository qualifierRepository;
 
+    @Autowired
+    private RoleRepository roleRepository;
+
     public User currentUser(){
         return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
-    public boolean canCreateUser(User user, Set<String> roles){
+    public boolean canCreateUser(User user, Set<Long> createdRoles){
+        List<String> roles = createdRoles.stream()
+                .map(e -> roleRepository.findOne(e).getAuthority())
+                .collect(Collectors.toList());
         Set<String> userAuthorities = user.getRoles().stream().map(Role::getAuthority).collect(Collectors.toSet());
         if (roles.contains(Authorities.ROLE_ADMIN) && !userAuthorities.contains(Authorities.ROLE_ADMIN)){
             return false;

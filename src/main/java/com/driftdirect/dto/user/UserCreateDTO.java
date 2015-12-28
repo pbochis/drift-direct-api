@@ -22,7 +22,7 @@ public class UserCreateDTO {
 
 
     @Size(min = 1)
-    private Set<String> roles;
+    private Set<Long> roles;
 
     public String getFirstName() {
         return firstName;
@@ -40,11 +40,11 @@ public class UserCreateDTO {
         this.lastName = lastName;
     }
 
-    public Set<String> getRoles() {
+    public Set<Long> getRoles() {
         return roles;
     }
 
-    public void setRoles(Set<String> roles) {
+    public void setRoles(Set<Long> roles) {
         this.roles = roles;
     }
 

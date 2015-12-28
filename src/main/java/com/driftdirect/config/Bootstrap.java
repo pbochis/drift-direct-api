@@ -9,6 +9,7 @@ import com.driftdirect.domain.championship.driver.DriverParticipationResults;
 import com.driftdirect.domain.championship.judge.JudgeParticipation;
 import com.driftdirect.domain.championship.judge.JudgeType;
 import com.driftdirect.domain.championship.judge.PointsAllocation;
+import com.driftdirect.domain.comment.Comment;
 import com.driftdirect.domain.driver.DriverDetails;
 import com.driftdirect.domain.driver.Team;
 import com.driftdirect.domain.file.File;
@@ -107,6 +108,10 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
     @Autowired
     private JudgeParticipationService judgeParticipationService;
+
+    @Autowired
+    private CommentRepository commentRepository;
+
     @Autowired
     public Bootstrap(
             ConfigSettingRepository configSettingRepository, RoleRepository roleRepository,
@@ -334,26 +339,26 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         Person driver1 = createDriver("Florin Cozmuta", saveFile("/img/kimi.jpg"));
 
         Person judge1 = createPerson("Diana V", "Drifitng judge", saveFile("/img/j1.jpg"), PersonType.Judge);
-        createUser("line", "line", "judge@judge.org", Authorities.ROLE_JUDGE, judge1.getId());
+        createUser("line", "line", "judge@judge.org", judgeRole, judge1.getId());
         createJudgeParticipation(judge1, c1, JudgeType.LINE, 30, 10);
 
         Person judge2 = createPerson("Andra B", "Drifting judge", saveFile("/img/j2.jpg"), PersonType.Judge);
-        createUser("angle", "angle", "judge@angle.org", Authorities.ROLE_JUDGE, judge2.getId());
+        createUser("angle", "angle", "judge@angle.org", judgeRole, judge2.getId());
         createJudgeParticipation(judge2, c1, JudgeType.ANGLE, 30, 10);
 
         Person judge3 = createPerson("Ioana f", "Drifting judge", saveFile("/img/j3.jpg"), PersonType.Judge);
-        createUser("style", "style", "judge@style.org", Authorities.ROLE_JUDGE, judge3.getId());
+        createUser("style", "style", "judge@style.org", judgeRole, judge3.getId());
         createJudgeParticipation(judge3, c1, JudgeType.STYLE, 20);
-
-        Qualifier qualifier = qualifierService.registerDriver(r1.getId(), driver1.getId());
-        for (JudgeParticipation jp : c1.getJudges()) {
-            submitRunJudging(qualifier, jp);
-        }
 
         comments.add(createComment("Good run", true).getId());
         comments.add(createComment("Nice slide", true).getId());
         comments.add(createComment("Weels off trqack", false).getId());
         comments.add(createComment("Slow speed", false).getId());
+
+        Qualifier qualifier = qualifierService.registerDriver(r1.getId(), driver1.getId());
+        for (JudgeParticipation jp : c1.getJudges()) {
+            submitRunJudging(qualifier, jp);
+        }
     }
 
     private void submitRunJudging(Qualifier qualifier, JudgeParticipation judge) {
@@ -370,19 +375,19 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         qualifierService.submitRunJudging(qualifier.getId(), qualifier.getFirstRun().getId(), dto, judge.getJudge());
     }
 
-    private CommentCreateDto createComment(String comment, boolean positive) {
-        CommentCreateDto dto = new CommentCreateDto();
+    private Comment createComment(String comment, boolean positive) {
+        Comment dto = new Comment();
         dto.setComment(comment);
         dto.setPositive(positive);
-        return dto;
+        return commentRepository.save(dto);
     }
 
-    private User createUser(String userName, String password, String email, String role, Long personId) {
+    private User createUser(String userName, String password, String email, Role role, Long personId) {
         UserCreateDTO user = new UserCreateDTO();
         user.setUsername(userName);
         user.setPassword(password);
         user.setEmail(email);
-        user.setRoles(new HashSet<>(Arrays.asList(role)));
+        user.setRoles(new HashSet<>(Arrays.asList(role.getId())));
         try {
             return userService.createFromDto(user, personId);
         } catch (MessagingException e) {
@@ -393,12 +398,12 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         return null;
     }
 
-    private User createUser(String userName, String password, String firstName, String lastName, String email, String role) {
+    private User createUser(String userName, String password, String firstName, String lastName, String email, Role role) {
         UserCreateDTO user = new UserCreateDTO();
         user.setUsername(userName);
         user.setPassword(password);
         user.setEmail(email);
-        user.setRoles(new HashSet<>(Arrays.asList(role)));
+        user.setRoles(new HashSet<>(Arrays.asList(role.getId())));
         user.setFirstName(firstName);
         user.setLastName(lastName);
         try {
@@ -410,14 +415,16 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         }
         return null;
     }
-
+    Role adminRole;
+    Role orgRole;
+    Role judgeRole;
     private void initDevUsersAndRoles() {
-        Role adminRole = roleRepository.save(new Role(Authorities.ROLE_ADMIN));
-        Role orgRole = roleRepository.save(new Role(Authorities.ROLE_ORGANIZER));
-        Role judgeRole = roleRepository.save(new Role(Authorities.ROLE_JUDGE));
+        adminRole = roleRepository.save(new Role(Authorities.ROLE_ADMIN));
+        orgRole = roleRepository.save(new Role(Authorities.ROLE_ORGANIZER));
+        judgeRole = roleRepository.save(new Role(Authorities.ROLE_JUDGE));
 
 //        createUser("judge", "judge", "Judge", "drifting", "paul.caca@caca.com", "ROLE_JUDGE");
-        this.organizer = createUser("org", "org", "Flo", "Coz", "paul.asdca@caca.com", Authorities.ROLE_ORGANIZER);
-        createUser("admin", "admin", "Flo", "Coz", "paul.cafds@caca.com", Authorities.ROLE_ADMIN);
+        this.organizer = createUser("org", "org", "Flo", "Coz", "paul.asdca@caca.com", orgRole);
+        createUser("admin", "admin", "Flo", "Coz", "paul.cafds@caca.com", adminRole);
     }
 }
