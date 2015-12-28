@@ -4,6 +4,8 @@ import com.driftdirect.domain.person.Person;
 import com.driftdirect.domain.user.Role;
 import com.driftdirect.domain.user.User;
 import com.driftdirect.dto.user.UserCreateDTO;
+import com.driftdirect.dto.user.UserShowDto;
+import com.driftdirect.mapper.UserMapper;
 import com.driftdirect.repository.PersonRepository;
 import com.driftdirect.repository.RoleRepository;
 import com.driftdirect.repository.UserRepository;
@@ -15,7 +17,9 @@ import org.springframework.stereotype.Service;
 import javax.mail.MessagingException;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by Paul on 11/10/2015.
@@ -45,6 +49,13 @@ public class UserService {
     public User createFromDto(UserCreateDTO dto, Long personId) throws IOException, MessagingException {
         Person person = personRepository.findOne(personId);
         return createUser(dto, person);
+    }
+
+    public List<UserShowDto> getUsers(){
+        return userRepository.findAll()
+                .stream()
+                .map(UserMapper::map)
+                .collect(Collectors.toList());
     }
 
     public User createFromDto(UserCreateDTO dto) throws MessagingException, IOException {

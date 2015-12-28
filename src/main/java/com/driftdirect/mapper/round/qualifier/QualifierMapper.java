@@ -1,10 +1,13 @@
 package com.driftdirect.mapper.round.qualifier;
 
+import com.driftdirect.domain.championship.judge.JudgeParticipation;
 import com.driftdirect.domain.round.qualifiers.AwardedPoints;
 import com.driftdirect.domain.round.qualifiers.Qualifier;
 import com.driftdirect.domain.round.qualifiers.Run;
 import com.driftdirect.domain.round.qualifiers.RunJudging;
+import com.driftdirect.dto.championship.judge.JudgeParticipationDto;
 import com.driftdirect.dto.round.qualifier.QualifierFullDto;
+import com.driftdirect.dto.round.qualifier.QualifierJudgeDto;
 import com.driftdirect.dto.round.qualifier.QualifierShortDto;
 import com.driftdirect.dto.round.qualifier.run.AwardedPointsDto;
 import com.driftdirect.dto.round.qualifier.run.RunFullDto;
@@ -34,6 +37,33 @@ public class QualifierMapper {
         dto.setDriver(PersonMapper.mapShort(qualifier.getDriver()));
         dto.setFirstRun(mapRun(qualifier.getFirstRun()));
         dto.setSecondRun(mapRun(qualifier.getSecondRun()));
+        return dto;
+    }
+
+    public static QualifierJudgeDto mapForJudge(Qualifier qualifier, JudgeParticipation participation){
+        QualifierJudgeDto dto = new QualifierJudgeDto();
+        dto.setId(qualifier.getId());
+        dto.setDriver(PersonMapper.mapShort(qualifier.getDriver()));
+        dto.setJudge(mapJudge(participation));
+        if (qualifier.getFirstRun().getJudgings().size() == 0){
+            dto.setRunId(qualifier.getFirstRun().getId());
+            dto.setRunNumber(1);
+        }else{
+            dto.setRunId(qualifier.getSecondRun().getId());
+            dto.setRunNumber(2);
+        }
+        return dto;
+    }
+
+    private static JudgeParticipationDto mapJudge(JudgeParticipation participation){
+        JudgeParticipationDto dto = new JudgeParticipationDto();
+        dto.setId(participation.getId());
+        dto.setTitle(participation.getTitle());
+        dto.setJudgeType(participation.getJudgeType());
+        dto.setPointsAllocations(participation.getPointsAllocations()
+                .stream()
+                .map(ChampionshipMapper::mapPointsAllocation)
+                .collect(Collectors.toList()));
         return dto;
     }
 

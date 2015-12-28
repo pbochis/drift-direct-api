@@ -1,7 +1,6 @@
 package com.driftdirect.dto.round.qualifier.run;
 
-import com.driftdirect.domain.round.qualifiers.AwardedPoints;
-import com.driftdirect.dto.championship.judge.JudgeParticipationDto;
+import com.driftdirect.dto.championship.judge.JudgeParticipationShowDto;
 import com.driftdirect.dto.comment.CommentDto;
 
 import java.util.List;
@@ -11,7 +10,7 @@ import java.util.List;
  */
 public class RunJudgingDto {
     private Long id;
-    private JudgeParticipationDto judgeParticipation;
+    private JudgeParticipationShowDto judgeParticipation;
     private List<AwardedPointsDto> awardedPoints;
     private List<CommentDto> comments;
 
@@ -23,11 +22,11 @@ public class RunJudgingDto {
         this.id = id;
     }
 
-    public JudgeParticipationDto getJudgeParticipation() {
+    public JudgeParticipationShowDto getJudgeParticipation() {
         return judgeParticipation;
     }
 
-    public void setJudgeParticipation(JudgeParticipationDto judgeParticipation) {
+    public void setJudgeParticipation(JudgeParticipationShowDto judgeParticipation) {
         this.judgeParticipation = judgeParticipation;
     }
 

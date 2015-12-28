@@ -8,8 +8,10 @@ import com.driftdirect.domain.round.qualifiers.AwardedPoints;
 import com.driftdirect.domain.round.qualifiers.Qualifier;
 import com.driftdirect.domain.round.qualifiers.Run;
 import com.driftdirect.domain.round.qualifiers.RunJudging;
+import com.driftdirect.domain.user.User;
 import com.driftdirect.dto.comment.CommentCreateDto;
 import com.driftdirect.dto.round.qualifier.QualifierFullDto;
+import com.driftdirect.dto.round.qualifier.QualifierJudgeDto;
 import com.driftdirect.dto.round.qualifier.run.AwardedPointsCreateDto;
 import com.driftdirect.dto.round.qualifier.run.RunJudgingCreateDto;
 import com.driftdirect.mapper.round.qualifier.QualifierMapper;
@@ -93,6 +95,15 @@ public class QualifierService {
             throw new NoSuchElementException();
         }
         return run;
+    }
+
+    public QualifierJudgeDto startQualifierJudging(Long qualifierId, Person judge) throws AccessDeniedException{
+        Qualifier qualifier = qualifierRepository.findOne(qualifierId);
+        JudgeParticipation participation = findJudgeParticipation(qualifier, judge);
+        if (participation == null){
+            throw new AccessDeniedException("You cannot judge at this qualifier");
+        }
+        return QualifierMapper.mapForJudge(qualifier, participation);
     }
 
     public void submitRunJudging(Long qualifierId, Long runId, RunJudgingCreateDto runJudgingDto, Person judge) throws AccessDeniedException, NoSuchElementException {

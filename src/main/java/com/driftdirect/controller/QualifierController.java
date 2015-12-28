@@ -3,6 +3,7 @@ package com.driftdirect.controller;
 import com.driftdirect.domain.user.Authorities;
 import com.driftdirect.domain.user.User;
 import com.driftdirect.dto.round.qualifier.QualifierFullDto;
+import com.driftdirect.dto.round.qualifier.QualifierJudgeDto;
 import com.driftdirect.dto.round.qualifier.run.RunJudgingCreateDto;
 import com.driftdirect.security.SecurityService;
 import com.driftdirect.service.round.qualifier.QualifierService;
@@ -44,5 +45,12 @@ public class QualifierController {
         }
         qualifierService.submitRunJudging(id, runId, runJudging, currentUser.getPerson());
         return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @Secured(Authorities.ROLE_JUDGE)
+    @RequestMapping(value = RestUrls.QUALIFIER_ID_START, method = RequestMethod.GET)
+    public ResponseEntity<QualifierJudgeDto> startJudging(@PathVariable(value = "id") Long id,
+                                                          @AuthenticationPrincipal User currentUser){
+        return new ResponseEntity<>(qualifierService.startQualifierJudging(id, currentUser.getPerson()), HttpStatus.OK);
     }
 }
