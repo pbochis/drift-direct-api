@@ -1,18 +1,28 @@
 package com.driftdirect.dto.championship.judge;
 
 import com.driftdirect.domain.championship.judge.JudgeType;
+import com.driftdirect.dto.person.PersonShortShowDto;
 
 import java.util.List;
 
 /**
- * Created by Paul on 12/28/2015.
+ * Created by Paul on 12/1/2015.
  */
 public class JudgeParticipationDto {
     private Long id;
     private JudgeType judgeType;
     private String title;
+    private PersonShortShowDto judge;
 
     private List<PointsAllocationDto> pointsAllocations;
+
+    public PersonShortShowDto getJudge() {
+        return judge;
+    }
+
+    public void setJudge(PersonShortShowDto judge) {
+        this.judge = judge;
+    }
 
     public Long getId() {
         return id;

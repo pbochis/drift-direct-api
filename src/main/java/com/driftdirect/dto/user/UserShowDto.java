@@ -10,6 +10,8 @@ import java.util.Set;
 public class UserShowDto {
     private String username;
     private String email;
+    private String firstName;
+    private String lastName;
 
     private Set<String> roles;
 
@@ -35,5 +37,21 @@ public class UserShowDto {
 
     public void setRoles(Set<String> roles) {
         this.roles = roles;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 }

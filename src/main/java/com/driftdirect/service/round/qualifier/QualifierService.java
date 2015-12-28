@@ -103,7 +103,7 @@ public class QualifierService {
         if (participation == null){
             throw new AccessDeniedException("You cannot judge at this qualifier");
         }
-        return QualifierMapper.mapForJudge(qualifier, participation);
+        return QualifierMapper.mapForJudge(qualifier, participation, commentService.findAll());
     }
 
     public void submitRunJudging(Long qualifierId, Long runId, RunJudgingCreateDto runJudgingDto, Person judge) throws AccessDeniedException, NoSuchElementException {
@@ -130,8 +130,8 @@ public class QualifierService {
             runJudging.addAwardedPoints(awardedPoints);
             totalAwardedPoints += points.getAwardedPoints();
         }
-        for (CommentCreateDto commentCreateDto : runJudgingDto.getComments()) {
-            runJudging.addComment(commentService.findOrCreate(commentCreateDto));
+        for (Long commentId: runJudgingDto.getComments()) {
+            runJudging.addComment(commentService.findComment(commentId));
         }
         run.addJudging(runJudging);
         run.addPoints(totalAwardedPoints);

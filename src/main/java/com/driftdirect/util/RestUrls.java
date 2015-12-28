@@ -27,6 +27,8 @@ public class RestUrls {
     public static final String USER = "/user";
     public static final String USERS = "/users";
 
+    public static final String ROLES= "/roles";
+
     public static final String PERSON = "/person";
     public static final String PERSON_ID = "/person/{id}";
 

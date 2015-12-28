@@ -11,9 +11,6 @@ import java.util.Set;
  */
 public class UserCreateDTO {
     private String username;
-
-    @NotNull
-    @Size(min = 5, max = 12)
     private String password;
 
     @NotNull

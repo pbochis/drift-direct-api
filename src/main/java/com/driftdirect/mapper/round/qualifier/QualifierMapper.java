@@ -1,6 +1,7 @@
 package com.driftdirect.mapper.round.qualifier;
 
 import com.driftdirect.domain.championship.judge.JudgeParticipation;
+import com.driftdirect.domain.comment.Comment;
 import com.driftdirect.domain.round.qualifiers.AwardedPoints;
 import com.driftdirect.domain.round.qualifiers.Qualifier;
 import com.driftdirect.domain.round.qualifiers.Run;
@@ -40,11 +41,11 @@ public class QualifierMapper {
         return dto;
     }
 
-    public static QualifierJudgeDto mapForJudge(Qualifier qualifier, JudgeParticipation participation){
+    public static QualifierJudgeDto mapForJudge(Qualifier qualifier, JudgeParticipation participation, List<Comment> comments){
         QualifierJudgeDto dto = new QualifierJudgeDto();
         dto.setId(qualifier.getId());
         dto.setDriver(PersonMapper.mapShort(qualifier.getDriver()));
-        dto.setJudge(mapJudge(participation));
+        dto.setJudge(ChampionshipMapper.mapJudgeParticipation(participation));
         if (qualifier.getFirstRun().getJudgings().size() == 0){
             dto.setRunId(qualifier.getFirstRun().getId());
             dto.setRunNumber(1);
@@ -52,6 +53,9 @@ public class QualifierMapper {
             dto.setRunId(qualifier.getSecondRun().getId());
             dto.setRunNumber(2);
         }
+        dto.setAvailableComments(comments.stream()
+                            .map(CommentMapper::map)
+                            .collect(Collectors.toList()));
         return dto;
     }
 

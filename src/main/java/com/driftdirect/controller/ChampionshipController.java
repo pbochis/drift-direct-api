@@ -7,7 +7,7 @@ import com.driftdirect.dto.championship.ChampionshipFullDto;
 import com.driftdirect.dto.championship.ChampionshipShortShowDto;
 import com.driftdirect.dto.championship.ChampionshipUpdateDTO;
 import com.driftdirect.dto.championship.driver.DriverParticipationDto;
-import com.driftdirect.dto.championship.judge.JudgeParticipationShowDto;
+import com.driftdirect.dto.championship.judge.JudgeParticipationDto;
 import com.driftdirect.dto.news.NewsCreateDto;
 import com.driftdirect.dto.person.PersonShortShowDto;
 import com.driftdirect.exception.ObjectNotFoundException;
@@ -102,7 +102,7 @@ public class ChampionshipController {
     }
 
     @RequestMapping(path = RestUrls.CHAMPIONSHIP_ID_JUDGES, method = RequestMethod.GET)
-    public ResponseEntity<List<JudgeParticipationShowDto>> getJudges(@PathVariable Long id) {
+    public ResponseEntity<List<JudgeParticipationDto>> getJudges(@PathVariable Long id) {
         return new ResponseEntity<>(championshipService.findJudges(id), HttpStatus.OK);
     }
 

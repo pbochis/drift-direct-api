@@ -320,6 +320,8 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         return resultsRepository.save(result);
     }
 
+    List<Long> comments = new ArrayList<>();
+
     private void initChampionshipAndRounds(){
         Championship c1 = createChampionship("DN1Z", saveFile("/img/championship_test.png"), bImg, demon, raceTech);
         Championship c2 = createChampionship("Romania Drift Allstars", saveFile("/img/allstars.jpg"), bImg);
@@ -344,9 +346,14 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         createJudgeParticipation(judge3, c1, JudgeType.STYLE, 20);
 
         Qualifier qualifier = qualifierService.registerDriver(r1.getId(), driver1.getId());
-//        for (JudgeParticipation jp : c1.getJudges()) {
-//            submitRunJudging(qualifier, jp);
-//        }
+        for (JudgeParticipation jp : c1.getJudges()) {
+            submitRunJudging(qualifier, jp);
+        }
+
+        comments.add(createComment("Good run", true).getId());
+        comments.add(createComment("Nice slide", true).getId());
+        comments.add(createComment("Weels off trqack", false).getId());
+        comments.add(createComment("Slow speed", false).getId());
     }
 
     private void submitRunJudging(Qualifier qualifier, JudgeParticipation judge) {
@@ -359,9 +366,6 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
             awardedPoints.add(points);
         }
         dto.setAwardedPoints(awardedPoints);
-        List<CommentCreateDto> comments = new ArrayList<>();
-        comments.add(createComment("Good run", true));
-        comments.add(createComment("Slow run", false));
         dto.setComments(comments);
         qualifierService.submitRunJudging(qualifier.getId(), qualifier.getFirstRun().getId(), dto, judge.getJudge());
     }

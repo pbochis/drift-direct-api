@@ -69,6 +69,11 @@ public class UserService {
     private User createUser(UserCreateDTO dto, Person person) throws IOException, MessagingException {
         User user = new User();
         user.setPerson(person);
+        if (dto.getUsername() != null && !dto.getUsername().equals("")){
+            user.setUsername(dto.getUsername());
+        }else{
+            user.setUsername(dto.getEmail());
+        }
         user.setUsername(dto.getUsername());
         String password = dto.getPassword();
         if (password == null){

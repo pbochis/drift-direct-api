@@ -1,8 +1,10 @@
 package com.driftdirect.dto.round.qualifier;
 
 import com.driftdirect.dto.championship.judge.JudgeParticipationDto;
-import com.driftdirect.dto.championship.judge.JudgeParticipationShowDto;
+import com.driftdirect.dto.comment.CommentDto;
 import com.driftdirect.dto.person.PersonShortShowDto;
+
+import java.util.List;
 
 /**
  * Created by Paul on 12/28/2015.
@@ -14,6 +16,7 @@ public class QualifierJudgeDto {
     private PersonShortShowDto driver;
     private JudgeParticipationDto judge;
 
+    private List<CommentDto> availableComments;
     public Long getId() {
         return id;
     }
@@ -52,5 +55,13 @@ public class QualifierJudgeDto {
 
     public void setRunNumber(int runNumber) {
         this.runNumber = runNumber;
+    }
+
+    public List<CommentDto> getAvailableComments() {
+        return availableComments;
+    }
+
+    public void setAvailableComments(List<CommentDto> availableComments) {
+        this.availableComments = availableComments;
     }
 }

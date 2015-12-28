@@ -9,7 +9,7 @@ import com.driftdirect.dto.championship.ChampionshipFullDto;
 import com.driftdirect.dto.championship.ChampionshipShortShowDto;
 import com.driftdirect.dto.championship.ChampionshipUpdateDTO;
 import com.driftdirect.dto.championship.driver.DriverParticipationDto;
-import com.driftdirect.dto.championship.judge.JudgeParticipationShowDto;
+import com.driftdirect.dto.championship.judge.JudgeParticipationDto;
 import com.driftdirect.dto.news.NewsCreateDto;
 import com.driftdirect.dto.person.PersonShortShowDto;
 import com.driftdirect.exception.ObjectNotFoundException;
@@ -108,7 +108,7 @@ public class ChampionshipService{
         return ChampionshipMapper.mapDriverParticipation(part);
     }
 
-    public List<JudgeParticipationShowDto> findJudges(Long championshipId) {
+    public List<JudgeParticipationDto> findJudges(Long championshipId) {
         Championship c = championshipRepository.findOne(championshipId);
         return c.getJudges()
                 .stream()
