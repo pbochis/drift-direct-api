@@ -18,6 +18,9 @@ public class ChampionshipFullDto {
     private String information;
     private String ticketsUrl;
 
+    private boolean published;
+    private PersonShortShowDto organizer;
+
     private Long backgroundImage;
     private Long logo;
 
@@ -125,5 +128,21 @@ public class ChampionshipFullDto {
 
     public void setNews(List<NewsShowDto> news) {
         this.news = news;
+    }
+
+    public boolean isPublished() {
+        return published;
+    }
+
+    public void setPublished(boolean published) {
+        this.published = published;
+    }
+
+    public PersonShortShowDto getOrganizer() {
+        return organizer;
+    }
+
+    public void setOrganizer(PersonShortShowDto organizer) {
+        this.organizer = organizer;
     }
 }

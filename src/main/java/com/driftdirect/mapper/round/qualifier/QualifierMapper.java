@@ -41,17 +41,20 @@ public class QualifierMapper {
         return dto;
     }
 
-    public static QualifierJudgeDto mapForJudge(Qualifier qualifier, JudgeParticipation participation, List<Comment> comments){
+    public static QualifierJudgeDto mapForJudge(Qualifier qualifier, Run run, JudgeParticipation participation, List<Comment> comments){
         QualifierJudgeDto dto = new QualifierJudgeDto();
         dto.setId(qualifier.getId());
         dto.setDriver(PersonMapper.mapShort(qualifier.getDriver()));
         dto.setJudge(ChampionshipMapper.mapJudgeParticipation(participation));
-        if (qualifier.getFirstRun().getJudgings().size() == 0){
-            dto.setRunId(qualifier.getFirstRun().getId());
-            dto.setRunNumber(1);
+        if (run != null) {
+            dto.setRunId(run.getId());
+            if (qualifier.getFirstRun().equals(run)) {
+                dto.setRunNumber(1);
+            } else {
+                dto.setRunNumber(2);
+            }
         }else{
-            dto.setRunId(qualifier.getSecondRun().getId());
-            dto.setRunNumber(2);
+            dto.setRunId(null);
         }
         dto.setAvailableComments(comments.stream()
                             .map(CommentMapper::map)

@@ -51,13 +51,13 @@ public class FileController {
         File f = fileRepository.findOne(id);
         byte[] data = f.getData();
 //        Working but not needed because polymer and android know how to resize images
-//            if (height != null && width != null){
-//            BufferedImage img = ImageIO.read(new ByteArrayInputStream(f.getData()));
-//            BufferedImage rescaled = Scalr.resize(img, Scalr.Method.AUTOMATIC, width, height);
-//            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//            ImageIO.write(rescaled, "jpg", baos); -> replace "jpg" with appropriate shit(can pe png or other stuff)
-//            data = baos.toByteArray();
-//        }
+        if (height != null && width != null){
+            BufferedImage img = ImageIO.read(new ByteArrayInputStream(f.getData()));
+            BufferedImage rescaled = Scalr.resize(img, Scalr.Method.AUTOMATIC, width, height);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(rescaled, f.getName().split("\\.")[1], baos);
+            data = baos.toByteArray();
+        }
         return ResponseEntity
                 .ok()
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)

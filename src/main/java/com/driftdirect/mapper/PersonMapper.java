@@ -16,7 +16,9 @@ public class PersonMapper {
         dto.setLastName(person.getLastName());
         dto.setId(person.getId());
         dto.setDescription(person.getDescription());
-        dto.setProfilePicture(person.getProfilePicture().getId());
+        if (person.getProfilePicture() != null){
+            dto.setProfilePicture(person.getProfilePicture().getId());
+        }
         dto.setNick(person.getNick());
         dto.setBirthDate(person.getBirthDate());
         if (person.getCountry() != null) {

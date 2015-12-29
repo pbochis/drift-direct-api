@@ -175,6 +175,14 @@ public class Person {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Person)){
+            return false;
+        }
+        return this.id.equals(((Person)(obj)).getId());
+    }
+
+    @Override
     public String toString() {
         return firstName + " " + lastName;
     }

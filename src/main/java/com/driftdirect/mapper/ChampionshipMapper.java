@@ -32,6 +32,8 @@ public class ChampionshipMapper {
         dto.setTicketsUrl(c.getTicketsUrl());
         dto.setBackgroundImage(c.getBackgroundImage().getId());
         dto.setLogo(c.getLogo().getId());
+        dto.setPublished(c.isPublished());
+        dto.setOrganizer(PersonMapper.mapShort(c.getOrganizer()));
         if (c.getRules() != null) {
             ChampionshipRulesDto rules = new ChampionshipRulesDto();
             rules.setId(c.getRules().getId());

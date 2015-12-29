@@ -103,7 +103,26 @@ public class QualifierService {
         if (participation == null){
             throw new AccessDeniedException("You cannot judge at this qualifier");
         }
-        return QualifierMapper.mapForJudge(qualifier, participation, commentService.findAll());
+        return QualifierMapper.mapForJudge(qualifier, findRunForJudge(qualifier, judge), participation, commentService.findAll());
+    }
+
+    private Run findRunForJudge(Qualifier qualifier, Person judge){
+        Run run = qualifier.getFirstRun();
+        for (RunJudging judging: run.getJudgings()){
+            if (judging.getJudge().getJudge().equals(judge)){
+                run = null;
+            }
+        }
+        if (run != null){
+            return run;
+        }
+        run = qualifier.getSecondRun();
+        for (RunJudging judging: run.getJudgings()){
+            if (judging.getJudge().getJudge().equals(judge)){
+                run = null;
+            }
+        }
+        return run;
     }
 
     public void submitRunJudging(Long qualifierId, Long runId, RunJudgingCreateDto runJudgingDto, Person judge) throws AccessDeniedException, NoSuchElementException {

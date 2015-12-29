@@ -41,6 +41,7 @@ import com.driftdirect.service.UserService;
 import com.driftdirect.service.championship.judge.JudgeParticipationService;
 import com.driftdirect.service.round.RoundService;
 import com.driftdirect.service.round.qualifier.QualifierService;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -159,6 +160,15 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         initChampionshipAndRounds();
     }
 
+    private String getRules(){
+        ClassPathResource r = new ClassPathResource("/mock/rules.txt");
+        try {
+            return FileUtils.readFileToString(r.getFile());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "Rules could not be read for some reason";
+    }
     private File saveFile(String path) {
         File f;
         try {
@@ -213,7 +223,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         c.setLogo(logo);
         c.setBackgroundImage(backgroundImage);
         ChampionshipRules rules = new ChampionshipRules();
-        rules.setRules("Rules of the championship");
+        rules.setRules(getRules());
         rules.setVideoUrl("http://www.youtube.com");
         c.setRules(rules);
         c.setOrganizer(organizer.getPerson());
@@ -330,6 +340,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
     private void initChampionshipAndRounds(){
         Championship c1 = createChampionship("DN1Z", saveFile("/img/championship_test.png"), bImg, demon, raceTech);
         Championship c2 = createChampionship("Romania Drift Allstars", saveFile("/img/allstars.jpg"), bImg);
+        Championship c3 = createChampionship("Ciobanu championship", fCiob, bImg);
         Round r1 = createRound("Manfield", "https://www.iticket.co.nz/events/2015/nov/the-demon-energy-d1nz-national-drifting-championship-round-1", "http://www.twitch.tv/sing_sing", c1, saveFile("/img/manfield.jpg"), 2015, 11);
         addTrack(r1, saveFile("/img/track.png"), "This tack is deadly. People will fall of cliffs", "http://www.youtube.com", "Pass = not dead");
         Round r2 = createRound("Baypark", "https://www.iticket.co.nz/events/2016/jan/the-demon-energy-d1nz-national-drifting-championship-round-2", null, c1, saveFile("/img/baypark.jpg"), 2016, 1);
@@ -350,15 +361,38 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         createUser("style", "style", "judge@style.org", judgeRole, judge3.getId());
         createJudgeParticipation(judge3, c1, JudgeType.STYLE, 20);
 
-        comments.add(createComment("Good run", true).getId());
-        comments.add(createComment("Nice slide", true).getId());
-        comments.add(createComment("Weels off trqack", false).getId());
-        comments.add(createComment("Slow speed", false).getId());
+        initComments();
 
         Qualifier qualifier = qualifierService.registerDriver(r1.getId(), driver1.getId());
         for (JudgeParticipation jp : c1.getJudges()) {
             submitRunJudging(qualifier, jp);
         }
+    }
+
+    private void initComments(){
+        comments.add(createComment("Good run", true).getId());
+        comments.add(createComment("Nice slide", true).getId());
+        comments.add(createComment("Torque was cool", true).getId());
+        comments.add(createComment("He was not afraid to commit to the spin", true).getId());
+        comments.add(createComment("No smoke from tires", true).getId());
+        comments.add(createComment("Propper  gear shifting", true).getId());
+        comments.add(createComment("Even though track was wet he did not oversteer", true).getId());
+        comments.add(createComment("Understeered for coolness efect and that pleased the public", true).getId());
+        comments.add(createComment("Got out of his car, waved to the crowd while sliding off the track. Coolest death ever.", true).getId());
+
+
+        comments.add(createComment("Weels off trqack", false).getId());
+        comments.add(createComment("Oversteered too much. He cannot drive properly", false).getId());
+        comments.add(createComment("His eyes were full of tears", false).getId());
+        comments.add(createComment("I chocked on the gas ", false).getId());
+        comments.add(createComment("he exagerated with the speed and spun out of control", false).getId());
+        comments.add(createComment("His mom is not hot enough", false).getId());
+        comments.add(createComment("Bet he can't get laid", false).getId());
+        comments.add(createComment("Should have driven a propper car, not an opel corsa", false).getId());
+        comments.add(createComment("OMG WTF IS THIS PLS GO BACK HGOME", false).getId());
+        comments.add(createComment("Rus gtfo", false).getId());
+        comments.add(createComment("CykA bLEA", false).getId());
+
     }
 
     private void submitRunJudging(Qualifier qualifier, JudgeParticipation judge) {

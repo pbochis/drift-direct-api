@@ -59,4 +59,12 @@ public class Run {
     public void setTotalPoints(int totalPoints) {
         this.totalPoints = totalPoints;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Run)){
+            return false;
+        }
+        return this.id.equals(((Run)(obj)).getId());
+    }
 }
