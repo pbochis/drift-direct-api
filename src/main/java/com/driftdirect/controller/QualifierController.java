@@ -36,7 +36,7 @@ public class QualifierController {
 
     @Secured(Authorities.ROLE_JUDGE)
     @RequestMapping(value = RestUrls.QUALIFIER_ID_SUBMIT, method = RequestMethod.POST)
-    public ResponseEntity submitFirstRunJudging(@PathVariable(value = "id") Long id,
+    public ResponseEntity submitRunJudging(@PathVariable(value = "id") Long id,
                                                 @PathVariable(value = "runId") Long runId,
                                                 @RequestBody RunJudgingCreateDto runJudging,
                                                 @AuthenticationPrincipal User currentUser) {

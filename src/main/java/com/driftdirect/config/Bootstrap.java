@@ -273,6 +273,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         person.setFirstName(name.split(" ")[0]);
         person.setLastName(name.split(" ")[1]);
         person.setCountry(c);
+        person.setNick("Nick");
         person.setProfilePicture(picture != null ? picture : fCiob);
         person.setPersonType(personType);
         person.setCareerStartDate(new DateTime(2010, 1,1, 0, 0));
@@ -335,7 +336,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         return resultsRepository.save(result);
     }
 
-    List<Long> comments = new ArrayList<>();
+    List<CommentCreateDto> comments = new ArrayList<>();
 
     private void initChampionshipAndRounds(){
         Championship c1 = createChampionship("DN1Z", saveFile("/img/championship_test.png"), bImg, demon, raceTech);
@@ -348,6 +349,10 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         Round r4 = createRound("Round 1 - C2", "www.google.com", null, c2, fCiob, 2016, 12);
 
         Person driver1 = createDriver("Florin Cozmuta", saveFile("/img/kimi.jpg"));
+        Person driver2 = createDriver("Bochis Paul", saveFile("/img/kimi.jpg"));
+        Person driver3 = createDriver("Vlad Iancu", saveFile("/img/kimi.jpg"));
+        Person driver4 = createDriver("Tommy Hilfinger", saveFile("/img/kimi.jpg"));
+        Person driver5 = createDriver("Samsung Daniel", saveFile("/img/kimi.jpg"));
 
         Person judge1 = createPerson("Diana V", "Drifitng judge", saveFile("/img/j1.jpg"), PersonType.Judge);
         createUser("line", "line", "judge@judge.org", judgeRole, judge1.getId());
@@ -364,34 +369,38 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         initComments();
 
         Qualifier qualifier = qualifierService.registerDriver(r1.getId(), driver1.getId());
+        qualifierService.registerDriver(r1.getId(), driver2.getId());
+        qualifierService.registerDriver(r1.getId(), driver3.getId());
+        qualifierService.registerDriver(r1.getId(), driver4.getId());
+        qualifierService.registerDriver(r1.getId(), driver5.getId());
         for (JudgeParticipation jp : c1.getJudges()) {
             submitRunJudging(qualifier, jp);
         }
     }
 
     private void initComments(){
-        comments.add(createComment("Good run", true).getId());
-        comments.add(createComment("Nice slide", true).getId());
-        comments.add(createComment("Torque was cool", true).getId());
-        comments.add(createComment("He was not afraid to commit to the spin", true).getId());
-        comments.add(createComment("No smoke from tires", true).getId());
-        comments.add(createComment("Propper  gear shifting", true).getId());
-        comments.add(createComment("Even though track was wet he did not oversteer", true).getId());
-        comments.add(createComment("Understeered for coolness efect and that pleased the public", true).getId());
-        comments.add(createComment("Got out of his car, waved to the crowd while sliding off the track. Coolest death ever.", true).getId());
+        comments.add(createComment("Good run", true));
+        comments.add(createComment("Nice slide", true));
+        comments.add(createComment("Torque was cool", true));
+        comments.add(createComment("He was not afraid to commit to the spin", true));
+        comments.add(createComment("No smoke from tires", true));
+        comments.add(createComment("Propper  gear shifting", true));
+        comments.add(createComment("Even though track was wet he did not oversteer", true));
+        comments.add(createComment("Understeered for coolness efect and that pleased the public", true));
+        comments.add(createComment("Got out of his car, waved to the crowd while sliding off the track. Coolest death ever.", true));
 
 
-        comments.add(createComment("Weels off trqack", false).getId());
-        comments.add(createComment("Oversteered too much. He cannot drive properly", false).getId());
-        comments.add(createComment("His eyes were full of tears", false).getId());
-        comments.add(createComment("I chocked on the gas ", false).getId());
-        comments.add(createComment("he exagerated with the speed and spun out of control", false).getId());
-        comments.add(createComment("His mom is not hot enough", false).getId());
-        comments.add(createComment("Bet he can't get laid", false).getId());
-        comments.add(createComment("Should have driven a propper car, not an opel corsa", false).getId());
-        comments.add(createComment("OMG WTF IS THIS PLS GO BACK HGOME", false).getId());
-        comments.add(createComment("Rus gtfo", false).getId());
-        comments.add(createComment("CykA bLEA", false).getId());
+        comments.add(createComment("Weels off trqack", false));
+        comments.add(createComment("Oversteered too much. He cannot drive properly", false));
+        comments.add(createComment("His eyes were full of tears", false));
+        comments.add(createComment("I chocked on the gas ", false));
+        comments.add(createComment("he exagerated with the speed and spun out of control", false));
+        comments.add(createComment("His mom is not hot enough", false));
+        comments.add(createComment("Bet he can't get laid", false));
+        comments.add(createComment("Should have driven a propper car, not an opel corsa", false));
+        comments.add(createComment("OMG WTF IS THIS PLS GO BACK HGOME", false));
+        comments.add(createComment("Rus gtfo", false));
+        comments.add(createComment("CykA bLEA", false));
 
     }
 
@@ -409,11 +418,14 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         qualifierService.submitRunJudging(qualifier.getId(), qualifier.getFirstRun().getId(), dto, judge.getJudge());
     }
 
-    private Comment createComment(String comment, boolean positive) {
-        Comment dto = new Comment();
-        dto.setComment(comment);
-        dto.setPositive(positive);
-        return commentRepository.save(dto);
+    private CommentCreateDto createComment(String commentText, boolean positive) {
+        Comment comment = new Comment();
+        comment.setComment(commentText);
+        comment.setPositive(positive);
+        comment = commentRepository.save(comment);
+        CommentCreateDto dto = new CommentCreateDto();
+        dto.setId(comment.getId());
+        return dto;
     }
 
     private User createUser(String userName, String password, String email, Role role, Long personId) {

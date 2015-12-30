@@ -9,7 +9,7 @@ import java.util.List;
  */
 public class RunJudgingCreateDto {
     private List<AwardedPointsCreateDto> awardedPoints;
-    private List<Long> comments;
+    private List<CommentCreateDto> comments;
     private Float entrySpeed;
 
     public List<AwardedPointsCreateDto> getAwardedPoints() {
@@ -20,11 +20,11 @@ public class RunJudgingCreateDto {
         this.awardedPoints = awardedPoints;
     }
 
-    public List<Long> getComments() {
+    public List<CommentCreateDto> getComments() {
         return comments;
     }
 
-    public void setComments(List<Long> comments) {
+    public void setComments(List<CommentCreateDto> comments) {
         this.comments = comments;
     }
 

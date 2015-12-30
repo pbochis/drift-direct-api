@@ -149,8 +149,8 @@ public class QualifierService {
             runJudging.addAwardedPoints(awardedPoints);
             totalAwardedPoints += points.getAwardedPoints();
         }
-        for (Long commentId: runJudgingDto.getComments()) {
-            runJudging.addComment(commentService.findComment(commentId));
+        for (CommentCreateDto comment: runJudgingDto.getComments()) {
+            runJudging.addComment(commentService.findOrCreate(comment));
         }
         run.addJudging(runJudging);
         run.addPoints(totalAwardedPoints);

@@ -53,7 +53,7 @@ public class FileController {
 //        Working but not needed because polymer and android know how to resize images
         if (height != null && width != null){
             BufferedImage img = ImageIO.read(new ByteArrayInputStream(f.getData()));
-            BufferedImage rescaled = Scalr.resize(img, Scalr.Method.AUTOMATIC, width, height);
+            BufferedImage rescaled = Scalr.resize(img, Scalr.Method.ULTRA_QUALITY, width, height);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ImageIO.write(rescaled, f.getName().split("\\.")[1], baos);
             data = baos.toByteArray();
