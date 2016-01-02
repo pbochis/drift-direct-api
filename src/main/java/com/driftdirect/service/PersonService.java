@@ -36,6 +36,10 @@ public class PersonService {
         return repository.findAll().stream().map(PersonMapper::mapShort).collect(Collectors.toList());
     }
 
+    public List<PersonShortShowDto> findByType(PersonType personType) {
+        return repository.findPersonsByType(personType).stream().map(PersonMapper::mapShort).collect(Collectors.toList());
+    }
+
     public void createFromDto(PersonCreateDto dto){
         Person p = new Person();
         p.setFirstName(dto.getFirstName());

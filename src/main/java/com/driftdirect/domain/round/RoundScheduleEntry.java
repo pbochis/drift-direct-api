@@ -17,7 +17,7 @@ public class RoundScheduleEntry implements Comparable<RoundScheduleEntry> {
     Round round;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @Column(name = "start_date")
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     private DateTime startDate;
@@ -25,11 +25,12 @@ public class RoundScheduleEntry implements Comparable<RoundScheduleEntry> {
     @Column(name = "end_date")
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     private DateTime endDate;
-    public long getId() {
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -67,8 +68,6 @@ public class RoundScheduleEntry implements Comparable<RoundScheduleEntry> {
 
     @Override
     public int compareTo(RoundScheduleEntry o) {
-        if (id == o.id)
-            return 0;
         if (startDate.isBefore(o.getStartDate()))
             return -1;
         return 1;

@@ -3,8 +3,6 @@ package com.driftdirect.dto.user;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import java.util.Set;
 
 /**
  * Created by Paul on 11/11/2015.
@@ -21,8 +19,8 @@ public class UserCreateDTO {
     private String lastName;
 
 
-    @Size(min = 1)
-    private Set<Long> roles;
+    @NotNull
+    private Long role;
 
     public String getFirstName() {
         return firstName;
@@ -38,14 +36,6 @@ public class UserCreateDTO {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    public Set<Long> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<Long> roles) {
-        this.roles = roles;
     }
 
     public String getEmail() {
@@ -70,5 +60,13 @@ public class UserCreateDTO {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public Long getRole() {
+        return role;
+    }
+
+    public void setRole(Long role) {
+        this.role = role;
     }
 }

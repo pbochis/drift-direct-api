@@ -25,7 +25,7 @@ import com.driftdirect.domain.user.User;
 import com.driftdirect.dto.championship.judge.JudgeParticipationCreateDto;
 import com.driftdirect.dto.championship.judge.PointsAllocationCreateDto;
 import com.driftdirect.dto.comment.CommentCreateDto;
-import com.driftdirect.dto.round.RoundScheduleCreateDto;
+import com.driftdirect.dto.round.RoundScheduleEntryCreateDto;
 import com.driftdirect.dto.round.qualifier.run.AwardedPointsCreateDto;
 import com.driftdirect.dto.round.qualifier.run.RunJudgingCreateDto;
 import com.driftdirect.dto.round.track.TrackCreateDto;
@@ -76,7 +76,10 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
     Sponsor demon;
     Sponsor raceTech;
     User organizer;
-
+    List<CommentCreateDto> comments = new ArrayList<>();
+    Role adminRole;
+    Role orgRole;
+    Role judgeRole;
     private Environment environment;
     private ConfigSettingRepository configSettingRepository;
     private RoleRepository roleRepository;
@@ -97,22 +100,16 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
     private SponsorRepository sponsorRepository;
     @Autowired
     private DriverDetailsRepository driverDetailsRepository;
-
     @Autowired
     private NewsRepository newsRepository;
-
     @Autowired
     private TrackLayoutRepository trackLayoutRepository;
-
     @Autowired
     private QualifierService qualifierService;
-
     @Autowired
     private JudgeParticipationService judgeParticipationService;
-
     @Autowired
     private CommentRepository commentRepository;
-
     @Autowired
     public Bootstrap(
             ConfigSettingRepository configSettingRepository, RoleRepository roleRepository,
@@ -169,6 +166,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         }
         return "Rules could not be read for some reason";
     }
+
     private File saveFile(String path) {
         File f;
         try {
@@ -237,12 +235,12 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         return championshipRepository.save(c);
     }
 
-    private void createSchedule(Long roundId, String name, DateTime startDate, DateTime endDate) {
-        RoundScheduleCreateDto s = new RoundScheduleCreateDto();
+    private void createSchedule(Round round, String name, DateTime startDate, DateTime endDate) {
+        RoundScheduleEntryCreateDto s = new RoundScheduleEntryCreateDto();
         s.setName(name);
         s.setStartDate(startDate);
         s.setEndDate(endDate);
-        roundService.addRoundSchedule(roundId, s);
+        roundService.addRoundSchedule(round, s);
     }
 
     private void addTrack(Round round, File layout, String description, String videoUrl, String judgingCriteria) {
@@ -251,7 +249,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         track.setDescription(description);
         track.setVideoUrl(videoUrl);
         track.setJudgingCriteria(judgingCriteria);
-        roundService.addTrack(round.getId(), track);
+        roundService.addTrack(round, track);
     }
 
     private Round createRound(String name, String ticketsUrl, String liveStream, Championship c, File logo, int year, int month) {
@@ -262,9 +260,9 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         r.setTicketsUrl(ticketsUrl);
         r.setLiveStream(liveStream);
         r = roundRepository.save(r);
-        createSchedule(r.getId(), "Registration", new DateTime(year, month, 1, 10, 0), new DateTime(year, month, 1, 10, 0));
-        createSchedule(r.getId(), "Qualifications", new DateTime(year, month, 2, 10, 0), new DateTime(year, month, 2, 20, 0));
-        createSchedule(r.getId(), "Playoff", new DateTime(year, month, 3, 10, 0), new DateTime(year, month, 3, 20, 0));
+        createSchedule(r, "Registration", new DateTime(year, month, 1, 10, 0), new DateTime(year, month, 1, 10, 0));
+        createSchedule(r, "Qualifications", new DateTime(year, month, 2, 10, 0), new DateTime(year, month, 2, 20, 0));
+        createSchedule(r, "Playoff", new DateTime(year, month, 3, 10, 0), new DateTime(year, month, 3, 20, 0));
         return r;
     }
 
@@ -308,7 +306,6 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         return driverParticipationRepository.save(participation);
     }
 
-
     private void createJudgeParticipation(Person judge, Championship championship, JudgeType type, Integer... maximumPoints) {
         List<PointsAllocationCreateDto> pointAllocations = new ArrayList<>();
         for (Integer maxPoints : maximumPoints) {
@@ -336,17 +333,15 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         return resultsRepository.save(result);
     }
 
-    List<CommentCreateDto> comments = new ArrayList<>();
-
     private void initChampionshipAndRounds(){
         Championship c1 = createChampionship("DN1Z", saveFile("/img/championship_test.png"), bImg, demon, raceTech);
         Championship c2 = createChampionship("Romania Drift Allstars", saveFile("/img/allstars.jpg"), bImg);
-        Championship c3 = createChampionship("Ciobanu championship", fCiob, bImg);
+        //TODO: refactor this
         Round r1 = createRound("Manfield", "https://www.iticket.co.nz/events/2015/nov/the-demon-energy-d1nz-national-drifting-championship-round-1", "http://www.twitch.tv/sing_sing", c1, saveFile("/img/manfield.jpg"), 2015, 11);
         addTrack(r1, saveFile("/img/track.png"), "This tack is deadly. People will fall of cliffs", "http://www.youtube.com", "Pass = not dead");
         Round r2 = createRound("Baypark", "https://www.iticket.co.nz/events/2016/jan/the-demon-energy-d1nz-national-drifting-championship-round-2", null, c1, saveFile("/img/baypark.jpg"), 2016, 1);
         addTrack(r2, saveFile("/img/track.png"), "This tack is deadly. People will fall of cliffs", "http://www.youtube.com", "Pass = not dead");
-        Round r4 = createRound("Round 1 - C2", "www.google.com", null, c2, fCiob, 2016, 12);
+        Round r3 = createRound("Round 1 - C2", "www.google.com", null, c2, fCiob, 2016, 12);
 
         Person driver1 = createDriver("Florin Cozmuta", saveFile("/img/kimi.jpg"));
         Person driver2 = createDriver("Bochis Paul", saveFile("/img/kimi.jpg"));
@@ -365,6 +360,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         Person judge3 = createPerson("Ioana f", "Drifting judge", saveFile("/img/j3.jpg"), PersonType.Judge);
         createUser("style", "style", "judge@style.org", judgeRole, judge3.getId());
         createJudgeParticipation(judge3, c1, JudgeType.STYLE, 20);
+//        championshipRepository.save(c1);
 
         initComments();
 
@@ -373,9 +369,9 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         qualifierService.registerDriver(r1.getId(), driver3.getId());
         qualifierService.registerDriver(r1.getId(), driver4.getId());
         qualifierService.registerDriver(r1.getId(), driver5.getId());
-        for (JudgeParticipation jp : c1.getJudges()) {
-            submitRunJudging(qualifier, jp);
-        }
+//        for (JudgeParticipation jp : c1.getJudges()) {
+//            submitRunJudging(qualifier, jp);
+//        }
     }
 
     private void initComments(){
@@ -433,7 +429,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         user.setUsername(userName);
         user.setPassword(password);
         user.setEmail(email);
-        user.setRoles(new HashSet<>(Arrays.asList(role.getId())));
+        user.setRole(role.getId());
         try {
             return userService.createFromDto(user, personId);
         } catch (MessagingException e) {
@@ -449,7 +445,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         user.setUsername(userName);
         user.setPassword(password);
         user.setEmail(email);
-        user.setRoles(new HashSet<>(Arrays.asList(role.getId())));
+        user.setRole(role.getId());
         user.setFirstName(firstName);
         user.setLastName(lastName);
         try {
@@ -461,9 +457,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         }
         return null;
     }
-    Role adminRole;
-    Role orgRole;
-    Role judgeRole;
+
     private void initDevUsersAndRoles() {
         adminRole = roleRepository.save(new Role(Authorities.ROLE_ADMIN));
         orgRole = roleRepository.save(new Role(Authorities.ROLE_ORGANIZER));

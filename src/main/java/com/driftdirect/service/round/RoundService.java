@@ -5,9 +5,8 @@ import com.driftdirect.domain.round.Round;
 import com.driftdirect.domain.round.RoundScheduleEntry;
 import com.driftdirect.domain.round.track.Track;
 import com.driftdirect.dto.round.RoundCreateDto;
-import com.driftdirect.dto.round.RoundScheduleCreateDto;
+import com.driftdirect.dto.round.RoundScheduleEntryCreateDto;
 import com.driftdirect.dto.round.RoundShowDto;
-import com.driftdirect.dto.round.RoundUpdateDto;
 import com.driftdirect.dto.round.track.TrackCreateDto;
 import com.driftdirect.mapper.round.RoundMapper;
 import com.driftdirect.repository.FileRepository;
@@ -31,6 +30,7 @@ public class RoundService {
     private RoundScheduleRepository roundScheduleRepository;
     private TrackLayoutRepository trackLayoutRepository;
     private FileRepository fileRepository;
+
     @Autowired
     public RoundService(RoundRepository roundRepository, FileRepository fileRepository, ChampionshipRepository championshipRepository, RoundScheduleRepository roundScheduleRepository, TrackLayoutRepository trackLayoutRepository) {
         this.roundRepository = roundRepository;
@@ -40,44 +40,52 @@ public class RoundService {
         this.trackLayoutRepository = trackLayoutRepository;
     }
 
-    public Long createFromDto(RoundCreateDto dto) {
-        Championship championship = championshipRepository.findOne(dto.getChampionshipId());
+    public Round createFromDto(Championship c, RoundCreateDto dto) {
         Round round = new Round();
-        round.setName(dto.getName());
-        round.setChampionship(championship);
-        round.setLogo(fileRepository.findOne(dto.getLogo()));
-        round.setStartDate(dto.getStartDate());
-        round.setEndDate(dto.getEndDate());
-        round.setTicketsUrl(dto.getTicketsUrl());
-        return roundRepository.save(round).getId();
-    }
-
-    public RoundShowDto update(RoundUpdateDto dto) {
-        Round round = roundRepository.findOne(dto.getId());
-        Championship championship = championshipRepository.findOne(dto.getChampionshipId());
-        round.setChampionship(championship);
+        round.setChampionship(c);
         round.setName(dto.getName());
         round.setLogo(fileRepository.findOne(dto.getLogo()));
-        round.setStartDate(dto.getStartDate());
-        round.setEndDate(dto.getEndDate());
         round.setTicketsUrl(dto.getTicketsUrl());
-        return RoundMapper.map(roundRepository.save(round));
+        round.setTrack(createTrack(dto.getTrack()));
+        round = roundRepository.save(round);
+        for (RoundScheduleEntryCreateDto schedule : dto.getScheduele()) {
+            addRoundSchedule(round, schedule);
+        }
+        return round;
     }
 
-    public void addTrack(Long id, TrackCreateDto trackCreateDto){
-        Round round = roundRepository.findOne(id);
+    public Track createTrack(TrackCreateDto trackCreateDto) {
         Track track = new Track();
         track.setDescription(trackCreateDto.getDescription());
         track.setLayout(fileRepository.findOne(trackCreateDto.getLayout()));
         track.setVideoUrl(trackCreateDto.getVideoUrl());
         track.setJudgingCriteria(trackCreateDto.getJudgingCriteria());
-        track = trackLayoutRepository.save(track);
+        return track;
+    }
+
+//    public RoundShowDto update(RoundUpdateDto dto) {
+//        Round round = roundRepository.findOne(dto.getId());
+//        Championship championship = championshipRepository.findOne(dto.getChampionshipId());
+//        round.setChampionship(championship);
+//        round.setName(dto.getName());
+//        round.setLogo(fileRepository.findOne(dto.getLogo()));
+//        round.setStartDate(dto.getStartDate());
+//        round.setEndDate(dto.getEndDate());
+//        round.setTicketsUrl(dto.getTicketsUrl());
+//        return RoundMapper.map(roundRepository.save(round));
+//    }
+
+    public void addTrack(Round round, TrackCreateDto trackCreateDto) {
+        Track track = new Track();
+        track.setDescription(trackCreateDto.getDescription());
+        track.setLayout(fileRepository.findOne(trackCreateDto.getLayout()));
+        track.setVideoUrl(trackCreateDto.getVideoUrl());
+        track.setJudgingCriteria(trackCreateDto.getJudgingCriteria());
         round.setTrack(track);
         roundRepository.save(round);
     }
 
-    public void addRoundSchedule(Long roundId, RoundScheduleCreateDto dto) {
-        Round round = roundRepository.findOne(roundId);
+    public void addRoundSchedule(Round round, RoundScheduleEntryCreateDto dto) {
         RoundScheduleEntry roundScheduleEntry = new RoundScheduleEntry();
         roundScheduleEntry.setName(dto.getName());
         roundScheduleEntry.setStartDate(dto.getStartDate());

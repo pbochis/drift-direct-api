@@ -9,6 +9,7 @@ import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -37,11 +38,11 @@ public class Round implements Comparable<Round> {
     @OneToOne(fetch = FetchType.EAGER)
     private File logo;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Track track;
 
     @ManyToOne
-    @JoinColumn(name = "championship_id", nullable = false)
+    @JoinColumn(name = "championship_id")
     private Championship championship;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "round", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -49,7 +50,7 @@ public class Round implements Comparable<Round> {
     private SortedSet<RoundScheduleEntry> scheduele = new TreeSet<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "round", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Qualifier> qualifiers;
+    private List<Qualifier> qualifiers = new ArrayList<>();
 
     public long getId() {
         return id;
@@ -90,6 +91,10 @@ public class Round implements Comparable<Round> {
     public void setScheduele(SortedSet<RoundScheduleEntry> scheduele) {
         this.scheduele.clear();
         this.scheduele = scheduele;
+    }
+
+    public void addScheduele(RoundScheduleEntry scheduleEntry) {
+        this.scheduele.add(scheduleEntry);
     }
 
     public Championship getChampionship() {

@@ -3,10 +3,8 @@ package com.driftdirect.controller;
 import com.driftdirect.domain.user.Authorities;
 import com.driftdirect.domain.user.User;
 import com.driftdirect.dto.round.RoundCreateDto;
-import com.driftdirect.dto.round.RoundScheduleCreateDto;
 import com.driftdirect.dto.round.RoundShowDto;
 import com.driftdirect.dto.round.RoundUpdateDto;
-import com.driftdirect.dto.round.track.TrackCreateDto;
 import com.driftdirect.security.SecurityService;
 import com.driftdirect.service.round.RoundService;
 import com.driftdirect.service.round.qualifier.QualifierService;
@@ -40,17 +38,17 @@ public class RoundController {
     @Secured(Authorities.ROLE_ORGANIZER)
     @RequestMapping(path = RestUrls.ROUND, method = RequestMethod.POST)
     public ResponseEntity createFromDto(@RequestBody @Valid RoundCreateDto dto, @AuthenticationPrincipal User currentUser) {
-        if (!securityService.canEditChampionship(currentUser, dto.getChampionshipId())) {
-            return new ResponseEntity(HttpStatus.FORBIDDEN);
-        }
-        roundService.createFromDto(dto);
+//        if (!securityService.canEditChampionship(currentUser, dto.getChampionshipId())) {
+//            return new ResponseEntity(HttpStatus.FORBIDDEN);
+//        }
+//        roundService.createFromDto(dto);
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @Secured(Authorities.ROLE_ORGANIZER)
     @RequestMapping(path = RestUrls.ROUND, method = RequestMethod.PUT)
     public ResponseEntity updateRound(@Valid RoundUpdateDto dto) throws NoSuchElementException {
-        roundService.update(dto);
+//        roundService.update(dto);
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -66,17 +64,17 @@ public class RoundController {
         return roundService.findRound(id);
     }
 
-    @RequestMapping(path = RestUrls.ROUND_ID_SHCEDULE, method = RequestMethod.POST)
-    public ResponseEntity addSchedule(@PathVariable Long id, @Valid @RequestBody RoundScheduleCreateDto rs){
-        roundService.addRoundSchedule(id, rs);
-        return new ResponseEntity(HttpStatus.OK);
-    }
+//    @RequestMapping(path = RestUrls.ROUND_ID_SHCEDULE, method = RequestMethod.POST)
+//    public ResponseEntity addSchedule(@PathVariable Long id, @Valid @RequestBody RoundScheduleEntryCreateDto rs){
+//        roundService.addRoundSchedule(id, rs);
+//        return new ResponseEntity(HttpStatus.OK);
+//    }
 
-    @RequestMapping(path = RestUrls.ROUND_ID_TRACK, method = RequestMethod.POST)
-    public ResponseEntity addTrackLayoiut(@PathVariable Long id, @Valid @RequestBody TrackCreateDto dto){
-        roundService.addTrack(id, dto);
-        return new ResponseEntity(HttpStatus.OK);
-    }
+//    @RequestMapping(path = RestUrls.ROUND_ID_TRACK, method = RequestMethod.POST)
+//    public ResponseEntity addTrackLayoiut(@PathVariable Long id, @Valid @RequestBody TrackCreateDto dto){
+//        roundService.addTrack(id, dto);
+//        return new ResponseEntity(HttpStatus.OK);
+//    }
 
     @RequestMapping(path = RestUrls.ROUND_ID_REGISTER, method = RequestMethod.POST)
     public ResponseEntity registerDriver(@PathVariable(value = "roundId") Long roundId,

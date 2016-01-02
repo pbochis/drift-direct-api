@@ -1,6 +1,8 @@
 package com.driftdirect.service;
 
 import com.driftdirect.domain.person.Person;
+import com.driftdirect.domain.person.PersonType;
+import com.driftdirect.domain.user.Authorities;
 import com.driftdirect.domain.user.Role;
 import com.driftdirect.domain.user.User;
 import com.driftdirect.dto.user.UserCreateDTO;
@@ -59,9 +61,16 @@ public class UserService {
     }
 
     public User createFromDto(UserCreateDTO dto) throws MessagingException, IOException {
+        Role role = roleRepository.findOne(dto.getRole());
         Person person = new Person();
         person.setFirstName(dto.getFirstName());
         person.setLastName(dto.getLastName());
+        if (role.getAuthority().equals(Authorities.ROLE_JUDGE)) {
+            person.setPersonType(PersonType.Judge);
+        }
+        if (role.getAuthority().equals(Authorities.ROLE_ORGANIZER)) {
+            person.setPersonType(PersonType.Organizer);
+        }
         person = personRepository.save(person);
         return createUser(dto, person);
     }
@@ -82,9 +91,7 @@ public class UserService {
         user.setEmail(dto.getEmail());
         user.setEnabled(true);
         Set<Role> roles = new HashSet<>();
-        for (Long role: dto.getRoles()){
-            roles.add(roleRepository.findOne(role));
-        }
+        roles.add(roleRepository.findOne(dto.getRole()));
         user.setRoles(roles);
         notifyNewUser(user.getEmail(), password);
         return userRepository.save(user);

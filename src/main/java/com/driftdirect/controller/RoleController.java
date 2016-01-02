@@ -2,6 +2,7 @@ package com.driftdirect.controller;
 
 import com.driftdirect.domain.user.Authorities;
 import com.driftdirect.domain.user.Role;
+import com.driftdirect.domain.user.User;
 import com.driftdirect.dto.RoleDto;
 import com.driftdirect.repository.RoleRepository;
 import com.driftdirect.util.RestUrls;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,7 +29,7 @@ public class RoleController {
 
     @Secured({Authorities.ROLE_ADMIN, Authorities.ROLE_ORGANIZER})
     @RequestMapping(value = RestUrls.ROLES, method = RequestMethod.GET)
-    public ResponseEntity<List<RoleDto>> getRoles(){
+    public ResponseEntity<List<RoleDto>> getRoles(@AuthenticationPrincipal User currentUser) {
         return new ResponseEntity<>(roleRepository.findAll()
                                     .stream()
                                     .map(this::mapRole)

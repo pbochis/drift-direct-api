@@ -1,23 +1,29 @@
 package com.driftdirect.dto.championship;
 
+import com.driftdirect.dto.championship.judge.JudgeParticipationCreateDto;
+import com.driftdirect.dto.championship.rules.RulesCreateDto;
+import com.driftdirect.dto.round.RoundCreateDto;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 /**
  * Created by Paul on 11/11/2015.
  */
 public class ChampionshipCreateDTO {
+    List<RoundCreateDto> rounds;
+    List<JudgeParticipationCreateDto> judges;
     //TODO: add List<ChampionshipJudgeTypeCreateDto> to this
     @NotNull
     @NotEmpty
     private String name;
-    private String rules;
-    private String information;
+    @NotNull
+    @NotEmpty
     private String ticketsUrl;
     private Long logo;
     private Long backgroundImage;
-    private boolean published;
+    private RulesCreateDto rules;
 
     public Long getLogo() {
         return logo;
@@ -35,21 +41,6 @@ public class ChampionshipCreateDTO {
         this.backgroundImage = backgroundImage;
     }
 
-    public String getRules() {
-        return rules;
-    }
-
-    public void setRules(String rules) {
-        this.rules = rules;
-    }
-
-    public String getInformation() {
-        return information;
-    }
-
-    public void setInformation(String information) {
-        this.information = information;
-    }
 
     public String getTicketsUrl() {
         return ticketsUrl;
@@ -59,19 +50,35 @@ public class ChampionshipCreateDTO {
         this.ticketsUrl = ticketsUrl;
     }
 
-    public boolean isPublished() {
-        return published;
-    }
-
-    public void setPublished(boolean published) {
-        this.published = published;
-    }
-
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public RulesCreateDto getRules() {
+        return rules;
+    }
+
+    public void setRules(RulesCreateDto rules) {
+        this.rules = rules;
+    }
+
+    public List<RoundCreateDto> getRounds() {
+        return rounds;
+    }
+
+    public void setRounds(List<RoundCreateDto> rounds) {
+        this.rounds = rounds;
+    }
+
+    public List<JudgeParticipationCreateDto> getJudges() {
+        return judges;
+    }
+
+    public void setJudges(List<JudgeParticipationCreateDto> judges) {
+        this.judges = judges;
     }
 }

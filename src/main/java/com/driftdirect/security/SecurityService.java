@@ -13,7 +13,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -37,18 +36,16 @@ public class SecurityService {
         return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
-    public boolean canCreateUser(User user, Set<Long> createdRoles){
-        List<String> roles = createdRoles.stream()
-                .map(e -> roleRepository.findOne(e).getAuthority())
-                .collect(Collectors.toList());
+    public boolean canCreateUser(User user, Long createdRole) {
+        String role = roleRepository.findOne(createdRole).getAuthority();
         Set<String> userAuthorities = user.getRoles().stream().map(Role::getAuthority).collect(Collectors.toSet());
-        if (roles.contains(Authorities.ROLE_ADMIN) && !userAuthorities.contains(Authorities.ROLE_ADMIN)){
+        if (role.equals(Authorities.ROLE_ADMIN) && !userAuthorities.contains(Authorities.ROLE_ADMIN)) {
             return false;
         }
-        if (roles.contains(Authorities.ROLE_ORGANIZER) && !userAuthorities.contains(Authorities.ROLE_ADMIN)){
+        if (role.equals(Authorities.ROLE_ORGANIZER) && !userAuthorities.contains(Authorities.ROLE_ADMIN)) {
             return false;
         }
-        if (roles.contains(Authorities.ROLE_JUDGE) && !userAuthorities.contains(Authorities.ROLE_ORGANIZER)){
+        if (role.equals(Authorities.ROLE_JUDGE) && !userAuthorities.contains(Authorities.ROLE_ORGANIZER)) {
             return false;
         }
         return true;

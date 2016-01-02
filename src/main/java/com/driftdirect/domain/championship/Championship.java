@@ -22,7 +22,6 @@ public class Championship{
     private Long id;
 
     private String name;
-    private String information;
     //will be a url -> where to buy ticketsUrl
     private String ticketsUrl;
 
@@ -69,14 +68,6 @@ public class Championship{
         this.id = id;
     }
 
-    public String getInformation() {
-        return information;
-    }
-
-    public void setInformation(String information) {
-        this.information = information;
-    }
-
     public String getTicketsUrl() {
         return ticketsUrl;
     }
@@ -108,6 +99,10 @@ public class Championship{
     public void setRounds(SortedSet<Round> rounds) {
         this.rounds.clear();
         this.rounds.addAll(rounds);
+    }
+
+    public void addRound(Round round) {
+
     }
 
     public File getBackgroundImage() {

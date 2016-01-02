@@ -71,6 +71,6 @@ public class JudgeParticipationService {
         }
         judgeParticipation = judgeParticipationRepository.save(judgeParticipation);
         championship.addJudgeParticipation(judgeParticipation);
-        championshipRepository.save(championship);
+//        championshipRepository.save(championship);
     }
 }

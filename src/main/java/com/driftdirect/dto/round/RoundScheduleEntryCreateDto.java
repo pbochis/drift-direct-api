@@ -8,7 +8,7 @@ import javax.validation.constraints.Size;
 /**
  * Created by Paul on 11/17/2015.
  */
-public class RoundScheduleCreateDto {
+public class RoundScheduleEntryCreateDto {
     @NotNull
     @Size(min = 2, max = 40)
     private String name;

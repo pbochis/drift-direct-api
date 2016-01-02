@@ -1,10 +1,12 @@
 package com.driftdirect.dto.round;
 
 
-import org.joda.time.DateTime;
+import com.driftdirect.dto.round.track.TrackCreateDto;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 /**
  * Created by Paul on 11/14/2015.
@@ -14,13 +16,15 @@ public class RoundCreateDto {
     @NotNull
     @Size(min = 1, max = 50)
     private String name;
-    @NotNull
-    private Long championshipId;
     private Long logo;
 
+    @NotNull
+    @NotEmpty
     private String ticketsUrl;
-    private DateTime startDate;
-    private DateTime endDate;
+
+    private TrackCreateDto track;
+
+    private List<RoundScheduleEntryCreateDto> scheduele;
 
     public Long getLogo() {
         return logo;
@@ -38,14 +42,6 @@ public class RoundCreateDto {
         this.name = name;
     }
 
-    public Long getChampionshipId() {
-        return championshipId;
-    }
-
-    public void setChampionshipId(Long championshipId) {
-        this.championshipId = championshipId;
-    }
-
     public String getTicketsUrl() {
         return ticketsUrl;
     }
@@ -54,19 +50,19 @@ public class RoundCreateDto {
         this.ticketsUrl = ticketsUrl;
     }
 
-    public DateTime getStartDate() {
-        return startDate;
+    public List<RoundScheduleEntryCreateDto> getScheduele() {
+        return scheduele;
     }
 
-    public void setStartDate(DateTime startDate) {
-        this.startDate = startDate;
+    public void setScheduele(List<RoundScheduleEntryCreateDto> scheduele) {
+        this.scheduele = scheduele;
     }
 
-    public DateTime getEndDate() {
-        return endDate;
+    public TrackCreateDto getTrack() {
+        return track;
     }
 
-    public void setEndDate(DateTime endDate) {
-        this.endDate = endDate;
+    public void setTrack(TrackCreateDto track) {
+        this.track = track;
     }
 }

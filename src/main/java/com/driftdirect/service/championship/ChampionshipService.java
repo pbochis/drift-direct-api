@@ -1,24 +1,27 @@
 package com.driftdirect.service.championship;
 
 import com.driftdirect.domain.championship.Championship;
+import com.driftdirect.domain.championship.ChampionshipRules;
 import com.driftdirect.domain.championship.driver.DriverParticipation;
 import com.driftdirect.domain.news.News;
 import com.driftdirect.domain.user.User;
 import com.driftdirect.dto.championship.ChampionshipCreateDTO;
 import com.driftdirect.dto.championship.ChampionshipFullDto;
 import com.driftdirect.dto.championship.ChampionshipShortShowDto;
-import com.driftdirect.dto.championship.ChampionshipUpdateDTO;
 import com.driftdirect.dto.championship.driver.DriverParticipationDto;
+import com.driftdirect.dto.championship.judge.JudgeParticipationCreateDto;
 import com.driftdirect.dto.championship.judge.JudgeParticipationDto;
 import com.driftdirect.dto.news.NewsCreateDto;
 import com.driftdirect.dto.person.PersonShortShowDto;
-import com.driftdirect.exception.ObjectNotFoundException;
+import com.driftdirect.dto.round.RoundCreateDto;
 import com.driftdirect.mapper.ChampionshipMapper;
 import com.driftdirect.mapper.PersonMapper;
 import com.driftdirect.repository.FileRepository;
 import com.driftdirect.repository.championship.ChampionshipRepository;
 import com.driftdirect.repository.championship.driver.DriverParticipationRepository;
 import com.driftdirect.repository.championship.judge.JudgeParticipationRepository;
+import com.driftdirect.service.championship.judge.JudgeParticipationService;
+import com.driftdirect.service.round.RoundService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,28 +41,33 @@ public class ChampionshipService{
     private DriverParticipationRepository driverParticipationRepository;
     private JudgeParticipationRepository judgeParticipationRepository;
     private FileRepository fileRepository;
+    private RoundService roundService;
+    private JudgeParticipationService judgeParticipationService;
 
     @Autowired
     public ChampionshipService(ChampionshipRepository championshipRepository,
                                DriverParticipationRepository driverParticipationRepository,
                                JudgeParticipationRepository judgeParticipationRepository,
-                               FileRepository fileRepository) {
+                               FileRepository fileRepository, RoundService roundService,
+                               JudgeParticipationService judgeParticipationService) {
         this.championshipRepository = championshipRepository;
+        this.roundService = roundService;
         this.fileRepository = fileRepository;
         this.driverParticipationRepository = driverParticipationRepository;
         this.judgeParticipationRepository = judgeParticipationRepository;
+        this.judgeParticipationService = judgeParticipationService;
     }
 
-    public void createFromDto(ChampionshipCreateDTO dto, User currentUser) {
+    public void createFromDto(ChampionshipCreateDTO dto, User currentUser) throws Exception {
         Championship c = new Championship();
         c.setOrganizer(currentUser.getPerson());
         populateAndSave(c, dto);
     }
 
-    public void update(ChampionshipUpdateDTO dto) throws ObjectNotFoundException {
-        Championship c = championshipRepository.findOne(dto.getId());
-        populateAndSave(c, dto);
-    }
+//    public void update(ChampionshipUpdateDTO dto) throws Exception {
+//        Championship c = championshipRepository.findOne(dto.getId());
+//        populateAndSave(c, dto);
+//    }
 
     public void delete(long id){
         championshipRepository.delete(id);
@@ -85,13 +93,22 @@ public class ChampionshipService{
                 .collect(Collectors.toList());
     }
 
-    private Championship populateAndSave(Championship c, ChampionshipCreateDTO dto){
+    private Championship populateAndSave(Championship c, ChampionshipCreateDTO dto) throws Exception {
         c.setName(dto.getName());
-        c.setInformation(dto.getInformation());
-        c.setPublished(dto.isPublished());
         c.setTicketsUrl(dto.getTicketsUrl());
         c.setBackgroundImage(fileRepository.findOne(dto.getBackgroundImage()));
         c.setLogo(fileRepository.findOne(dto.getLogo()));
+        ChampionshipRules rules = new ChampionshipRules();
+        rules.setVideoUrl(dto.getRules().getVideoUrl());
+        rules.setRules(dto.getRules().getRules());
+        c.setRules(rules);
+        c = championshipRepository.save(c);
+        for (RoundCreateDto roundCreateDto : dto.getRounds()) {
+            roundService.createFromDto(c, roundCreateDto);
+        }
+        for (JudgeParticipationCreateDto judgeParticipationCreateDto : dto.getJudges()) {
+            judgeParticipationService.addJudge(c, judgeParticipationCreateDto);
+        }
         return championshipRepository.save(c);
     }
 

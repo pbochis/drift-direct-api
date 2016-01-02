@@ -28,7 +28,6 @@ public class ChampionshipMapper {
         ChampionshipFullDto dto = new ChampionshipFullDto();
         dto.setId(c.getId());
         dto.setName(c.getName());
-        dto.setInformation(c.getInformation());
         dto.setTicketsUrl(c.getTicketsUrl());
         dto.setBackgroundImage(c.getBackgroundImage().getId());
         dto.setLogo(c.getLogo().getId());

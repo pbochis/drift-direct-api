@@ -1,5 +1,6 @@
 package com.driftdirect.controller;
 
+import com.driftdirect.domain.person.PersonType;
 import com.driftdirect.dto.person.*;
 import com.driftdirect.service.PersonService;
 import com.driftdirect.util.RestUrls;
@@ -24,7 +25,10 @@ public class PersonController {
     }
 
     @RequestMapping(path = RestUrls.PERSON, method = RequestMethod.GET)
-    public ResponseEntity<List<PersonShortShowDto>> findAll(){
+    public ResponseEntity<List<PersonShortShowDto>> findAll(@RequestParam(name = "personType", required = false) PersonType personType) {
+        if (personType != null) {
+            return new ResponseEntity<>(personService.findByType(personType), HttpStatus.OK);
+        }
         return new ResponseEntity<>(personService.findAll(), HttpStatus.OK);
     }
 

@@ -52,7 +52,7 @@ public class UserController {
     @RequestMapping(value = RestUrls.USER, method = RequestMethod.POST)
     public ResponseEntity createUser(@Valid @RequestBody UserCreateDTO user) throws MessagingException, IOException {
         User currentUser = securityService.currentUser();
-        if (securityService.canCreateUser(currentUser, user.getRoles())){
+        if (securityService.canCreateUser(currentUser, user.getRole())) {
             userService.createFromDto(user);
             return new ResponseEntity(HttpStatus.OK);
         }

@@ -31,13 +31,25 @@ public class FileController {
         this.fileRepository = fileRepository;
     }
 
+    public static BufferedImage scale(BufferedImage src, int dWidth, int dHeight, double fWidth, double fHeight) {
+        BufferedImage dbi = null;
+        if (src != null) {
+            dbi = new BufferedImage(dWidth, dHeight, BufferedImage.TYPE_INT_RGB);
+            Graphics2D g = dbi.createGraphics();
+            AffineTransform at = AffineTransform.getScaleInstance(fWidth, fHeight);
+            g.drawRenderedImage(src, at);
+        }
+        return dbi;
+    }
+
     @RequestMapping(path = RestUrls.FILE, method = RequestMethod.POST)
     public ResponseEntity<Long> uploadFile(@RequestBody MultipartFile file) {
         try {
             File f = new File();
             f.setName(file.getOriginalFilename());
             f.setData(file.getBytes());
-            return new ResponseEntity<Long>(fileRepository.save(f).getId(), HttpStatus.OK);
+            f = fileRepository.save(f);
+            return new ResponseEntity<Long>(f.getId(), HttpStatus.OK);
         } catch (IOException e) {
             return new ResponseEntity<Long>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -62,17 +74,6 @@ public class FileController {
                 .ok()
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(data);
-    }
-
-    public static BufferedImage scale(BufferedImage src, int dWidth, int dHeight, double fWidth, double fHeight) {
-        BufferedImage dbi = null;
-        if(src != null) {
-            dbi = new BufferedImage(dWidth, dHeight, BufferedImage.TYPE_INT_RGB);
-            Graphics2D g = dbi.createGraphics();
-            AffineTransform at = AffineTransform.getScaleInstance(fWidth, fHeight);
-            g.drawRenderedImage(src, at);
-        }
-        return dbi;
     }
 
 }

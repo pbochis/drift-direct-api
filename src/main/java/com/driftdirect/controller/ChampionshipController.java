@@ -49,7 +49,7 @@ public class ChampionshipController {
 
     @Secured(Authorities.ROLE_ORGANIZER)
     @RequestMapping(path = RestUrls.CHAMPIONSHIP, method = RequestMethod.POST)
-    public ResponseEntity createChampionship(@Valid ChampionshipCreateDTO c, @AuthenticationPrincipal User currentUser) {
+    public ResponseEntity createChampionship(@Valid @RequestBody ChampionshipCreateDTO c, @AuthenticationPrincipal User currentUser) throws Exception {
         championshipService.createFromDto(c, currentUser);
         return new ResponseEntity(HttpStatus.OK);
     }
@@ -60,7 +60,7 @@ public class ChampionshipController {
         if (!securityService.canEditChampionship(currentUser, c.getId())) {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
         }
-        championshipService.update(c);
+//        championshipService.update(c);
         return new ResponseEntity(HttpStatus.OK);
     }
 

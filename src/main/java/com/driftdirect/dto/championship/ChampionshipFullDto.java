@@ -15,7 +15,6 @@ public class ChampionshipFullDto {
     private Long id;
     private String name;
     private ChampionshipRulesDto rules;
-    private String information;
     private String ticketsUrl;
 
     private boolean published;
@@ -34,11 +33,11 @@ public class ChampionshipFullDto {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -56,14 +55,6 @@ public class ChampionshipFullDto {
 
     public void setRules(ChampionshipRulesDto rules) {
         this.rules = rules;
-    }
-
-    public String getInformation() {
-        return information;
-    }
-
-    public void setInformation(String information) {
-        this.information = information;
     }
 
     public String getTicketsUrl() {
