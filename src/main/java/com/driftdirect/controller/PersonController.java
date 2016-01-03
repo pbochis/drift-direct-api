@@ -33,9 +33,9 @@ public class PersonController {
     }
 
     @RequestMapping(path = RestUrls.PERSON, method = RequestMethod.POST)
-    public ResponseEntity createPerson(@RequestBody @Valid PersonCreateDto dto){
-        personService.createFromDto(dto);
-        return new ResponseEntity(HttpStatus.CREATED);
+    public ResponseEntity<Long> createPerson(@RequestBody @Valid PersonCreateDto dto){
+        Long id = personService.createFromDto(dto).getId();
+        return new ResponseEntity<Long>(id, HttpStatus.CREATED);
     }
 
     @RequestMapping(path = RestUrls.PERSON_ID, method = RequestMethod.PUT)

@@ -25,6 +25,7 @@ import com.driftdirect.domain.user.User;
 import com.driftdirect.dto.championship.judge.JudgeParticipationCreateDto;
 import com.driftdirect.dto.championship.judge.PointsAllocationCreateDto;
 import com.driftdirect.dto.comment.CommentCreateDto;
+import com.driftdirect.dto.person.PersonCreateDto;
 import com.driftdirect.dto.round.RoundScheduleEntryCreateDto;
 import com.driftdirect.dto.round.qualifier.run.AwardedPointsCreateDto;
 import com.driftdirect.dto.round.qualifier.run.RunJudgingCreateDto;
@@ -349,6 +350,12 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         Person driver4 = createDriver("Tommy Hilfinger", saveFile("/img/kimi.jpg"));
         Person driver5 = createDriver("Samsung Daniel", saveFile("/img/kimi.jpg"));
 
+        createDriverParticipation(driver1, c1);
+        createDriverParticipation(driver2, c1);
+        createDriverParticipation(driver3, c1);
+        createDriverParticipation(driver4, c1);
+        createDriverParticipation(driver5, c1);
+
         Person judge1 = createPerson("Diana V", "Drifitng judge", saveFile("/img/j1.jpg"), PersonType.Judge);
         createUser("line", "line", "judge@judge.org", judgeRole, judge1.getId());
         createJudgeParticipation(judge1, c1, JudgeType.LINE, 30, 10);
@@ -364,11 +371,11 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
         initComments();
 
-        Qualifier qualifier = qualifierService.registerDriver(r1.getId(), driver1.getId());
-        qualifierService.registerDriver(r1.getId(), driver2.getId());
-        qualifierService.registerDriver(r1.getId(), driver3.getId());
-        qualifierService.registerDriver(r1.getId(), driver4.getId());
-        qualifierService.registerDriver(r1.getId(), driver5.getId());
+//        Qualifier qualifier = qualifierService.registerDriver(r1.getId(), driver1.getId());
+//        qualifierService.registerDriver(r1.getId(), driver2.getId());
+//        qualifierService.registerDriver(r1.getId(), driver3.getId());
+//        qualifierService.registerDriver(r1.getId(), driver4.getId());
+//        qualifierService.registerDriver(r1.getId(), driver5.getId());
 //        for (JudgeParticipation jp : c1.getJudges()) {
 //            submitRunJudging(qualifier, jp);
 //        }
@@ -446,8 +453,11 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         user.setPassword(password);
         user.setEmail(email);
         user.setRole(role.getId());
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
+        PersonCreateDto person = new PersonCreateDto();
+        person.setFirstName(firstName);
+        person.setLastName(lastName);
+        person.setPersonType("Judge");
+        user.setPerson(person);
         try {
             return userService.createFromDto(user);
         } catch (MessagingException e) {

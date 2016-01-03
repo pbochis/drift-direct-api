@@ -30,7 +30,9 @@ public class PersonMapper {
             driverDetails.setMake(person.getDriverDetails().getMake());
             driverDetails.setModel(person.getDriverDetails().getModel());
             driverDetails.setHorsePower(person.getDriverDetails().getHorsePower());
-            driverDetails.setTeam(TeamMapper.map(person.getDriverDetails().getTeam()));
+            if (person.getDriverDetails().getTeam() != null){
+                driverDetails.setTeam(TeamMapper.map(person.getDriverDetails().getTeam()));
+            }
             dto.setDriverDetails(driverDetails);
         }
         return dto;

@@ -11,10 +11,11 @@ public class PersonCreateDto {
     private String telephone;
     private Long profilePicture;
     private Long country;
-
+    private DateTime birthDate;
     private DateTime careerStartDate;
     private String portfolio;
     private String description;
+    private String nick;
 
     private String personType;
 
@@ -98,5 +99,21 @@ public class PersonCreateDto {
 
     public void setPortfolio(String portfolio) {
         this.portfolio = portfolio;
+    }
+
+    public String getNick() {
+        return nick;
+    }
+
+    public void setNick(String nick) {
+        this.nick = nick;
+    }
+
+    public DateTime getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(DateTime birthDate) {
+        this.birthDate = birthDate;
     }
 }

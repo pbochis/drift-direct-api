@@ -2,6 +2,7 @@ package com.driftdirect.controller;
 
 import com.driftdirect.domain.user.Authorities;
 import com.driftdirect.domain.user.User;
+import com.driftdirect.dto.person.PersonShortShowDto;
 import com.driftdirect.dto.round.RoundCreateDto;
 import com.driftdirect.dto.round.RoundShowDto;
 import com.driftdirect.dto.round.RoundUpdateDto;
@@ -17,6 +18,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.xml.transform.OutputKeys;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 /**
@@ -85,6 +88,12 @@ public class RoundController {
         }
         qualifierService.registerDriver(roundId, driverId);
         return new ResponseEntity(HttpStatus.OK);
+    }
+
+
+    @RequestMapping(path = RestUrls.ROUND_ID_REGISTER_DESK, method = RequestMethod.GET)
+    public ResponseEntity<List<PersonShortShowDto>> getDriversForRegisterDesk(@PathVariable(value = "id") Long roundId){
+        return new ResponseEntity<List<PersonShortShowDto>>(roundService.getPersonsForRegisterDesk(roundId), HttpStatus.OK);
     }
 }
 

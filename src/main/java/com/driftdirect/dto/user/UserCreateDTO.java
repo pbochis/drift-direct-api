@@ -1,5 +1,6 @@
 package com.driftdirect.dto.user;
 
+import com.driftdirect.dto.person.PersonCreateDto;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.NotNull;
@@ -10,32 +11,22 @@ import javax.validation.constraints.NotNull;
 public class UserCreateDTO {
     private String username;
     private String password;
-
     @NotNull
     @NotEmpty
     private String email;
 
-    private String firstName;
-    private String lastName;
-
+    //TODO: refactor this to be a long. This is not good code and also not cool. Fuck me.
+    private PersonCreateDto person;
 
     @NotNull
     private Long role;
 
-    public String getFirstName() {
-        return firstName;
+    public PersonCreateDto getPerson() {
+        return person;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setPerson(PersonCreateDto person) {
+        this.person = person;
     }
 
     public String getEmail() {

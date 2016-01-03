@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,7 +31,20 @@ public class RoleController {
     @Secured({Authorities.ROLE_ADMIN, Authorities.ROLE_ORGANIZER})
     @RequestMapping(value = RestUrls.ROLES, method = RequestMethod.GET)
     public ResponseEntity<List<RoleDto>> getRoles(@AuthenticationPrincipal User currentUser) {
-        return new ResponseEntity<>(roleRepository.findAll()
+        //TODO: Oh god please forgive me for this code.
+        Role userRole = (Role)currentUser.getRoles().toArray()[0];
+        List<String> visibleRoles = new ArrayList<>();
+        switch (userRole.getAuthority()){
+            case Authorities.ROLE_ADMIN:
+                visibleRoles.add(Authorities.ROLE_ADMIN);
+                visibleRoles.add(Authorities.ROLE_JUDGE);
+                visibleRoles.add(Authorities.ROLE_ORGANIZER);
+                break;
+            case Authorities.ROLE_ORGANIZER:
+                visibleRoles.add(Authorities.ROLE_JUDGE);
+                break;
+        }
+        return new ResponseEntity<>(roleRepository.findVisibleRoles(visibleRoles)
                                     .stream()
                                     .map(this::mapRole)
                                     .collect(Collectors.toList()), HttpStatus.OK);

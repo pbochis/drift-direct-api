@@ -43,7 +43,7 @@ public class UserController {
         return UserMapper.map(securityService.currentUser());
     }
 
-    @Secured({Authorities.ROLE_ADMIN})
+    @Secured({Authorities.ROLE_ADMIN, Authorities.ROLE_ORGANIZER})
     @RequestMapping(value = RestUrls.USERS, method = RequestMethod.GET)
     public ResponseEntity<List<UserShowDto>> getUsers(@AuthenticationPrincipal User currentUser){
         return new ResponseEntity<List<UserShowDto>>(userService.getUsers(), HttpStatus.OK);

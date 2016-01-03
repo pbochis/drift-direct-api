@@ -30,14 +30,14 @@ import java.util.stream.Collectors;
 public class UserService {
     private final String USER_NOTIFY_EMAIL_TEMPLATE = "/template/templateAccountCreated.html";
     private UserRepository userRepository;
-    private PersonRepository personRepository;
+    private PersonService personService;
     private RoleRepository roleRepository;
     private BCryptPasswordEncoder passwordEncoder;
     private MailSenderService mailSenderService;
 
     @Autowired
     public UserService(UserRepository userRepository,
-                       PersonRepository personRepository,
+                       PersonService personService,
                        RoleRepository roleRepository,
                        BCryptPasswordEncoder passwordEncoder,
                        MailSenderService mailSenderService){
@@ -45,11 +45,11 @@ public class UserService {
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.mailSenderService = mailSenderService;
-        this.personRepository = personRepository;
+        this.personService = personService;
     }
 
     public User createFromDto(UserCreateDTO dto, Long personId) throws IOException, MessagingException {
-        Person person = personRepository.findOne(personId);
+        Person person = personService.findOne(personId);
         return createUser(dto, person);
     }
 
@@ -62,16 +62,13 @@ public class UserService {
 
     public User createFromDto(UserCreateDTO dto) throws MessagingException, IOException {
         Role role = roleRepository.findOne(dto.getRole());
-        Person person = new Person();
-        person.setFirstName(dto.getFirstName());
-        person.setLastName(dto.getLastName());
+        Person person = personService.createFromDto(dto.getPerson());
         if (role.getAuthority().equals(Authorities.ROLE_JUDGE)) {
             person.setPersonType(PersonType.Judge);
         }
         if (role.getAuthority().equals(Authorities.ROLE_ORGANIZER)) {
             person.setPersonType(PersonType.Organizer);
         }
-        person = personRepository.save(person);
         return createUser(dto, person);
     }
 

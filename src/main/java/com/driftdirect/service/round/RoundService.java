@@ -1,13 +1,17 @@
 package com.driftdirect.service.round;
 
 import com.driftdirect.domain.championship.Championship;
+import com.driftdirect.domain.person.Person;
 import com.driftdirect.domain.round.Round;
 import com.driftdirect.domain.round.RoundScheduleEntry;
+import com.driftdirect.domain.round.qualifiers.Qualifier;
 import com.driftdirect.domain.round.track.Track;
+import com.driftdirect.dto.person.PersonShortShowDto;
 import com.driftdirect.dto.round.RoundCreateDto;
 import com.driftdirect.dto.round.RoundScheduleEntryCreateDto;
 import com.driftdirect.dto.round.RoundShowDto;
 import com.driftdirect.dto.round.track.TrackCreateDto;
+import com.driftdirect.mapper.PersonMapper;
 import com.driftdirect.mapper.round.RoundMapper;
 import com.driftdirect.repository.FileRepository;
 import com.driftdirect.repository.championship.ChampionshipRepository;
@@ -18,6 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by Paul on 11/14/2015.
@@ -105,6 +111,15 @@ public class RoundService {
 
     public void delete(Long id){
         roundRepository.delete(id);
+    }
+
+    public List<PersonShortShowDto> getPersonsForRegisterDesk(Long roundId){
+        Round round = roundRepository.findOne(roundId);
+        List<Person> drivers = round.getChampionship().getDrivers().stream().map(e -> e.getDriver()).collect(Collectors.toList());
+        for (Qualifier qualifier: round.getQualifiers()){
+            drivers.remove(qualifier.getDriver());
+        }
+        return drivers.stream().map(PersonMapper::mapShort).collect(Collectors.toList());
     }
 
     public RoundShowDto findRound(long id){

@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  */
 @Service
 public class PersonService {
-    private PersonRepository repository;
+    private PersonRepository personRepository;
     private CountryRepository countryRepository;
     private DriverDetailsRepository driverDetailsRepository;
     private TeamRepository teamRepository;
@@ -26,40 +26,53 @@ public class PersonService {
 
     @Autowired
     public PersonService(PersonRepository personRepository, FileRepository fileRepository, CountryRepository countryRepository, TeamRepository teamRepository, DriverDetailsRepository driverDetailsRepository) {
-        this.repository = personRepository;
+        this.personRepository = personRepository;
         this.countryRepository = countryRepository;
         this.teamRepository = teamRepository;
         this.driverDetailsRepository = driverDetailsRepository;
         this.fileRepository = fileRepository;
     }
     public List<PersonShortShowDto> findAll(){
-        return repository.findAll().stream().map(PersonMapper::mapShort).collect(Collectors.toList());
+        return personRepository.findAll().stream().map(PersonMapper::mapShort).collect(Collectors.toList());
     }
 
     public List<PersonShortShowDto> findByType(PersonType personType) {
-        return repository.findPersonsByType(personType).stream().map(PersonMapper::mapShort).collect(Collectors.toList());
+        return personRepository.findPersonsByType(personType).stream().map(PersonMapper::mapShort).collect(Collectors.toList());
     }
 
-    public void createFromDto(PersonCreateDto dto){
+    public Person findOne(Long id){
+        return personRepository.findOne(id);
+    }
+
+    public Person createFromDto(PersonCreateDto dto){
         Person p = new Person();
         p.setFirstName(dto.getFirstName());
         p.setLastName(dto.getLastName());
-        p.setCountry(countryRepository.findOne(dto.getCountry()));
+        if (dto.getCountry() != null){
+            p.setCountry(countryRepository.findOne(dto.getCountry()));
+        }
+        p.setNick(dto.getNick());
+        p.setBirthDate(dto.getBirthDate());
         p.setTelephone(dto.getTelephone());
         p.setCareerStartDate(dto.getCareerStartDate());
         p.setDescription(dto.getDescription());
         p.setPortfolio(dto.getPortfolio());
         p.setPersonType(PersonType.valueOf(dto.getPersonType()));
-        p.setProfilePicture(fileRepository.findOne(dto.getProfilePicture()));
+        if (dto.getProfilePicture() != null){
+            p.setProfilePicture(fileRepository.findOne(dto.getProfilePicture()));
+        }
         if (p.getPersonType() == PersonType.Driver){
             p.setDriverDetails(createDriverDetails(dto.getDriverDetails()));
         }
-        repository.save(p);
+        return personRepository.save(p);
     }
 
     private DriverDetails createDriverDetails(DriverDetailsCreateDto dto){
         DriverDetails driverDetails = new DriverDetails();
-        Team team = teamRepository.findOne(dto.getTeam());
+        if (dto.getTeam() != null){
+            Team team = teamRepository.findOne(dto.getTeam());
+            driverDetails.setTeam(team);
+        }
         driverDetails.setMake(dto.getMake());
         driverDetails.setModel(dto.getModel());
         driverDetails.setEngine(dto.getEngine());
@@ -68,12 +81,11 @@ public class PersonService {
         driverDetails.setWheels(dto.getWheels());
         driverDetails.setTires(dto.getTires());
         driverDetails.setOther(dto.getOther());
-        driverDetails.setTeam(team);
         return driverDetailsRepository.save(driverDetails);
     }
 
     public void updatePerson(PersonUpdateDto dto){
-        Person person = repository.findOne(dto.getId());
+        Person person = personRepository.findOne(dto.getId());
         person.setFirstName(dto.getFirstName());
         person.setLastName(dto.getLastName());
         person.setTelephone(dto.getTelephone());
@@ -82,7 +94,7 @@ public class PersonService {
         person.setPortfolio(dto.getPortfolio());
         person.setDescription(dto.getDescription());
         person.setPersonType(PersonType.valueOf(dto.getPersonType()));
-        repository.save(person);
+        personRepository.save(person);
     }
 
     public void upateDriverDetails(DriverDetailsUpdateDto dto){
@@ -100,10 +112,10 @@ public class PersonService {
     }
 
     public PersonFullDto findPerson(Long id) {
-        return PersonMapper.mapFull(repository.findOne(id));
+        return PersonMapper.mapFull(personRepository.findOne(id));
     }
 
     public void delete(Long id){
-        repository.delete(id);
+        personRepository.delete(id);
     }
 }
