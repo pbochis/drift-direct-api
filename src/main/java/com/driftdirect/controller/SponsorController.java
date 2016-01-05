@@ -44,7 +44,7 @@ public class SponsorController {
     @RequestMapping(path = RestUrls.SPONSOR, method = RequestMethod.POST)
     public ResponseEntity createSponsor(@RequestBody @Valid SponsorCreateDto dto){
         sponsorService.createFromDto(dto);
-        return new ResponseEntity(HttpStatus.CREATED);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @RequestMapping(path = RestUrls.SPONSOR, method = RequestMethod.PUT)

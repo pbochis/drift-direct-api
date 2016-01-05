@@ -10,6 +10,9 @@ public class QualifierShortDto {
     private PersonShortShowDto driver;
     private Integer points;
 
+    private Integer firstRunScore;
+    private Integer secondRunScore;
+
     public Long getId() {
         return id;
     }
@@ -32,5 +35,21 @@ public class QualifierShortDto {
 
     public void setPoints(Integer points) {
         this.points = points;
+    }
+
+    public Integer getFirstRunScore() {
+        return firstRunScore;
+    }
+
+    public void setFirstRunScore(Integer firstRunScore) {
+        this.firstRunScore = firstRunScore;
+    }
+
+    public Integer getSecondRunScore() {
+        return secondRunScore;
+    }
+
+    public void setSecondRunScore(Integer secondRunScore) {
+        this.secondRunScore = secondRunScore;
     }
 }

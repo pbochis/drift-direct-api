@@ -56,10 +56,7 @@ import org.springframework.stereotype.Component;
 
 import javax.mail.MessagingException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Paul on 11/10/2015.
@@ -282,6 +279,10 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         return personRepository.save(person);
     }
 
+    private Person createDriver(String firstName, String lastName, File picture) {
+        return createDriver(firstName + " " + lastName, picture);
+    }
+
     private Person createDriver(String name, File picture) {
         DriverDetails d = new DriverDetails();
         d.setModel("GT86");
@@ -329,9 +330,20 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
     private DriverParticipationResults createResult(DriverParticipation participation, int rank, int points) {
         DriverParticipationResults result = new DriverParticipationResults();
         result.setRank(rank);
-        result.setTotalPoints(points);
+        result.setTotalPoints((float) points);
         result.setParticipation(participation);
         return resultsRepository.save(result);
+    }
+
+    private List<Person> createDrivers(int size) {
+        String[] firstNames = {"John", "Malcolm", "Joshua", "Jim", "Paul", "Alex", "Tom", "Marcus", "Wayne", "Shane", "Christian", "Greg"};
+        String[] lastNames = {"Guzman", "Fit", "Gallagher", "McClane", "Plit", "DelRey", "Paquito", "Marquiz", "Velasquez"};
+        List<Person> drivers = new ArrayList<>();
+        Random r = new Random();
+        for (int i = 0; i < size; i++) {
+            drivers.add(createDriver(firstNames[r.nextInt(firstNames.length)], lastNames[r.nextInt(lastNames.length)], saveFile("/img/kimi.jpg")));
+        }
+        return drivers;
     }
 
     private void initChampionshipAndRounds(){
@@ -356,6 +368,8 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         createDriverParticipation(driver4, c1);
         createDriverParticipation(driver5, c1);
 
+        List<Person> drivers = createDrivers(32);
+
         Person judge1 = createPerson("Diana V", "Drifitng judge", saveFile("/img/j1.jpg"), PersonType.Judge);
         createUser("line", "line", "judge@judge.org", judgeRole, judge1.getId());
         createJudgeParticipation(judge1, c1, JudgeType.LINE, 30, 10);
@@ -370,14 +384,16 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 //        championshipRepository.save(c1);
 
         initComments();
+        List<Qualifier> qualifiers = new ArrayList<>();
+        for (Person p : drivers) {
+            qualifiers.add(qualifierService.registerDriver(r1.getId(), p.getId()));
 
-//        Qualifier qualifier = qualifierService.registerDriver(r1.getId(), driver1.getId());
-//        qualifierService.registerDriver(r1.getId(), driver2.getId());
-//        qualifierService.registerDriver(r1.getId(), driver3.getId());
-//        qualifierService.registerDriver(r1.getId(), driver4.getId());
-//        qualifierService.registerDriver(r1.getId(), driver5.getId());
-//        for (JudgeParticipation jp : c1.getJudges()) {
-//            submitRunJudging(qualifier, jp);
+        }
+//        for (Qualifier qualifier: qualifiers){
+//            for (JudgeParticipation jp : c1.getJudges()) {
+//                submitRunJudging(qualifier, qualifier.getFirstRun().getId(), jp);
+//                submitRunJudging(qualifier, qualifier.getSecondRun().getId(), jp);
+//            }
 //        }
     }
 
@@ -407,18 +423,19 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
     }
 
-    private void submitRunJudging(Qualifier qualifier, JudgeParticipation judge) {
+    private void submitRunJudging(Qualifier qualifier, Long runId, JudgeParticipation judge) {
+        Random r = new Random();
         RunJudgingCreateDto dto = new RunJudgingCreateDto();
         List<AwardedPointsCreateDto> awardedPoints = new ArrayList<>();
         for (PointsAllocation allocation : judge.getPointsAllocations()) {
             AwardedPointsCreateDto points = new AwardedPointsCreateDto();
-            points.setAwardedPoints(allocation.getMaxPoints() - 5);
+            points.setAwardedPoints(r.nextInt(allocation.getMaxPoints()) + 1);
             points.setPointsAllocation(allocation.getId());
             awardedPoints.add(points);
         }
         dto.setAwardedPoints(awardedPoints);
         dto.setComments(comments);
-        qualifierService.submitRunJudging(qualifier.getId(), qualifier.getFirstRun().getId(), dto, judge.getJudge());
+        qualifierService.submitRunJudging(qualifier.getId(), runId, dto, judge.getJudge());
     }
 
     private CommentCreateDto createComment(String commentText, boolean positive) {
@@ -456,7 +473,17 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         PersonCreateDto person = new PersonCreateDto();
         person.setFirstName(firstName);
         person.setLastName(lastName);
-        person.setPersonType("Judge");
+        switch (role.getAuthority()) {
+            case Authorities.ROLE_ADMIN:
+                person.setPersonType("Admin");
+                break;
+            case Authorities.ROLE_JUDGE:
+                person.setPersonType("Judge");
+                break;
+            case Authorities.ROLE_ORGANIZER:
+                person.setPersonType("Organizer");
+                break;
+        }
         user.setPerson(person);
         try {
             return userService.createFromDto(user);

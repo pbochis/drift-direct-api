@@ -58,7 +58,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                         RestUrls.ROUND_ID,
                         RestUrls.QUALIFIER_ID,
                         RestUrls.PERSON_ID,
-                        RestUrls.FILE_ID).permitAll()
+                        RestUrls.FILE_ID,
+                        RestUrls.ROUND_ID_PLAYOFF).permitAll()
                 .antMatchers(HttpMethod.GET, "/testTime").permitAll()
                     .anyRequest().authenticated()
                 .and()

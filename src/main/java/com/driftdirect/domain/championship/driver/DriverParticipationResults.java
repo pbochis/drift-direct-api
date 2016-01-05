@@ -13,7 +13,7 @@ public class DriverParticipationResults {
     private Long id;
 
     private int rank;
-    private int totalPoints;
+    private Float totalPoints;
 
     @OneToOne
     private DriverParticipation participation;
@@ -34,12 +34,20 @@ public class DriverParticipationResults {
         this.rank = rank;
     }
 
-    public int getTotalPoints() {
+    public Float getTotalPoints() {
         return totalPoints;
     }
 
-    public void setTotalPoints(int totalPoints) {
+    public void setTotalPoints(Float totalPoints) {
         this.totalPoints = totalPoints;
+    }
+
+    public void addPoints(Float points) {
+        if (this.getTotalPoints() == null) {
+            this.totalPoints = points;
+        } else {
+            this.totalPoints += points;
+        }
     }
 
     public DriverParticipation getParticipation() {

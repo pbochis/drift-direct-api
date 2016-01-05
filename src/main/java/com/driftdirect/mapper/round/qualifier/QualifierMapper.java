@@ -2,11 +2,9 @@ package com.driftdirect.mapper.round.qualifier;
 
 import com.driftdirect.domain.championship.judge.JudgeParticipation;
 import com.driftdirect.domain.comment.Comment;
-import com.driftdirect.domain.round.qualifiers.AwardedPoints;
-import com.driftdirect.domain.round.qualifiers.Qualifier;
-import com.driftdirect.domain.round.qualifiers.Run;
-import com.driftdirect.domain.round.qualifiers.RunJudging;
+import com.driftdirect.domain.round.qualifiers.*;
 import com.driftdirect.dto.championship.judge.JudgeParticipationDto;
+import com.driftdirect.dto.round.qualifier.QualifiedDriverDto;
 import com.driftdirect.dto.round.qualifier.QualifierFullDto;
 import com.driftdirect.dto.round.qualifier.QualifierJudgeDto;
 import com.driftdirect.dto.round.qualifier.QualifierShortDto;
@@ -28,6 +26,8 @@ public class QualifierMapper {
     private static void mapInternal(QualifierShortDto dto, Qualifier qualifier){
         dto.setId(qualifier.getId());
         dto.setDriver(PersonMapper.mapShort(qualifier.getDriver()));
+        dto.setFirstRunScore(qualifier.getFirstRun().getTotalPoints());
+        dto.setSecondRunScore(qualifier.getSecondRun().getTotalPoints());
         dto.setPoints(qualifier.getFinalScore() > 0 ? qualifier.getFinalScore() : null);
     }
 
@@ -46,6 +46,7 @@ public class QualifierMapper {
         dto.setId(qualifier.getId());
         dto.setDriver(PersonMapper.mapShort(qualifier.getDriver()));
         dto.setJudge(ChampionshipMapper.mapJudgeParticipation(participation));
+        dto.setRoundId(qualifier.getRound().getId());
         if (run != null) {
             dto.setRunId(run.getId());
             if (qualifier.getFirstRun().equals(run)) {
@@ -124,5 +125,16 @@ public class QualifierMapper {
                 .stream()
                 .map(QualifierMapper::mapShort)
                 .collect(Collectors.toList());
+    }
+
+    public static QualifiedDriverDto mapQualifiedDriver(QualifiedDriver driver) {
+        if (driver == null) {
+            return null;
+        }
+        QualifiedDriverDto dto = new QualifiedDriverDto();
+        dto.setDriver(PersonMapper.mapShort(driver.getDriver()));
+        dto.setRanking(driver.getRanking());
+        dto.setId(driver.getId());
+        return dto;
     }
 }

@@ -1,12 +1,15 @@
 package com.driftdirect.security;
 
 import com.driftdirect.domain.championship.Championship;
+import com.driftdirect.domain.round.Round;
+import com.driftdirect.domain.round.playoff.PlayoffTree;
 import com.driftdirect.domain.round.qualifiers.Qualifier;
 import com.driftdirect.domain.user.Authorities;
 import com.driftdirect.domain.user.Role;
 import com.driftdirect.domain.user.User;
 import com.driftdirect.repository.RoleRepository;
 import com.driftdirect.repository.round.RoundRepository;
+import com.driftdirect.repository.round.playoff.PlayoffTreeRepository;
 import com.driftdirect.repository.round.qualifier.QualifierRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,6 +34,10 @@ public class SecurityService {
 
     @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
+    private PlayoffTreeRepository playoffTreeRepository;
+
 
     public User currentUser(){
         return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -74,5 +81,37 @@ public class SecurityService {
                 .getJudges()
                 .stream()
                 .anyMatch(judgeParticipation -> judgeParticipation.getJudge().getId().equals(user.getPerson().getId()));
+    }
+
+    public boolean canJudgePlayoff(User user, Long playoffId) {
+        PlayoffTree tree = playoffTreeRepository.findOne(playoffId);
+        if (tree == null) {
+            throw new NoSuchElementException("Qualifier not found!");
+        }
+        return tree.getRound()
+                .getChampionship()
+                .getJudges()
+                .stream()
+                .anyMatch(judgeParticipation -> judgeParticipation.getJudge().getId().equals(user.getPerson().getId()));
+    }
+
+    public boolean canGeneratePlayoffs(User user, Long roundId) {
+        Round round = roundRepository.findOne(roundId);
+        if (user == null) {
+            return false;
+        }
+        if (round == null) {
+            return false;
+        }
+        if (user.getPerson().equals(round.getChampionship().getOrganizer())) {
+            return true;
+        }
+        return round
+                .getChampionship()
+                .getJudges()
+                .stream()
+                .anyMatch(judgeParticipation -> judgeParticipation.getJudge().equals(user.getPerson()));
+
+
     }
 }

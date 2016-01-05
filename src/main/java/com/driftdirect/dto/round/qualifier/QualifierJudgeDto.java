@@ -13,6 +13,7 @@ public class QualifierJudgeDto {
     private Long id;
     private Long runId;
     private int runNumber;
+    private Long roundId;
     private PersonShortShowDto driver;
     private JudgeParticipationDto judge;
 
@@ -63,5 +64,13 @@ public class QualifierJudgeDto {
 
     public void setAvailableComments(List<CommentDto> availableComments) {
         this.availableComments = availableComments;
+    }
+
+    public Long getRoundId() {
+        return roundId;
+    }
+
+    public void setRoundId(Long roundId) {
+        this.roundId = roundId;
     }
 }

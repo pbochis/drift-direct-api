@@ -2,6 +2,8 @@ package com.driftdirect.domain.round;
 
 import com.driftdirect.domain.championship.Championship;
 import com.driftdirect.domain.file.File;
+import com.driftdirect.domain.round.playoff.PlayoffTree;
+import com.driftdirect.domain.round.qualifiers.QualifiedDriver;
 import com.driftdirect.domain.round.qualifiers.Qualifier;
 import com.driftdirect.domain.round.track.Track;
 import org.hibernate.annotations.SortNatural;
@@ -51,6 +53,12 @@ public class Round implements Comparable<Round> {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "round", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Qualifier> qualifiers = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "round", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<QualifiedDriver> qualifiedDrivers = new ArrayList<>();
+
+    @OneToOne(fetch = FetchType.EAGER, mappedBy = "round", cascade = CascadeType.ALL, orphanRemoval = true)
+    private PlayoffTree playoffTree;
 
     public long getId() {
         return id;
@@ -175,5 +183,21 @@ public class Round implements Comparable<Round> {
 
     public boolean isFuture() {
         return this.startDate.isAfter(DateTime.now());
+    }
+
+    public PlayoffTree getPlayoffTree() {
+        return playoffTree;
+    }
+
+    public void setPlayoffTree(PlayoffTree playoffTree) {
+        this.playoffTree = playoffTree;
+    }
+
+    public List<QualifiedDriver> getQualifiedDrivers() {
+        return qualifiedDrivers;
+    }
+
+    public void setQualifiedDrivers(List<QualifiedDriver> qualifiedDrivers) {
+        this.qualifiedDrivers = qualifiedDrivers;
     }
 }

@@ -45,7 +45,7 @@ public class TeamController {
     @RequestMapping(path = RestUrls.TEAM, method = RequestMethod.POST)
     public ResponseEntity createTeam(@RequestBody @Valid TeamCreateDto dto){
         teamService.createFromDto(dto);
-        return new ResponseEntity(HttpStatus.CREATED);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @RequestMapping(path = RestUrls.TEAM, method = RequestMethod.PUT)

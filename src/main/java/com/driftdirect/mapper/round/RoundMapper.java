@@ -2,10 +2,12 @@ package com.driftdirect.mapper.round;
 
 import com.driftdirect.domain.round.Round;
 import com.driftdirect.domain.round.RoundScheduleEntry;
+import com.driftdirect.domain.round.playoff.PlayoffTree;
 import com.driftdirect.dto.round.RoundScheduleEntryShowDto;
 import com.driftdirect.dto.round.RoundShortShowDto;
 import com.driftdirect.dto.round.RoundShowDto;
 import com.driftdirect.dto.round.RoundStatus;
+import com.driftdirect.dto.round.qualifier.QualifierShortDto;
 import com.driftdirect.dto.round.track.TrackDto;
 import com.driftdirect.mapper.round.qualifier.QualifierMapper;
 
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 public class RoundMapper {
     public static RoundShowDto map(Round round){
         RoundShowDto dto = new RoundShowDto();
+        PlayoffTree tree = round.getPlayoffTree();
         dto.setId(round.getId());
         dto.setName(round.getName());
         dto.setLiveStream(round.getLiveStream());
@@ -36,7 +39,8 @@ public class RoundMapper {
             dto.setTrack(track);
         }
 
-        dto.setQualifiers(QualifierMapper.mapShort(round.getQualifiers()));
+        List<QualifierShortDto> qualifiers = QualifierMapper.mapShort(round.getQualifiers());
+        dto.setQualifiers(qualifiers);
         return dto;
     }
 

@@ -9,7 +9,7 @@ import javax.persistence.*;
  * Created by Paul on 12/15/2015.
  */
 @Entity
-public class Qualifier {
+public class Qualifier implements Comparable<Qualifier> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -72,5 +72,28 @@ public class Qualifier {
 
     public void setRound(Round round) {
         this.round = round;
+    }
+
+    @Override
+    public int compareTo(Qualifier o) {
+        if (this.id.equals(o.getId())) {
+            return 0;
+        }
+        if (this.finalScore > o.getFinalScore()) {
+            return 1;
+        }
+        if (this.finalScore < o.getFinalScore()) {
+            return -1;
+        }
+        int a = Math.min(firstRun.getTotalPoints(), secondRun.getTotalPoints());
+        int b = Math.min(o.getFirstRun().getTotalPoints(), o.getSecondRun().getTotalPoints());
+
+        if (a > b) {
+            return 1;
+        }
+        if (a < b) {
+            return -1;
+        }
+        return 0;
     }
 }

@@ -4,24 +4,29 @@ import com.driftdirect.domain.championship.Championship;
 import com.driftdirect.domain.person.Person;
 import com.driftdirect.domain.round.Round;
 import com.driftdirect.domain.round.RoundScheduleEntry;
+import com.driftdirect.domain.round.qualifiers.QualifiedDriver;
 import com.driftdirect.domain.round.qualifiers.Qualifier;
 import com.driftdirect.domain.round.track.Track;
 import com.driftdirect.dto.person.PersonShortShowDto;
 import com.driftdirect.dto.round.RoundCreateDto;
 import com.driftdirect.dto.round.RoundScheduleEntryCreateDto;
 import com.driftdirect.dto.round.RoundShowDto;
+import com.driftdirect.dto.round.playoff.graphic.PlayoffTreeGraphicDisplayDto;
 import com.driftdirect.dto.round.track.TrackCreateDto;
 import com.driftdirect.mapper.PersonMapper;
 import com.driftdirect.mapper.round.RoundMapper;
+import com.driftdirect.mapper.round.playoff.PlayoffMapper;
 import com.driftdirect.repository.FileRepository;
-import com.driftdirect.repository.championship.ChampionshipRepository;
 import com.driftdirect.repository.round.RoundRepository;
 import com.driftdirect.repository.round.RoundScheduleRepository;
-import com.driftdirect.repository.round.track.TrackLayoutRepository;
+import com.driftdirect.repository.round.qualifier.QualifiedDriverRepository;
+import com.driftdirect.service.championship.driver.DriverParticipationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,18 +37,22 @@ import java.util.stream.Collectors;
 @Service
 public class RoundService {
     private RoundRepository roundRepository;
-    private ChampionshipRepository championshipRepository;
     private RoundScheduleRepository roundScheduleRepository;
-    private TrackLayoutRepository trackLayoutRepository;
     private FileRepository fileRepository;
+    private DriverParticipationService driverParticipationService;
+    private QualifiedDriverRepository qualifiedDriverRepository;
 
     @Autowired
-    public RoundService(RoundRepository roundRepository, FileRepository fileRepository, ChampionshipRepository championshipRepository, RoundScheduleRepository roundScheduleRepository, TrackLayoutRepository trackLayoutRepository) {
+    public RoundService(DriverParticipationService driverParticipationService,
+                        RoundRepository roundRepository,
+                        FileRepository fileRepository,
+                        RoundScheduleRepository roundScheduleRepository,
+                        QualifiedDriverRepository qualifiedDriverRepository) {
         this.roundRepository = roundRepository;
         this.fileRepository = fileRepository;
-        this.championshipRepository = championshipRepository;
         this.roundScheduleRepository = roundScheduleRepository;
-        this.trackLayoutRepository = trackLayoutRepository;
+        this.driverParticipationService = driverParticipationService;
+        this.qualifiedDriverRepository = qualifiedDriverRepository;
     }
 
     public Round createFromDto(Championship c, RoundCreateDto dto) {
@@ -124,5 +133,38 @@ public class RoundService {
 
     public RoundShowDto findRound(long id){
         return RoundMapper.map(roundRepository.findOne(id));
+    }
+
+    public void finishQualifiers(Long roundId) {
+        Round round = roundRepository.findOne(roundId);
+        List<Qualifier> qualifiers = round.getQualifiers();
+        Collections.sort(qualifiers);
+        List<Qualifier> topQualifiers = qualifiers.subList(0, 24);
+        Championship championship = round.getChampionship();
+        List<QualifiedDriver> qualifiedDrivers = new ArrayList<>();
+        for (int i = 0; i < championship.getPlayoffSize(); i++) {
+            Qualifier driver = topQualifiers.get(i);
+            int place = i + 1;
+            QualifiedDriver qualifiedDriver = new QualifiedDriver();
+            qualifiedDriver.setDriver(driver.getDriver());
+            qualifiedDriver.setRanking(place);
+            qualifiedDriver.setRound(round);
+            qualifiedDriverRepository.save(qualifiedDriver);
+            if (place == 1) driverParticipationService.addResult(championship, driver.getDriver(), 12);
+            if (place == 2) driverParticipationService.addResult(championship, driver.getDriver(), 10);
+            if (place == 3) driverParticipationService.addResult(championship, driver.getDriver(), 8);
+            if (place == 4) driverParticipationService.addResult(championship, driver.getDriver(), 6);
+            if (place == 5 || place == 6) driverParticipationService.addResult(championship, driver.getDriver(), 4);
+            if (place == 7 || place == 8) driverParticipationService.addResult(championship, driver.getDriver(), 3);
+            if (place >= 9 && place <= 12) driverParticipationService.addResult(championship, driver.getDriver(), 2);
+            if (place >= 13 && place <= 16) driverParticipationService.addResult(championship, driver.getDriver(), 1);
+            if (place >= 17 && place <= 24)
+                driverParticipationService.addResult(championship, driver.getDriver(), (float) 0.5);
+        }
+    }
+
+    public PlayoffTreeGraphicDisplayDto getPlayoffs(Long roundId) {
+        Round round = roundRepository.findOne(roundId);
+        return PlayoffMapper.mapPlayoffForDisplay(round.getPlayoffTree());
     }
 }

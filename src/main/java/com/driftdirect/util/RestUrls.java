@@ -20,10 +20,14 @@ public class RestUrls {
     public static final String ROUND_ID_TRACK = "/round/{id}/track";
     public static final String ROUND_ID_REGISTER = "/round/{roundId}/register/{driverId}";
     public static final String ROUND_ID_REGISTER_DESK = "/round/{id}/desk";
+    public static final String ROUND_ID_PLAYOFF_START = "/round/{id}/playoff/start";
+    public static final String ROUND_ID_PLAYOFF = "/round/{id}/playoffs";
 
     public static final String QUALIFIER_ID = "/qualifier/{id}";
     public static final String QUALIFIER_ID_SUBMIT = "/qualifier/{id}/submit/run/{runId}";
     public static final String QUALIFIER_ID_START = "/qualifier/{id}/start";
+
+    public static final String PLAYOFF_ID_START = "/playoff/{playoffId}/stage/{stageId}/battle/{battleId}/start";
 
     public static final String USER = "/user";
     public static final String USERS = "/users";

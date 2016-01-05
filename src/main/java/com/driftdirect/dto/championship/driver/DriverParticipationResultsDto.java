@@ -6,7 +6,7 @@ package com.driftdirect.dto.championship.driver;
 public class DriverParticipationResultsDto {
     private Long id;
     private int rank;
-    private int totalPoints;
+    private float totalPoints;
 
     public Long getId() {
         return id;
@@ -24,11 +24,11 @@ public class DriverParticipationResultsDto {
         this.rank = rank;
     }
 
-    public int getTotalPoints() {
+    public float getTotalPoints() {
         return totalPoints;
     }
 
-    public void setTotalPoints(int totalPoints) {
+    public void setTotalPoints(float totalPoints) {
         this.totalPoints = totalPoints;
     }
 }

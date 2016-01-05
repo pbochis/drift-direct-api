@@ -40,6 +40,7 @@ public class QualifierController {
                                                 @PathVariable(value = "runId") Long runId,
                                                 @RequestBody RunJudgingCreateDto runJudging,
                                                 @AuthenticationPrincipal User currentUser) {
+
         if (!securityService.canJudgeQualifier(currentUser, id)) {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
         }

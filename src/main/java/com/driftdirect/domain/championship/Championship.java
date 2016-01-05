@@ -60,6 +60,9 @@ public class Championship{
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<News> news = new HashSet<>();
 
+    //todo: make this customizable in future versions;
+    private Integer playoffSize = 24;
+
     public Long getId() {
         return id;
     }
@@ -192,6 +195,14 @@ public class Championship{
 
     public void setOrganizer(Person organizer) {
         this.organizer = organizer;
+    }
+
+    public Integer getPlayoffSize() {
+        return playoffSize;
+    }
+
+    public void setPlayoffSize(Integer playoffSize) {
+        this.playoffSize = playoffSize;
     }
 
     @Override

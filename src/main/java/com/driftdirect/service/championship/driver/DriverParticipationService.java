@@ -2,6 +2,7 @@ package com.driftdirect.service.championship.driver;
 
 import com.driftdirect.domain.championship.Championship;
 import com.driftdirect.domain.championship.driver.DriverParticipation;
+import com.driftdirect.domain.championship.driver.DriverParticipationResults;
 import com.driftdirect.domain.person.Person;
 import com.driftdirect.repository.championship.driver.DriverParticipationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,4 +31,16 @@ public class DriverParticipationService {
             driverParticipationRepository.save(participation);
         }
     }
+
+    public void addResult(Championship championship, Person driver, float result) {
+        DriverParticipation driverParticipation = driverParticipationRepository.findByChampionshipIdAndDriverId(championship.getId(), driver.getId());
+        DriverParticipationResults results = driverParticipation.getResults();
+        if (results == null) {
+            results = new DriverParticipationResults();
+            driverParticipation.setResults(results);
+        }
+        results.addPoints(result);
+        driverParticipationRepository.save(driverParticipation);
+    }
+
 }

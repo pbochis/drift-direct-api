@@ -21,7 +21,7 @@ public class DriverParticipation {
     @ManyToOne
     private Championship championship;
 
-    @OneToOne(orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "participation")
+    @OneToOne(orphanRemoval = true, fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "participation")
     private DriverParticipationResults results;
 
     public Long getId() {
