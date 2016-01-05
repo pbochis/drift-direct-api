@@ -19,6 +19,8 @@ public class BattleRound {
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private BattleRoundRun secondRun;
 
+    private boolean suddenDeath = false;
+
     public Long getId() {
         return id;
     }
@@ -41,5 +43,13 @@ public class BattleRound {
 
     public void setSecondRun(BattleRoundRun secondRun) {
         this.secondRun = secondRun;
+    }
+
+    public boolean isSuddenDeath() {
+        return suddenDeath;
+    }
+
+    public void setSuddenDeath(boolean suddenDeath) {
+        this.suddenDeath = suddenDeath;
     }
 }

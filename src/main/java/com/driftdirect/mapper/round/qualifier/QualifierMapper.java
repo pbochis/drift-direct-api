@@ -52,6 +52,9 @@ public class QualifierMapper {
             if (qualifier.getFirstRun().equals(run)) {
                 dto.setRunNumber(1);
             } else {
+                if (qualifier.getFirstRun().getJudgings().size() < 3){
+                    dto.setRunId(0L);
+                }
                 dto.setRunNumber(2);
             }
         }else{

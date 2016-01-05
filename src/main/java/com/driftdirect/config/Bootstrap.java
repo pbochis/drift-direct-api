@@ -389,12 +389,12 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
             qualifiers.add(qualifierService.registerDriver(r1.getId(), p.getId()));
 
         }
-//        for (Qualifier qualifier: qualifiers){
-//            for (JudgeParticipation jp : c1.getJudges()) {
-//                submitRunJudging(qualifier, qualifier.getFirstRun().getId(), jp);
-//                submitRunJudging(qualifier, qualifier.getSecondRun().getId(), jp);
-//            }
-//        }
+        for (Qualifier qualifier: qualifiers){
+            for (JudgeParticipation jp : c1.getJudges()) {
+                submitRunJudging(qualifier, qualifier.getFirstRun().getId(), jp);
+                submitRunJudging(qualifier, qualifier.getSecondRun().getId(), jp);
+            }
+        }
     }
 
     private void initComments(){

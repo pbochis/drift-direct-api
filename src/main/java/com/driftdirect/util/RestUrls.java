@@ -27,7 +27,7 @@ public class RestUrls {
     public static final String QUALIFIER_ID_SUBMIT = "/qualifier/{id}/submit/run/{runId}";
     public static final String QUALIFIER_ID_START = "/qualifier/{id}/start";
 
-    public static final String PLAYOFF_ID_START = "/playoff/{playoffId}/stage/{stageId}/battle/{battleId}/start";
+    public static final String PLAYOFF_ID_START = "/playoff/battle/{battleId}/start";
 
     public static final String USER = "/user";
     public static final String USERS = "/users";

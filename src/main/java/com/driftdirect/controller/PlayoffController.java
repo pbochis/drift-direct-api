@@ -1,6 +1,7 @@
 package com.driftdirect.controller;
 
 import com.driftdirect.domain.user.User;
+import com.driftdirect.dto.round.playoff.PlayoffJudgeDto;
 import com.driftdirect.security.SecurityService;
 import com.driftdirect.service.round.playoff.PlayoffService;
 import com.driftdirect.util.RestUrls;
@@ -27,15 +28,12 @@ public class PlayoffController {
 //    public static final String PLAYOFF_ID_START = "/playoff/{playoffId}/stage/{stageId}/battle/{battleId}/start";
 
     @RequestMapping(path = RestUrls.PLAYOFF_ID_START, method = RequestMethod.GET)
-    public ResponseEntity startBattleJudging(@PathVariable(value = "playoffId") Long playoffId,
-                                             @PathVariable(value = "stageId") Long stageId,
-                                             @PathVariable(value = "battleId") Long battleId,
-                                             @AuthenticationPrincipal User currentUser) {
-        if (!securityService.canJudgePlayoff(currentUser, playoffId)) {
-            return new ResponseEntity(HttpStatus.FORBIDDEN);
+    public ResponseEntity<PlayoffJudgeDto> startBattleJudging(@PathVariable(value = "battleId") Long battleId,
+                                                              @AuthenticationPrincipal User currentUser) {
+        if (!securityService.canJudgePlayoff(currentUser, battleId)) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
-
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<>(playoffService.startPlayoffJudging(currentUser.getPerson(), battleId), HttpStatus.OK);
     }
 
 }
