@@ -10,6 +10,7 @@ import com.driftdirect.dto.round.playoff.PlayoffJudgeDto;
 import com.driftdirect.dto.round.playoff.graphic.PlayoffTreeGraphicDisplayDto;
 import com.driftdirect.mapper.round.playoff.PlayoffMapper;
 import com.driftdirect.repository.round.RoundRepository;
+import com.driftdirect.repository.round.playoff.PlayoffStageRepository;
 import com.driftdirect.repository.round.playoff.PlayoffTreeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,29 +26,36 @@ import java.util.NoSuchElementException;
 @Transactional
 public class PlayoffService {
     private PlayoffTreeRepository playoffTreeRepository;
+    private PlayoffStageRepository playoffStageRepository;
     private RoundRepository roundRepository;
 
     @Autowired
-    public PlayoffService(PlayoffTreeRepository playoffTreeRepository, RoundRepository roundRepository) {
+    public PlayoffService(PlayoffTreeRepository playoffTreeRepository,
+                          RoundRepository roundRepository,
+                          PlayoffStageRepository playoffStageRepository) {
         this.playoffTreeRepository = playoffTreeRepository;
         this.roundRepository = roundRepository;
+        this.playoffStageRepository = playoffStageRepository;
     }
 
     public PlayoffTreeGraphicDisplayDto generatePlayoffTree(Long roundId) {
         Round round = roundRepository.findOne(roundId);
         PlayoffTree tree = new PlayoffTree();
         tree.setRound(round);
-        tree.addStage(generateFirstStage(round)); // 16 battles
-        tree.addStage(generateStage(8));
-        tree.addStage(generateStage(4));
-        tree.addStage(generateStage(2));
-        tree.addStage(generateStage(1));
+        tree = playoffTreeRepository.save(tree);
+        tree.addStage(generateFirstStage(round, tree)); // 16 battles
+        tree.addStage(generateStage(8, tree));
+        tree.addStage(generateStage(4, tree));
+        tree.addStage(generateStage(2, tree));
+        tree.addStage(generateStage(1, tree));
         return PlayoffMapper.mapPlayoffForDisplay(playoffTreeRepository.save(tree));
     }
 
-    private PlayoffStage generateFirstStage(Round round) {
+    private PlayoffStage generateFirstStage(Round round, PlayoffTree tree) {
         List<QualifiedDriver> qualifiedDrivers = round.getQualifiedDrivers();
         PlayoffStage stage1 = new PlayoffStage();
+        stage1.setPlayoffTree(tree);
+        stage1 = playoffStageRepository.save(stage1);
         addBattle(stage1, qualifiedDrivers, 1, 9, 24);
         addBattle(stage1, qualifiedDrivers, 2, 1, null);
         addBattle(stage1, qualifiedDrivers, 3, 10, 23);
@@ -67,8 +75,10 @@ public class PlayoffService {
         return stage1;
     }
 
-    private PlayoffStage generateStage(int numberOfBattles) {
+    private PlayoffStage generateStage(int numberOfBattles, PlayoffTree tree) {
         PlayoffStage stage = new PlayoffStage();
+        stage.setPlayoffTree(tree);
+        stage = playoffStageRepository.save(stage);
         for (int i = 1; i <= numberOfBattles; i++) {
             addEmptyBattle(stage, i);
         }
@@ -78,12 +88,14 @@ public class PlayoffService {
     private void addEmptyBattle(PlayoffStage stage, int battleOrder) {
         Battle battle = new Battle();
         battle.setOrder(battleOrder);
+        battle.setPlayoffStage(stage);
         stage.addBattle(battle);
     }
 
     private void addBattle(PlayoffStage stage, List<QualifiedDriver> drivers, int order, int highPlace, Integer lowPlace) {
         Battle battle = new Battle();
         battle.setOrder(order);
+        battle.setPlayoffStage(stage);
         QualifiedDriver person1 = drivers.get(highPlace - 1);
         battle.setDriver1(person1);
         if (lowPlace == null) {

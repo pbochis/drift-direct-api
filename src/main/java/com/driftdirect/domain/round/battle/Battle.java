@@ -1,5 +1,6 @@
 package com.driftdirect.domain.round.battle;
 
+import com.driftdirect.domain.round.playoff.PlayoffStage;
 import com.driftdirect.domain.round.qualifiers.QualifiedDriver;
 
 import javax.persistence.*;
@@ -29,6 +30,9 @@ public class Battle implements Comparable<Battle> {
     private QualifiedDriver driver2;
 
     private boolean autoWin = false;
+
+    @ManyToOne
+    private PlayoffStage playoffStage;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<BattleRound> battleRounds = new ArrayList<>();
@@ -83,6 +87,14 @@ public class Battle implements Comparable<Battle> {
 
     public void setAutoWin(boolean autoWin) {
         this.autoWin = autoWin;
+    }
+
+    public PlayoffStage getPlayoffStage() {
+        return playoffStage;
+    }
+
+    public void setPlayoffStage(PlayoffStage playoffStage) {
+        this.playoffStage = playoffStage;
     }
 
     @Override

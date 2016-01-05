@@ -25,7 +25,6 @@ public class PlayoffStage implements Comparable<PlayoffStage> {
     private SortedSet<Battle> battles = new TreeSet<>();
 
     @ManyToOne
-    @JoinColumn(name = "playoff_tree_id")
     private PlayoffTree playoffTree;
 
     public SortedSet<Battle> getBattles() {
