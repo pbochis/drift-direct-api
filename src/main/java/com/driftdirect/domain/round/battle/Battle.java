@@ -33,6 +33,7 @@ public class Battle implements Comparable<Battle> {
     private QualifiedDriver winner;
 
     private boolean autoWin = false;
+    private boolean grandFinal = false;
 
     @ManyToOne
     private PlayoffStage playoffStage;
@@ -119,5 +120,20 @@ public class Battle implements Comparable<Battle> {
     @Override
     public int compareTo(Battle o) {
         return order - o.getOrder();
+    }
+
+    public boolean isGrandFinal() {
+        return grandFinal;
+    }
+
+    public void setGrandFinal(boolean grandFinal) {
+        this.grandFinal = grandFinal;
+    }
+
+    public QualifiedDriver getLoser(){
+        if (this.winner == null){
+            return null;
+        }
+        return this.winner.getDriver().equals(this.driver1.getDriver()) ? driver1 : driver2;
     }
 }

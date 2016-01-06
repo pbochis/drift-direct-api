@@ -14,6 +14,7 @@ import com.driftdirect.dto.round.qualifier.QualifierFullDto;
 import com.driftdirect.dto.round.qualifier.QualifierJudgeDto;
 import com.driftdirect.dto.round.qualifier.run.AwardedPointsCreateDto;
 import com.driftdirect.dto.round.qualifier.run.RunJudgingCreateDto;
+import com.driftdirect.exception.PreviousRunJudgingNotCompletedException;
 import com.driftdirect.mapper.round.qualifier.QualifierMapper;
 import com.driftdirect.repository.PersonRepository;
 import com.driftdirect.repository.championship.judge.PointsAllocationRepository;
@@ -97,7 +98,7 @@ public class QualifierService {
         return run;
     }
 
-    public QualifierJudgeDto startQualifierJudging(Long qualifierId, Person judge) throws AccessDeniedException{
+    public QualifierJudgeDto startQualifierJudging(Long qualifierId, Person judge) throws AccessDeniedException, PreviousRunJudgingNotCompletedException {
         Qualifier qualifier = qualifierRepository.findOne(qualifierId);
         JudgeParticipation participation = findJudgeParticipation(qualifier, judge);
         if (participation == null){
@@ -106,7 +107,7 @@ public class QualifierService {
         return QualifierMapper.mapForJudge(qualifier, findRunForJudge(qualifier, judge), participation, commentService.findAll());
     }
 
-    private Run findRunForJudge(Qualifier qualifier, Person judge){
+    private Run findRunForJudge(Qualifier qualifier, Person judge) throws PreviousRunJudgingNotCompletedException {
         Run run = qualifier.getFirstRun();
         for (RunJudging judging: run.getJudgings()){
             if (judging.getJudge().getJudge().equals(judge)){
@@ -121,6 +122,9 @@ public class QualifierService {
             if (judging.getJudge().getJudge().equals(judge)){
                 run = null;
             }
+        }
+        if (run != null && qualifier.getFirstRun().getJudgings().size() < 3){
+            throw new PreviousRunJudgingNotCompletedException("Please wait for the other judges to give their scores for the first run.");
         }
         return run;
     }

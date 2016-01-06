@@ -20,7 +20,7 @@ public class BattleRoundRunDriverJudging {
     @ManyToOne
     private Person judge;
 
-    private Integer points;
+    private int points;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(

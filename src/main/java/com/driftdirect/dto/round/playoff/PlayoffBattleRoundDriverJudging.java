@@ -2,6 +2,7 @@ package com.driftdirect.dto.round.playoff;
 
 import com.driftdirect.dto.comment.CommentCreateDto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -10,7 +11,7 @@ import java.util.List;
 public class PlayoffBattleRoundDriverJudging {
     private Long qualifiedDriverId;
     private int points;
-    private List<CommentCreateDto> comments;
+    private List<CommentCreateDto> comments = new ArrayList<>();
 
     public List<CommentCreateDto> getComments() {
         return comments;

@@ -86,7 +86,7 @@ public class SecurityService {
     public boolean canJudgePlayoff(User user, Long battleId) throws NoSuchElementException {
         Battle battle = battleRepository.findOne(battleId);
         if (battle == null) {
-            throw new NoSuchElementException("Qualifier not found!");
+            throw new NoSuchElementException("Battle not found!");
         }
         return battle
                 .getPlayoffStage()

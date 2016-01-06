@@ -11,7 +11,10 @@ import com.driftdirect.dto.round.playoff.PlayoffBattleDriverToJudgeDto;
 import com.driftdirect.dto.round.playoff.PlayoffBattleRoundDriverJudging;
 import com.driftdirect.dto.round.playoff.PlayoffBattleRoundJudging;
 import com.driftdirect.dto.round.playoff.PlayoffJudgeDto;
+import com.driftdirect.dto.round.playoff.battle.PlayoffBattleFullDto;
+import com.driftdirect.dto.round.playoff.battle.PlayoffBattleRoundFullDto;
 import com.driftdirect.dto.round.playoff.graphic.PlayoffTreeGraphicDisplayDto;
+import com.driftdirect.exception.PreviousRunJudgingNotCompletedException;
 import com.driftdirect.mapper.comment.CommentMapper;
 import com.driftdirect.mapper.round.playoff.PlayoffMapper;
 import com.driftdirect.mapper.round.qualifier.QualifierMapper;
@@ -54,6 +57,10 @@ public class PlayoffService {
         this.commentService = commentService;
     }
 
+    public PlayoffBattleFullDto findBattle(Long id){
+        return PlayoffMapper.mapBattleFull(battleRepository.findOne(id));
+    }
+
     public PlayoffTreeGraphicDisplayDto generatePlayoffTree(Long roundId) {
         Round round = roundRepository.findOne(roundId);
         PlayoffTree tree = new PlayoffTree();
@@ -63,7 +70,7 @@ public class PlayoffService {
         tree.addStage(generateStage(8, tree));
         tree.addStage(generateStage(4, tree));
         tree.addStage(generateStage(2, tree));
-        tree.addStage(generateStage(1, tree));
+        tree.addStage(generateFinalsStage(tree));
         return PlayoffMapper.mapPlayoffForDisplay(playoffTreeRepository.save(tree));
     }
 
@@ -90,6 +97,14 @@ public class PlayoffService {
         addBattle(stage1, qualifiedDrivers, 16, 2, null);
         return stage1;
     }
+    private PlayoffStage generateFinalsStage(PlayoffTree tree) {
+        PlayoffStage stage = new PlayoffStage();
+        stage.setPlayoffTree(tree);
+        stage = playoffStageRepository.save(stage);
+        addEmptyBattle(stage, 1);
+        addEmptyBattle(stage, 2, true);
+        return stage;
+    }
 
     private PlayoffStage generateStage(int numberOfBattles, PlayoffTree tree) {
         PlayoffStage stage = new PlayoffStage();
@@ -99,6 +114,13 @@ public class PlayoffService {
             addEmptyBattle(stage, i);
         }
         return stage;
+    }
+    private void addEmptyBattle(PlayoffStage stage, int battleOrder, boolean grandFinal) {
+        Battle battle = new Battle();
+        battle.setOrder(battleOrder);
+        battle.setPlayoffStage(stage);
+        battle.setGrandFinal(true);
+        stage.addBattle(battle);
     }
 
     private void addEmptyBattle(PlayoffStage stage, int battleOrder) {
@@ -197,17 +219,18 @@ public class PlayoffService {
         return true;
     }
 
-    private boolean checkBattleHasFinalResult(Long battleId) {
-        return false;
+    private boolean checkBattleHasFinalResult(Battle battle) {
+        return battle.getWinner() != null;
     }
 
-    public PlayoffJudgeDto startPlayoffJudging(Person judge, Long battleId) throws NoSuchElementException {
-        if (checkBattleHasFinalResult(battleId)) {
-            return null;
-        }
+    public PlayoffJudgeDto startPlayoffJudging(Person judge, Long battleId) throws NoSuchElementException, PreviousRunJudgingNotCompletedException {
         Battle battle = battleRepository.findOne(battleId);
         if (battle == null){
             throw new NoSuchElementException("No such battle!");
+        }
+
+        if (checkBattleHasFinalResult(battle)) {
+            return null;
         }
 
         BattleRound roundToJudge = null;
@@ -225,6 +248,9 @@ public class PlayoffService {
             previousRun = round.getFirstRun();
             runNumber++;
             if (checkCanJudgeRun(judge, round.getSecondRun())) {
+                if (previousRun.getDriver1().getJudgings().size() < 3){
+                    throw new PreviousRunJudgingNotCompletedException("Please wait for the other judges to give their scores for the first run.");
+                }
                 roundToJudge = round;
                 runToJudge = round.getSecondRun();
                 break;
@@ -232,7 +258,7 @@ public class PlayoffService {
             previousRun = round.getSecondRun();
         }
         if (roundToJudge == null || runToJudge == null) {
-            throw new NoSuchElementException("Nothing to judge");
+            throw new NoSuchElementException("The results of this battle round have not been concluded yet. Please wait for the other judges to give their scores.");
         }
         PlayoffJudgeDto dto = new PlayoffJudgeDto();
         dto.setBattleId(battleId);
@@ -299,7 +325,7 @@ public class PlayoffService {
                 + round.getSecondRun().getDriver1().getPoints();
         int secondDriverTotalScore = round.getFirstRun().getDriver2().getPoints()
                 + round.getSecondRun().getDriver2().getPoints();
-        boolean moveDriverUp = true;
+        boolean moveDriverUp = battle.getPlayoffStage().getPlayoffTree().getPlayoffStages().tailSet(battle.getPlayoffStage()).size() > 0;
         if (firstDriverTotalScore == secondDriverTotalScore) {
             //Then it's a tie and we create a new BattleRound
             BattleRound omt = new BattleRound();
@@ -308,15 +334,18 @@ public class PlayoffService {
             battle.addBattleRound(omt);
             moveDriverUp = false;
         }
-        if (firstDriverTotalScore > secondDriverTotalScore) {
+        else if (firstDriverTotalScore > secondDriverTotalScore) {
             battle.setWinner(battle.getDriver1());
         }
-        if (firstDriverTotalScore < secondDriverTotalScore) {
+        else if (firstDriverTotalScore < secondDriverTotalScore) {
             battle.setWinner(battle.getDriver2());
         }
-        battle = battleRepository.save(battle);
         if (moveDriverUp)
             moveWinnerUp(battle);
+        battle = battleRepository.save(battle);
+        if (battle.isGrandFinal()){
+            generateFinalResults(battle.getPlayoffStage().getPlayoffTree());
+        }
     }
 
     private void moveWinnerUp(Battle battle) {
@@ -343,18 +372,46 @@ public class PlayoffService {
         if (pairBattle.getWinner() == null) {
             return;
         }
-        int nextBattleOrder = Math.max(pairBattleOrder, battle.getOrder()) / 2;
-        QualifiedDriver driver1 = battle.getWinner().getRanking() > pairBattle.getWinner().getRanking() ? battle.getWinner() : pairBattle.getWinner();
-        QualifiedDriver driver2 = battle.getWinner().getRanking() < pairBattle.getWinner().getRanking() ? battle.getWinner() : pairBattle.getWinner();
         PlayoffStage nextStage = getNextStage(battle.getPlayoffStage());
-        createBattle(nextStage, nextBattleOrder, driver1, driver2);
+        // here we check if the next stage is the last one
+        // and if it is we use different logic for creating the next stage.
+        QualifiedDriver winner1 = battle.getWinner().getRanking() < pairBattle.getWinner().getRanking() ? battle.getWinner() : pairBattle.getWinner();
+        QualifiedDriver winner2 = battle.getWinner().getRanking() > pairBattle.getWinner().getRanking() ? battle.getWinner() : pairBattle.getWinner();
+        if (nextStage.getPlayoffTree().getPlayoffStages().tailSet(nextStage).size() == 0){
+            Battle grandFinal = nextStage.getBattles().last(); // order of grand final is 2;
+            grandFinal.setDriver1(winner1);
+            grandFinal.setDriver2(winner2);
+            grandFinal.addBattleRound(createBattleRound(winner1, winner2));
+            battleRepository.save(grandFinal);
+
+            QualifiedDriver loser1 = battle.getLoser().getRanking() < pairBattle.getLoser().getRanking() ? battle.getLoser() : pairBattle.getLoser();
+            QualifiedDriver loser2 = battle.getLoser().getRanking() > pairBattle.getLoser().getRanking() ? battle.getLoser() : pairBattle.getLoser();
+            Battle smallFinal = nextStage.getBattles().first(); // order of 3rd-4th place match is 1
+            smallFinal.setDriver1(loser1);
+            smallFinal.setDriver2(loser2);
+            smallFinal.addBattleRound(createBattleRound(loser1, loser2));
+            battleRepository.save(smallFinal);
+        }else {
+            Battle newBattle = null;
+            int nextBattleOrder = Math.max(pairBattleOrder, battle.getOrder()) / 2;
+            for (Battle nextStageBattle : nextStage.getBattles()) {
+                if (nextStageBattle.getOrder() == nextBattleOrder) {
+                    newBattle = nextStageBattle;
+                }
+            }
+            newBattle.setDriver1(winner1);
+            newBattle.setDriver2(winner2);
+            newBattle.addBattleRound(createBattleRound(winner1, winner2));
+            newBattle = battleRepository.save(newBattle);
+        }
         playoffTreeRepository.save(nextStage.getPlayoffTree());
     }
 
     private PlayoffStage getNextStage(PlayoffStage stage) {
         SortedSet<PlayoffStage> stages = stage.getPlayoffTree().getPlayoffStages();
         for (PlayoffStage nextStage : stages) {
-            if (stage.getBattles().size() == nextStage.getBattles().size() * 2) {
+            if (stage.getBattles().size() == nextStage.getBattles().size() * 2
+                || (stage.getBattles().size() == nextStage.getBattles().size() && !stage.getId().equals(nextStage.getId()))) {
                 return nextStage;
             }
         }
@@ -371,10 +428,15 @@ public class PlayoffService {
         driver.addPoints(driverJudging.getPoints());
         BattleRoundRunDriverJudging newJudging = new BattleRoundRunDriverJudging();
         newJudging.setJudge(judge);
-        newJudging.setPoints(driver.getPoints());
+        newJudging.setPoints(driverJudging.getPoints());
         for (CommentCreateDto comment : driverJudging.getComments()) {
             newJudging.addComment(commentService.findOrCreate(comment));
         }
+        driver.addJudging(newJudging);
+    }
+
+    private void generateFinalResults(PlayoffTree playoffTree){
+
     }
 
     // That means that this judge submitted scores for all the battle rounds already created.

@@ -4,6 +4,7 @@ import com.driftdirect.domain.user.Authorities;
 import com.driftdirect.domain.user.User;
 import com.driftdirect.dto.round.playoff.PlayoffBattleRoundJudging;
 import com.driftdirect.dto.round.playoff.PlayoffJudgeDto;
+import com.driftdirect.exception.PreviousRunJudgingNotCompletedException;
 import com.driftdirect.security.SecurityService;
 import com.driftdirect.service.round.playoff.PlayoffService;
 import com.driftdirect.util.RestUrls;
@@ -30,23 +31,28 @@ public class PlayoffController {
     @Secured(Authorities.ROLE_JUDGE)
     @RequestMapping(path = RestUrls.PLAYOFF_ID_START, method = RequestMethod.GET)
     public ResponseEntity<PlayoffJudgeDto> startBattleJudging(@PathVariable(value = "battleId") Long battleId,
-                                                              @AuthenticationPrincipal User currentUser) {
+                                                              @AuthenticationPrincipal User currentUser) throws PreviousRunJudgingNotCompletedException {
         if (!securityService.canJudgePlayoff(currentUser, battleId)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         return new ResponseEntity<>(playoffService.startPlayoffJudging(currentUser.getPerson(), battleId), HttpStatus.OK);
     }
 
+
+    @RequestMapping(path = RestUrls.PLAYOFF_BATTLE_ID, method = RequestMethod.GET)
+    public ResponseEntity<Object> getPlayoffBattle(@PathVariable(value = "battleId") Long battleId){
+        return new ResponseEntity<>(playoffService.findBattle(battleId), HttpStatus.OK);
+    }
+
     @Secured(Authorities.ROLE_JUDGE)
     @RequestMapping(path = RestUrls.PLAYOFF_ID_SUBMIT, method = RequestMethod.POST)
     public ResponseEntity submitBattleRunJudging(@PathVariable(value = "battleId") Long battleId,
-                                                 @PathVariable(value = "runId") Long runId,
                                                  @RequestBody PlayoffBattleRoundJudging battleRoundJudging,
                                                  @AuthenticationPrincipal User currentUser) {
         if (!securityService.canJudgePlayoff(currentUser, battleId)) {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
         }
-        //call service to juge
+        playoffService.submitPlayoffJudging(currentUser.getPerson(), battleId, battleRoundJudging);
         return new ResponseEntity(HttpStatus.OK);
     }
 }
