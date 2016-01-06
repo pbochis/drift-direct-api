@@ -29,6 +29,9 @@ public class Battle implements Comparable<Battle> {
     @OneToOne
     private QualifiedDriver driver2;
 
+    @OneToOne
+    private QualifiedDriver winner;
+
     private boolean autoWin = false;
 
     @ManyToOne
@@ -95,6 +98,14 @@ public class Battle implements Comparable<Battle> {
 
     public void setPlayoffStage(PlayoffStage playoffStage) {
         this.playoffStage = playoffStage;
+    }
+
+    public QualifiedDriver getWinner() {
+        return winner;
+    }
+
+    public void setWinner(QualifiedDriver winner) {
+        this.winner = winner;
     }
 
     @Override

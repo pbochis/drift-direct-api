@@ -6,23 +6,28 @@ import com.driftdirect.domain.round.battle.*;
 import com.driftdirect.domain.round.playoff.PlayoffStage;
 import com.driftdirect.domain.round.playoff.PlayoffTree;
 import com.driftdirect.domain.round.qualifiers.QualifiedDriver;
+import com.driftdirect.dto.comment.CommentCreateDto;
 import com.driftdirect.dto.round.playoff.PlayoffBattleDriverToJudgeDto;
+import com.driftdirect.dto.round.playoff.PlayoffBattleRoundDriverJudging;
+import com.driftdirect.dto.round.playoff.PlayoffBattleRoundJudging;
 import com.driftdirect.dto.round.playoff.PlayoffJudgeDto;
 import com.driftdirect.dto.round.playoff.graphic.PlayoffTreeGraphicDisplayDto;
 import com.driftdirect.mapper.comment.CommentMapper;
 import com.driftdirect.mapper.round.playoff.PlayoffMapper;
 import com.driftdirect.mapper.round.qualifier.QualifierMapper;
-import com.driftdirect.repository.CommentRepository;
 import com.driftdirect.repository.round.RoundRepository;
 import com.driftdirect.repository.round.playoff.BattleRepository;
 import com.driftdirect.repository.round.playoff.PlayoffStageRepository;
 import com.driftdirect.repository.round.playoff.PlayoffTreeRepository;
+import com.driftdirect.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.SortedSet;
 import java.util.stream.Collectors;
 
 /**
@@ -35,18 +40,18 @@ public class PlayoffService {
     private PlayoffStageRepository playoffStageRepository;
     private BattleRepository battleRepository;
     private RoundRepository roundRepository;
-    private CommentRepository commentRepository;
+    private CommentService commentService;
     @Autowired
     public PlayoffService(PlayoffTreeRepository playoffTreeRepository,
                           RoundRepository roundRepository,
                           PlayoffStageRepository playoffStageRepository,
                           BattleRepository battleRepository,
-                          CommentRepository commentRepository) {
+                          CommentService commentService) {
         this.playoffTreeRepository = playoffTreeRepository;
         this.roundRepository = roundRepository;
         this.playoffStageRepository = playoffStageRepository;
         this.battleRepository = battleRepository;
-        this.commentRepository = commentRepository;
+        this.commentService = commentService;
     }
 
     public PlayoffTreeGraphicDisplayDto generatePlayoffTree(Long roundId) {
@@ -104,17 +109,22 @@ public class PlayoffService {
     }
 
     private void addBattle(PlayoffStage stage, List<QualifiedDriver> drivers, int order, int highPlace, Integer lowPlace) {
+        QualifiedDriver driver1 = drivers.get(highPlace - 1);
+        QualifiedDriver driver2 = lowPlace == null ? null : drivers.get(lowPlace - 1);
+        createBattle(stage, order, driver1, driver2);
+    }
+
+    private void createBattle(PlayoffStage stage, int order, QualifiedDriver driver1, QualifiedDriver driver2) {
         Battle battle = new Battle();
         battle.setOrder(order);
         battle.setPlayoffStage(stage);
-        QualifiedDriver person1 = drivers.get(highPlace - 1);
-        battle.setDriver1(person1);
-        if (lowPlace == null) {
+        battle.setDriver1(driver1);
+        if (driver2 == null) {
             battle.setAutoWin(true);
+            battle.setWinner(driver1);
         } else {
-            QualifiedDriver person2 = drivers.get(lowPlace - 1);
-            battle.setDriver2(person2);
-            battle.addBattleRound(createBattleRound(person1, person2));
+            battle.setDriver2(driver2);
+            battle.addBattleRound(createBattleRound(driver1, driver2));
         }
         stage.addBattle(battle);
     }
@@ -229,7 +239,7 @@ public class PlayoffService {
         dto.setBattleRoundId(roundToJudge.getId());
         dto.setRunId(runToJudge.getId());
         dto.setRunNumber(runNumber);
-        dto.setAvailableComments(commentRepository.findAll()
+        dto.setAvailableComments(commentService.findAll()
                                     .stream()
                                     .map(CommentMapper::map)
                                     .collect(Collectors.toList()));
@@ -246,6 +256,125 @@ public class PlayoffService {
         dto.setDriver1(driver1);
         dto.setDriver2(driver2);
         return dto;
+    }
+
+    private BattleRound findRound(Battle battle, Long roundId) {
+        for (BattleRound round : battle.getBattleRounds()) {
+            if (round.getId().equals(roundId)) {
+                return round;
+            }
+        }
+        throw new NoSuchElementException("No such playoff round!");
+    }
+
+    public void submitPlayoffJudging(Person judge, Long battleId, PlayoffBattleRoundJudging judging) throws NoSuchElementException {
+        Battle battle = battleRepository.findOne(battleId);
+        BattleRound round = findRound(battle, judging.getRoundId());
+        BattleRoundRun run = null;
+        boolean updateScores = true;
+        if (round.getFirstRun().getId().equals(judging.getRunId())) {
+            run = round.getFirstRun();
+            updateScores = false;
+        }
+        if (round.getSecondRun().getId().equals(judging.getRunId())) {
+            updateScores = true;
+            run = round.getSecondRun();
+        }
+        addBattleRunScores(run.getDriver1(), judge, judging.getDriver1());
+        addBattleRunScores(run.getDriver2(), judge, judging.getDriver2());
+        battle = battleRepository.save(battle);
+        if (updateScores) {
+            checkAndUpdateFinalScores(battle);
+        }
+    }
+
+    private void checkAndUpdateFinalScores(Battle battle) {
+        //Firstly, add the points for each driver;
+        BattleRound round = battle.getBattleRounds().get(battle.getBattleRounds().size() - 1);
+        boolean canUpdate = round.getFirstRun().getDriver1().getJudgings().size() == 3;
+        canUpdate = round.getSecondRun().getDriver1().getJudgings().size() == 3 && canUpdate;
+        if (!canUpdate)
+            return;
+        int firstDriverTotalScore = round.getFirstRun().getDriver1().getPoints()
+                + round.getSecondRun().getDriver1().getPoints();
+        int secondDriverTotalScore = round.getFirstRun().getDriver2().getPoints()
+                + round.getSecondRun().getDriver2().getPoints();
+        boolean moveDriverUp = true;
+        if (firstDriverTotalScore == secondDriverTotalScore) {
+            //Then it's a tie and we create a new BattleRound
+            BattleRound omt = new BattleRound();
+            omt.setFirstRun(createBattleRoundRun(battle.getDriver1(), battle.getDriver2()));
+            omt.setSecondRun(createBattleRoundRun(battle.getDriver1(), battle.getDriver2()));
+            battle.addBattleRound(omt);
+            moveDriverUp = false;
+        }
+        if (firstDriverTotalScore > secondDriverTotalScore) {
+            battle.setWinner(battle.getDriver1());
+        }
+        if (firstDriverTotalScore < secondDriverTotalScore) {
+            battle.setWinner(battle.getDriver2());
+        }
+        battle = battleRepository.save(battle);
+        if (moveDriverUp)
+            moveWinnerUp(battle);
+    }
+
+    private void moveWinnerUp(Battle battle) {
+        if (battle.getPlayoffStage().getBattles().size() == 1) {
+            //the winner of this battle is the winner of the championship. Grats.
+            return;
+        }
+        QualifiedDriver winner = battle.getWinner();
+        Battle pairBattle = null;
+        int pairBattleOrder;
+        if (battle.getOrder() % 2 == 1) {
+            pairBattleOrder = battle.getOrder() + 1;
+        } else {
+            pairBattleOrder = battle.getOrder() - 1;
+        }
+        for (Battle stageBattle : battle.getPlayoffStage().getBattles()) {
+            if (stageBattle.getOrder() == pairBattleOrder) {
+                pairBattle = stageBattle;
+            }
+        }
+        // found pair battle
+        // if it doesn't have a winner, then the battle forom the next stage will be decided when pairBattle will
+        // have a winner.
+        if (pairBattle.getWinner() == null) {
+            return;
+        }
+        int nextBattleOrder = Math.max(pairBattleOrder, battle.getOrder()) / 2;
+        QualifiedDriver driver1 = battle.getWinner().getRanking() > pairBattle.getWinner().getRanking() ? battle.getWinner() : pairBattle.getWinner();
+        QualifiedDriver driver2 = battle.getWinner().getRanking() < pairBattle.getWinner().getRanking() ? battle.getWinner() : pairBattle.getWinner();
+        PlayoffStage nextStage = getNextStage(battle.getPlayoffStage());
+        createBattle(nextStage, nextBattleOrder, driver1, driver2);
+        playoffTreeRepository.save(nextStage.getPlayoffTree());
+    }
+
+    private PlayoffStage getNextStage(PlayoffStage stage) {
+        SortedSet<PlayoffStage> stages = stage.getPlayoffTree().getPlayoffStages();
+        for (PlayoffStage nextStage : stages) {
+            if (stage.getBattles().size() == nextStage.getBattles().size() * 2) {
+                return nextStage;
+            }
+        }
+        return null;
+    }
+
+
+    private void addBattleRunScores(BattleRoundRunDriver driver, Person judge, PlayoffBattleRoundDriverJudging driverJudging) throws AccessDeniedException {
+        for (BattleRoundRunDriverJudging existingJudging : driver.getJudgings()) {
+            if (existingJudging.getJudge().equals(judge)) {
+                throw new AccessDeniedException("You have already judged this battle run!");
+            }
+        }
+        driver.addPoints(driverJudging.getPoints());
+        BattleRoundRunDriverJudging newJudging = new BattleRoundRunDriverJudging();
+        newJudging.setJudge(judge);
+        newJudging.setPoints(driver.getPoints());
+        for (CommentCreateDto comment : driverJudging.getComments()) {
+            newJudging.addComment(commentService.findOrCreate(comment));
+        }
     }
 
     // That means that this judge submitted scores for all the battle rounds already created.

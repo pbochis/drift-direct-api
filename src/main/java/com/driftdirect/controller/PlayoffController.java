@@ -1,6 +1,8 @@
 package com.driftdirect.controller;
 
+import com.driftdirect.domain.user.Authorities;
 import com.driftdirect.domain.user.User;
+import com.driftdirect.dto.round.playoff.PlayoffBattleRoundJudging;
 import com.driftdirect.dto.round.playoff.PlayoffJudgeDto;
 import com.driftdirect.security.SecurityService;
 import com.driftdirect.service.round.playoff.PlayoffService;
@@ -8,11 +10,9 @@ import com.driftdirect.util.RestUrls;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Created by Paul on 1/5/2016.
@@ -27,6 +27,7 @@ public class PlayoffController {
     private SecurityService securityService;
 //    public static final String PLAYOFF_ID_START = "/playoff/{playoffId}/stage/{stageId}/battle/{battleId}/start";
 
+    @Secured(Authorities.ROLE_JUDGE)
     @RequestMapping(path = RestUrls.PLAYOFF_ID_START, method = RequestMethod.GET)
     public ResponseEntity<PlayoffJudgeDto> startBattleJudging(@PathVariable(value = "battleId") Long battleId,
                                                               @AuthenticationPrincipal User currentUser) {
@@ -36,4 +37,16 @@ public class PlayoffController {
         return new ResponseEntity<>(playoffService.startPlayoffJudging(currentUser.getPerson(), battleId), HttpStatus.OK);
     }
 
+    @Secured(Authorities.ROLE_JUDGE)
+    @RequestMapping(path = RestUrls.PLAYOFF_ID_SUBMIT, method = RequestMethod.POST)
+    public ResponseEntity submitBattleRunJudging(@PathVariable(value = "battleId") Long battleId,
+                                                 @PathVariable(value = "runId") Long runId,
+                                                 @RequestBody PlayoffBattleRoundJudging battleRoundJudging,
+                                                 @AuthenticationPrincipal User currentUser) {
+        if (!securityService.canJudgePlayoff(currentUser, battleId)) {
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+        }
+        //call service to juge
+        return new ResponseEntity(HttpStatus.OK);
+    }
 }

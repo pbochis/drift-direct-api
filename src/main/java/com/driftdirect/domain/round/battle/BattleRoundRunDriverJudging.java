@@ -4,6 +4,7 @@ import com.driftdirect.domain.comment.Comment;
 import com.driftdirect.domain.person.Person;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,7 +27,7 @@ public class BattleRoundRunDriverJudging {
             name = "battle_round_run_judging_comment",
             joinColumns = {@JoinColumn(name = "battle_round_run_judging_id")},
             inverseJoinColumns = {@JoinColumn(name = "comment_id")})
-    private List<Comment> comments;
+    private List<Comment> comments = new ArrayList<>();
 
     public Person getJudge() {
         return judge;
@@ -50,5 +51,9 @@ public class BattleRoundRunDriverJudging {
 
     public void setComments(List<Comment> comments) {
         this.comments = comments;
+    }
+
+    public void addComment(Comment comment) {
+        this.comments.add(comment);
     }
 }
