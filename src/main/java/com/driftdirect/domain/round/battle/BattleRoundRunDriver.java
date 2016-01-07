@@ -3,8 +3,8 @@ package com.driftdirect.domain.round.battle;
 import com.driftdirect.domain.round.qualifiers.QualifiedDriver;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by Paul on 1/4/2016.
@@ -22,7 +22,7 @@ public class BattleRoundRunDriver {
     private Integer points;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private List<BattleRoundRunDriverJudging> judgings = new ArrayList<>();
+    private Set<BattleRoundRunDriverJudging> judgings = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -40,11 +40,11 @@ public class BattleRoundRunDriver {
         this.driver = driver;
     }
 
-    public List<BattleRoundRunDriverJudging> getJudgings() {
+    public Set<BattleRoundRunDriverJudging> getJudgings() {
         return judgings;
     }
 
-    public void setJudgings(List<BattleRoundRunDriverJudging> judgings) {
+    public void setJudgings(Set<BattleRoundRunDriverJudging> judgings) {
         this.judgings = judgings;
     }
 

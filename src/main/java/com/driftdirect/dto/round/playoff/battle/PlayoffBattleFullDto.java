@@ -1,6 +1,5 @@
 package com.driftdirect.dto.round.playoff.battle;
 
-import com.driftdirect.domain.round.qualifiers.QualifiedDriver;
 import com.driftdirect.dto.round.qualifier.QualifiedDriverDto;
 
 import java.util.ArrayList;
@@ -17,6 +16,7 @@ public class PlayoffBattleFullDto {
     private QualifiedDriverDto winner;
 
     private List<PlayoffBattleRoundFullDto> rounds = new ArrayList<>();
+//    private List<BattleRoundRunJudgeScores> runJudgeScores = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -61,4 +61,17 @@ public class PlayoffBattleFullDto {
     public void addRound(PlayoffBattleRoundFullDto round){
         this.rounds.add(round);
     }
+
+//    public List<BattleRoundRunJudgeScores> getRunJudgeScores() {
+//        return runJudgeScores;
+//    }
+//
+//    public void setRunJudgeScores(List<BattleRoundRunJudgeScores> runJudgeScores) {
+//        this.runJudgeScores = runJudgeScores;
+//    }
+
+//    public void addRound(BattleRoundRunJudgeScores scores){
+//        this.runJudgeScores.add(scores);
+//    }
+
 }

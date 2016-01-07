@@ -24,6 +24,9 @@ public class PlayoffStage implements Comparable<PlayoffStage> {
     @SortNatural
     private SortedSet<Battle> battles = new TreeSet<>();
 
+    @Column(name = "stage_order")
+    private int order;
+
     @ManyToOne
     private PlayoffTree playoffTree;
 
@@ -55,23 +58,24 @@ public class PlayoffStage implements Comparable<PlayoffStage> {
         this.playoffTree = playoffTree;
     }
 
+    public int getOrder() {
+        return order;
+    }
+
+    public void setOrder(int order) {
+        this.order = order;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof PlayoffStage)) {
             return false;
         }
-        return this.id.equals(((PlayoffStage) obj).getId());
+        return this.order == (((PlayoffStage) obj).getOrder());
     }
 
     @Override
     public int compareTo(PlayoffStage o) {
-        if (this.battles.size() > o.getBattles().size())
-            return -1;
-        if (this.battles.size() == o.getBattles().size()) {
-            if (this.battles.first().isGrandFinal() || this.battles.last().isGrandFinal()) {
-                return -1;
-            }
-        }
-        return 1;
+        return this.order - o.getOrder();
     }
 }

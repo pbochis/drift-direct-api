@@ -75,9 +75,9 @@ public class PlayoffService {
         tree.setRound(round);
         tree = playoffTreeRepository.save(tree);
         tree.addStage(generateFirstStage(round, tree)); // 16 battles
-        tree.addStage(generateStage(8, tree));
-        tree.addStage(generateStage(4, tree));
-        tree.addStage(generateStage(2, tree));
+        tree.addStage(generateStage(8, 2, tree));
+        tree.addStage(generateStage(4, 3, tree));
+        tree.addStage(generateStage(2, 4, tree));
         tree.addStage(generateFinalsStage(tree));
         return PlayoffMapper.mapPlayoffForDisplay(playoffTreeRepository.save(tree));
     }
@@ -86,6 +86,7 @@ public class PlayoffService {
         List<QualifiedDriver> qualifiedDrivers = round.getQualifiedDrivers();
         PlayoffStage stage1 = new PlayoffStage();
         stage1.setPlayoffTree(tree);
+        stage1.setOrder(1);
         stage1 = playoffStageRepository.save(stage1);
         addBattle(stage1, qualifiedDrivers, 1, 9, 24);
         addBattle(stage1, qualifiedDrivers, 2, 1, null);
@@ -108,15 +109,17 @@ public class PlayoffService {
     private PlayoffStage generateFinalsStage(PlayoffTree tree) {
         PlayoffStage stage = new PlayoffStage();
         stage.setPlayoffTree(tree);
+        stage.setOrder(5);
         stage = playoffStageRepository.save(stage);
         addEmptyBattle(stage, 1);
         addEmptyBattle(stage, 2, true);
         return stage;
     }
 
-    private PlayoffStage generateStage(int numberOfBattles, PlayoffTree tree) {
+    private PlayoffStage generateStage(int numberOfBattles, int order, PlayoffTree tree) {
         PlayoffStage stage = new PlayoffStage();
         stage.setPlayoffTree(tree);
+        stage.setOrder(order);
         stage = playoffStageRepository.save(stage);
         for (int i = 1; i <= numberOfBattles; i++) {
             addEmptyBattle(stage, i);
@@ -385,7 +388,7 @@ public class PlayoffService {
         // and if it is we use different logic for creating the next stage.
         QualifiedDriver winner1 = battle.getWinner().getRanking() < pairBattle.getWinner().getRanking() ? battle.getWinner() : pairBattle.getWinner();
         QualifiedDriver winner2 = battle.getWinner().getRanking() > pairBattle.getWinner().getRanking() ? battle.getWinner() : pairBattle.getWinner();
-        if (nextStage.getPlayoffTree().getPlayoffStages().tailSet(nextStage).size() == 0){
+        if (nextStage.getOrder() == 5) {
             Battle grandFinal = nextStage.getBattles().last(); // order of grand final is 2;
             grandFinal.setDriver1(winner1);
             grandFinal.setDriver2(winner2);
@@ -453,7 +456,9 @@ public class PlayoffService {
         for (PlayoffStage stage : tree.getPlayoffStages()) {
             if (stage.getBattles().size() >= 4) {
                 for (Battle battle : stage.getBattles()) {
-                    updateRoundResult(round, battle.getLoser().getDriver(), stage.getBattles().size() + 1);
+                    if (battle.getLoser() != null) {
+                        updateRoundResult(round, battle.getLoser().getDriver(), stage.getBattles().size() + 1);
+                    }
                 }
             }
         }

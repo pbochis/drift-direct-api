@@ -17,6 +17,12 @@ import com.driftdirect.domain.news.News;
 import com.driftdirect.domain.person.Person;
 import com.driftdirect.domain.person.PersonType;
 import com.driftdirect.domain.round.Round;
+import com.driftdirect.domain.round.battle.Battle;
+import com.driftdirect.domain.round.battle.BattleRound;
+import com.driftdirect.domain.round.battle.BattleRoundRun;
+import com.driftdirect.domain.round.playoff.PlayoffStage;
+import com.driftdirect.domain.round.playoff.PlayoffTree;
+import com.driftdirect.domain.round.qualifiers.QualifiedDriver;
 import com.driftdirect.domain.round.qualifiers.Qualifier;
 import com.driftdirect.domain.sponsor.Sponsor;
 import com.driftdirect.domain.user.Authorities;
@@ -27,6 +33,8 @@ import com.driftdirect.dto.championship.judge.PointsAllocationCreateDto;
 import com.driftdirect.dto.comment.CommentCreateDto;
 import com.driftdirect.dto.person.PersonCreateDto;
 import com.driftdirect.dto.round.RoundScheduleEntryCreateDto;
+import com.driftdirect.dto.round.playoff.PlayoffBattleRoundDriverJudging;
+import com.driftdirect.dto.round.playoff.PlayoffBattleRoundJudging;
 import com.driftdirect.dto.round.qualifier.run.AwardedPointsCreateDto;
 import com.driftdirect.dto.round.qualifier.run.RunJudgingCreateDto;
 import com.driftdirect.dto.round.track.TrackCreateDto;
@@ -41,6 +49,7 @@ import com.driftdirect.repository.round.track.TrackLayoutRepository;
 import com.driftdirect.service.UserService;
 import com.driftdirect.service.championship.judge.JudgeParticipationService;
 import com.driftdirect.service.round.RoundService;
+import com.driftdirect.service.round.playoff.PlayoffService;
 import com.driftdirect.service.round.qualifier.QualifierService;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -53,15 +62,18 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.MessagingException;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by Paul on 11/10/2015.
  */
 @Component
+@Transactional
 public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
     private final String APPLICATION_INIT = "init";
     private final Logger log = LoggerFactory.getLogger(this.getClass());
@@ -78,6 +90,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
     Role adminRole;
     Role orgRole;
     Role judgeRole;
+    List<CommentCreateDto> someComments = new ArrayList<>();
     private Environment environment;
     private ConfigSettingRepository configSettingRepository;
     private RoleRepository roleRepository;
@@ -108,6 +121,9 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
     private JudgeParticipationService judgeParticipationService;
     @Autowired
     private CommentRepository commentRepository;
+    @Autowired
+    private PlayoffService playoffService;
+
     @Autowired
     public Bootstrap(
             ConfigSettingRepository configSettingRepository, RoleRepository roleRepository,
@@ -395,8 +411,66 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
                 submitRunJudging(qualifier, qualifier.getSecondRun().getId(), jp);
             }
         }
+
+        List<Person> judges = c1.getJudges().stream().map(e -> e.getJudge()).collect(Collectors.toList());
+//        roundService.finishQualifiers(r1.getId());
+//        mockPlayoffs(r1.getId(), judges);
     }
 
+    private void mockPlayoffs(Long roundId, List<Person> judges) {
+        initSomeComments();
+        playoffService.generatePlayoffTree(roundId);
+        Round round = roundRepository.findOne(roundId);
+        PlayoffTree tree = round.getPlayoffTree();
+        for (PlayoffStage stage : tree.getPlayoffStages()) {
+            for (Battle battle : stage.getBattles()) {
+                BattleRound battleRound = battle.getBattleRounds().get(0);
+                for (Person judge : judges) {
+                    playoffService.submitPlayoffJudging(
+                            judge,
+                            battle.getId(),
+                            createJudging(battleRound, battleRound.getFirstRun(), battle.getDriver1(), battle.getDriver2()));
+                }
+
+                for (Person judge : judges) {
+                    playoffService.submitPlayoffJudging(
+                            judge,
+                            battle.getId(),
+                            createJudging(battleRound, battleRound.getSecondRun(), battle.getDriver1(), battle.getDriver2()));
+                }
+            }
+        }
+    }
+
+    private PlayoffBattleRoundJudging createJudging(BattleRound round, BattleRoundRun run, QualifiedDriver driver1, QualifiedDriver driver2) {
+        PlayoffBattleRoundJudging judging = new PlayoffBattleRoundJudging();
+
+        PlayoffBattleRoundDriverJudging driver1Judging = new PlayoffBattleRoundDriverJudging();
+        driver1Judging.setPoints(6);
+        driver1Judging.setComments(someComments);
+        driver1Judging.setQualifiedDriverId(driver1.getId());
+
+        PlayoffBattleRoundDriverJudging driver2Judging = new PlayoffBattleRoundDriverJudging();
+        driver2Judging.setPoints(4);
+        driver2Judging.setComments(someComments);
+        driver2Judging.setQualifiedDriverId(driver2.getId());
+
+        judging.setDriver1(driver1Judging);
+        judging.setDriver2(driver2Judging);
+        judging.setRoundId(round.getId());
+        judging.setRunId(run.getId());
+
+        return judging;
+    }
+
+    private void initSomeComments() {
+        comments.add(createComment("Good run", true));
+        comments.add(createComment("Nice slide", true));
+
+        comments.add(createComment("Weels off trqack", false));
+        comments.add(createComment("Oversteered too much. He cannot drive properly", false));
+
+    }
     private void initComments(){
         comments.add(createComment("Good run", true));
         comments.add(createComment("Nice slide", true));

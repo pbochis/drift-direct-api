@@ -134,6 +134,6 @@ public class Battle implements Comparable<Battle> {
         if (this.winner == null){
             return null;
         }
-        return this.winner.getDriver().equals(this.driver1.getDriver()) ? driver1 : driver2;
+        return this.winner.getDriver().equals(this.driver1.getDriver()) ? driver2 : driver1;
     }
 }

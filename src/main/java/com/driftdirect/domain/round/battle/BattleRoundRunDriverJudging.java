@@ -56,4 +56,11 @@ public class BattleRoundRunDriverJudging {
     public void addComment(Comment comment) {
         this.comments.add(comment);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof BattleRoundRunDriverJudging))
+            return false;
+        return this.judge.equals(((BattleRoundRunDriverJudging) obj).getJudge());
+    }
 }

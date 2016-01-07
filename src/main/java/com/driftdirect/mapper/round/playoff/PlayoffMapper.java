@@ -41,6 +41,7 @@ public class PlayoffMapper {
     private static PlayoffStageGraphicDisplayDto mapStageForDisplay(PlayoffStage stage) {
         PlayoffStageGraphicDisplayDto dto = new PlayoffStageGraphicDisplayDto();
         dto.setId(stage.getId());
+        dto.setOrder(stage.getOrder());
         for (Battle battle : stage.getBattles()) {
             dto.addBattle(mapBattle(battle));
         }

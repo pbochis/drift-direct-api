@@ -9,6 +9,7 @@ import java.util.List;
 public class PlayoffStageGraphicDisplayDto {
     private Long id;
     private List<BattleGraphicDisplayDto> battles = new ArrayList<>();
+    private int order;
 
     public Long getId() {
         return id;
@@ -28,5 +29,13 @@ public class PlayoffStageGraphicDisplayDto {
 
     public void addBattle(BattleGraphicDisplayDto battleGraphicDisplayDto) {
         this.battles.add(battleGraphicDisplayDto);
+    }
+
+    public int getOrder() {
+        return order;
+    }
+
+    public void setOrder(int order) {
+        this.order = order;
     }
 }
