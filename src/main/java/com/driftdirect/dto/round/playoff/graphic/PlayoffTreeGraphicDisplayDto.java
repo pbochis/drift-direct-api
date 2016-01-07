@@ -1,5 +1,7 @@
 package com.driftdirect.dto.round.playoff.graphic;
 
+import com.driftdirect.dto.round.RoundDriverResultDto;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +11,7 @@ import java.util.List;
 public class PlayoffTreeGraphicDisplayDto {
     private Long id;
     private List<PlayoffStageGraphicDisplayDto> stages = new ArrayList<>();
+    private List<RoundDriverResultDto> roundResults = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -28,5 +31,17 @@ public class PlayoffTreeGraphicDisplayDto {
 
     public void addStage(PlayoffStageGraphicDisplayDto stage) {
         this.stages.add(stage);
+    }
+
+    public List<RoundDriverResultDto> getRoundResults() {
+        return roundResults;
+    }
+
+    public void setRoundResults(List<RoundDriverResultDto> roundResults) {
+        this.roundResults = roundResults;
+    }
+
+    public void addRoundResult(RoundDriverResultDto resultDto) {
+        this.roundResults.add(resultDto);
     }
 }

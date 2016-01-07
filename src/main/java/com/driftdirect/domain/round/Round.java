@@ -57,6 +57,9 @@ public class Round implements Comparable<Round> {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "round", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<QualifiedDriver> qualifiedDrivers = new ArrayList<>();
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "round", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RoundDriverResult> roundResults = new ArrayList<>();
+
     @OneToOne(fetch = FetchType.EAGER, mappedBy = "round", cascade = CascadeType.ALL, orphanRemoval = true)
     private PlayoffTree playoffTree;
 
@@ -198,6 +201,14 @@ public class Round implements Comparable<Round> {
     }
 
     public void setQualifiedDrivers(List<QualifiedDriver> qualifiedDrivers) {
-        this.qualifiedDrivers = qualifiedDrivers;
+        this.qualifiedDrivers.addAll(qualifiedDrivers);
+    }
+
+    public List<RoundDriverResult> getRoundResults() {
+        return roundResults;
+    }
+
+    public void setRoundResults(List<RoundDriverResult> roundResults) {
+        this.roundResults.addAll(roundResults);
     }
 }

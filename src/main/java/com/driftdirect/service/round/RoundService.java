@@ -3,6 +3,7 @@ package com.driftdirect.service.round;
 import com.driftdirect.domain.championship.Championship;
 import com.driftdirect.domain.person.Person;
 import com.driftdirect.domain.round.Round;
+import com.driftdirect.domain.round.RoundDriverResult;
 import com.driftdirect.domain.round.RoundScheduleEntry;
 import com.driftdirect.domain.round.qualifiers.QualifiedDriver;
 import com.driftdirect.domain.round.qualifiers.Qualifier;
@@ -17,15 +18,14 @@ import com.driftdirect.mapper.PersonMapper;
 import com.driftdirect.mapper.round.RoundMapper;
 import com.driftdirect.mapper.round.playoff.PlayoffMapper;
 import com.driftdirect.repository.FileRepository;
+import com.driftdirect.repository.round.RoundDriverResultRepository;
 import com.driftdirect.repository.round.RoundRepository;
 import com.driftdirect.repository.round.RoundScheduleRepository;
 import com.driftdirect.repository.round.qualifier.QualifiedDriverRepository;
-import com.driftdirect.service.championship.driver.DriverParticipationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,11 +39,11 @@ public class RoundService {
     private RoundRepository roundRepository;
     private RoundScheduleRepository roundScheduleRepository;
     private FileRepository fileRepository;
-    private DriverParticipationService driverParticipationService;
+    private RoundDriverResultRepository roundDriverResultRepository;
     private QualifiedDriverRepository qualifiedDriverRepository;
 
     @Autowired
-    public RoundService(DriverParticipationService driverParticipationService,
+    public RoundService(RoundDriverResultRepository roundDriverResultRepository,
                         RoundRepository roundRepository,
                         FileRepository fileRepository,
                         RoundScheduleRepository roundScheduleRepository,
@@ -51,7 +51,7 @@ public class RoundService {
         this.roundRepository = roundRepository;
         this.fileRepository = fileRepository;
         this.roundScheduleRepository = roundScheduleRepository;
-        this.driverParticipationService = driverParticipationService;
+        this.roundDriverResultRepository = roundDriverResultRepository;
         this.qualifiedDriverRepository = qualifiedDriverRepository;
     }
 
@@ -139,28 +139,42 @@ public class RoundService {
         Round round = roundRepository.findOne(roundId);
         List<Qualifier> qualifiers = round.getQualifiers();
         Collections.sort(qualifiers);
-        List<Qualifier> topQualifiers = qualifiers.subList(0, 24);
         Championship championship = round.getChampionship();
-        List<QualifiedDriver> qualifiedDrivers = new ArrayList<>();
-        for (int i = 0; i < championship.getPlayoffSize(); i++) {
-            Qualifier driver = topQualifiers.get(i);
+        for (int i = 0; i < qualifiers.size(); i++) {
+            Qualifier driver = qualifiers.get(i);
             int place = i + 1;
-            QualifiedDriver qualifiedDriver = new QualifiedDriver();
-            qualifiedDriver.setDriver(driver.getDriver());
-            qualifiedDriver.setRanking(place);
-            qualifiedDriver.setRound(round);
-            qualifiedDriverRepository.save(qualifiedDriver);
-            if (place == 1) driverParticipationService.addResult(championship, driver.getDriver(), 12);
-            if (place == 2) driverParticipationService.addResult(championship, driver.getDriver(), 10);
-            if (place == 3) driverParticipationService.addResult(championship, driver.getDriver(), 8);
-            if (place == 4) driverParticipationService.addResult(championship, driver.getDriver(), 6);
-            if (place == 5 || place == 6) driverParticipationService.addResult(championship, driver.getDriver(), 4);
-            if (place == 7 || place == 8) driverParticipationService.addResult(championship, driver.getDriver(), 3);
-            if (place >= 9 && place <= 12) driverParticipationService.addResult(championship, driver.getDriver(), 2);
-            if (place >= 13 && place <= 16) driverParticipationService.addResult(championship, driver.getDriver(), 1);
-            if (place >= 17 && place <= 24)
-                driverParticipationService.addResult(championship, driver.getDriver(), (float) 0.5);
+            if (place <= championship.getPlayoffSize()) {
+                createQualifiedDriver(driver.getDriver(), place, round);
+            }
+            createRoundResult(driver.getDriver(), place, round);
         }
+    }
+
+    private void createRoundResult(Person driver, int place, Round round) {
+        RoundDriverResult roundResult = new RoundDriverResult();
+        roundResult.setDriver(driver);
+        roundResult.setQualifierRanking(place);
+        roundResult.setRound(round);
+        if (place == 1) roundResult.setQualifierPoints(12);
+        else if (place == 2) roundResult.setQualifierPoints(10);
+        else if (place == 3) roundResult.setQualifierPoints(8);
+        else if (place == 4) roundResult.setQualifierPoints(6);
+        else if (place == 5 || place == 6) roundResult.setQualifierPoints(4);
+        else if (place == 7 || place == 8) roundResult.setQualifierPoints(3);
+        else if (place >= 9 && place <= 12) roundResult.setQualifierPoints(2);
+        else if (place >= 13 && place <= 16) roundResult.setQualifierPoints(1);
+        else if (place >= 17 && place <= 24) roundResult.setQualifierPoints(0.5F);
+        else roundResult.setQualifierPoints(0F);
+        roundDriverResultRepository.save(roundResult);
+    }
+
+    private void createQualifiedDriver(Person driver, int ranking, Round round) {
+        QualifiedDriver qualifiedDriver = new QualifiedDriver();
+        qualifiedDriver.setDriver(driver);
+        qualifiedDriver.setRanking(ranking);
+        qualifiedDriver.setRound(round);
+        qualifiedDriverRepository.save(qualifiedDriver);
+
     }
 
     public PlayoffTreeGraphicDisplayDto getPlayoffs(Long roundId) {

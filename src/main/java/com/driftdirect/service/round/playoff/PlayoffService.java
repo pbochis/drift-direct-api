@@ -2,6 +2,7 @@ package com.driftdirect.service.round.playoff;
 
 import com.driftdirect.domain.person.Person;
 import com.driftdirect.domain.round.Round;
+import com.driftdirect.domain.round.RoundDriverResult;
 import com.driftdirect.domain.round.battle.*;
 import com.driftdirect.domain.round.playoff.PlayoffStage;
 import com.driftdirect.domain.round.playoff.PlayoffTree;
@@ -12,17 +13,18 @@ import com.driftdirect.dto.round.playoff.PlayoffBattleRoundDriverJudging;
 import com.driftdirect.dto.round.playoff.PlayoffBattleRoundJudging;
 import com.driftdirect.dto.round.playoff.PlayoffJudgeDto;
 import com.driftdirect.dto.round.playoff.battle.PlayoffBattleFullDto;
-import com.driftdirect.dto.round.playoff.battle.PlayoffBattleRoundFullDto;
 import com.driftdirect.dto.round.playoff.graphic.PlayoffTreeGraphicDisplayDto;
 import com.driftdirect.exception.PreviousRunJudgingNotCompletedException;
 import com.driftdirect.mapper.comment.CommentMapper;
 import com.driftdirect.mapper.round.playoff.PlayoffMapper;
 import com.driftdirect.mapper.round.qualifier.QualifierMapper;
+import com.driftdirect.repository.round.RoundDriverResultRepository;
 import com.driftdirect.repository.round.RoundRepository;
 import com.driftdirect.repository.round.playoff.BattleRepository;
 import com.driftdirect.repository.round.playoff.PlayoffStageRepository;
 import com.driftdirect.repository.round.playoff.PlayoffTreeRepository;
 import com.driftdirect.service.CommentService;
+import com.driftdirect.service.championship.driver.DriverParticipationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -43,18 +45,24 @@ public class PlayoffService {
     private PlayoffStageRepository playoffStageRepository;
     private BattleRepository battleRepository;
     private RoundRepository roundRepository;
+    private RoundDriverResultRepository roundResultRepository;
     private CommentService commentService;
+    private DriverParticipationService driverParticipationService;
     @Autowired
-    public PlayoffService(PlayoffTreeRepository playoffTreeRepository,
+    public PlayoffService(RoundDriverResultRepository roundResultRepository,
+                          PlayoffTreeRepository playoffTreeRepository,
                           RoundRepository roundRepository,
                           PlayoffStageRepository playoffStageRepository,
                           BattleRepository battleRepository,
-                          CommentService commentService) {
+                          CommentService commentService,
+                          DriverParticipationService driverParticipationService) {
         this.playoffTreeRepository = playoffTreeRepository;
         this.roundRepository = roundRepository;
         this.playoffStageRepository = playoffStageRepository;
         this.battleRepository = battleRepository;
         this.commentService = commentService;
+        this.roundResultRepository = roundResultRepository;
+        this.driverParticipationService = driverParticipationService;
     }
 
     public PlayoffBattleFullDto findBattle(Long id){
@@ -435,8 +443,40 @@ public class PlayoffService {
         driver.addJudging(newJudging);
     }
 
-    private void generateFinalResults(PlayoffTree playoffTree){
+    private void generateFinalResults(PlayoffTree tree) {
+        Round round = tree.getRound();
+        PlayoffStage finalsStage = tree.getPlayoffStages().last();
+        updateRoundResult(round, finalsStage.getBattles().last().getWinner().getDriver(), 1);
+        updateRoundResult(round, finalsStage.getBattles().last().getLoser().getDriver(), 2);
+        updateRoundResult(round, finalsStage.getBattles().first().getWinner().getDriver(), 3);
+        updateRoundResult(round, finalsStage.getBattles().first().getLoser().getDriver(), 4);
+        for (PlayoffStage stage : tree.getPlayoffStages()) {
+            if (stage.getBattles().size() >= 4) {
+                for (Battle battle : stage.getBattles()) {
+                    updateRoundResult(round, battle.getLoser().getDriver(), stage.getBattles().size() + 1);
+                }
+            }
+        }
+    }
 
+    private void updateRoundResult(Round round, Person driver, int playoffRanking) {
+        RoundDriverResult result = roundResultRepository.findByRoundAndDriver(round, driver);
+        result.setPlayoffRanking(playoffRanking);
+        result.setPlayoffPoints(getPointsForRanking(playoffRanking));
+        result = roundResultRepository.save(result);
+        driverParticipationService.addResult(round.getChampionship(), result);
+    }
+
+    private float getPointsForRanking(int ranking) {
+        float points = 0F;
+        if (ranking == 1) points = 100F;
+        else if (ranking == 2) points = 88F;
+        else if (ranking == 3) points = 78F;
+        else if (ranking == 4) points = 69F;
+        else if (ranking >= 5 && ranking <= 8) points = 61F;
+        else if (ranking >= 9 && ranking <= 16) points = 54F;
+        else points = 24F;
+        return points;
     }
 
     // That means that this judge submitted scores for all the battle rounds already created.

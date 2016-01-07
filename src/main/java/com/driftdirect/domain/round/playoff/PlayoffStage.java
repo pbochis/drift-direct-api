@@ -60,13 +60,18 @@ public class PlayoffStage implements Comparable<PlayoffStage> {
         if (!(obj instanceof PlayoffStage)) {
             return false;
         }
-        return this.getBattles().size() == ((PlayoffStage) obj).getBattles().size();
+        return this.id.equals(((PlayoffStage) obj).getId());
     }
 
     @Override
     public int compareTo(PlayoffStage o) {
         if (this.battles.size() > o.getBattles().size())
             return -1;
+        if (this.battles.size() == o.getBattles().size()) {
+            if (this.battles.first().isGrandFinal() || this.battles.last().isGrandFinal()) {
+                return -1;
+            }
+        }
         return 1;
     }
 }

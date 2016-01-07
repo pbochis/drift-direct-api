@@ -15,6 +15,7 @@ import com.driftdirect.dto.round.playoff.graphic.PlayoffStageGraphicDisplayDto;
 import com.driftdirect.dto.round.playoff.graphic.PlayoffTreeGraphicDisplayDto;
 import com.driftdirect.mapper.PersonMapper;
 import com.driftdirect.mapper.comment.CommentMapper;
+import com.driftdirect.mapper.round.RoundMapper;
 import com.driftdirect.mapper.round.qualifier.QualifierMapper;
 
 import java.util.List;
@@ -30,6 +31,7 @@ public class PlayoffMapper {
         }
         PlayoffTreeGraphicDisplayDto dto = new PlayoffTreeGraphicDisplayDto();
         dto.setId(tree.getId());
+        dto.setRoundResults(tree.getRound().getRoundResults().stream().map(RoundMapper::mapRoundResult).collect(Collectors.toList()));
         for (PlayoffStage stage : tree.getPlayoffStages()) {
             dto.addStage(mapStageForDisplay(stage));
         }

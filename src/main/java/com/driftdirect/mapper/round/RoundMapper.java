@@ -1,14 +1,12 @@
 package com.driftdirect.mapper.round;
 
 import com.driftdirect.domain.round.Round;
+import com.driftdirect.domain.round.RoundDriverResult;
 import com.driftdirect.domain.round.RoundScheduleEntry;
-import com.driftdirect.domain.round.playoff.PlayoffTree;
-import com.driftdirect.dto.round.RoundScheduleEntryShowDto;
-import com.driftdirect.dto.round.RoundShortShowDto;
-import com.driftdirect.dto.round.RoundShowDto;
-import com.driftdirect.dto.round.RoundStatus;
+import com.driftdirect.dto.round.*;
 import com.driftdirect.dto.round.qualifier.QualifierShortDto;
 import com.driftdirect.dto.round.track.TrackDto;
+import com.driftdirect.mapper.PersonMapper;
 import com.driftdirect.mapper.round.qualifier.QualifierMapper;
 
 import java.util.List;
@@ -21,7 +19,6 @@ import java.util.stream.Collectors;
 public class RoundMapper {
     public static RoundShowDto map(Round round){
         RoundShowDto dto = new RoundShowDto();
-        PlayoffTree tree = round.getPlayoffTree();
         dto.setId(round.getId());
         dto.setName(round.getName());
         dto.setLiveStream(round.getLiveStream());
@@ -41,6 +38,17 @@ public class RoundMapper {
 
         List<QualifierShortDto> qualifiers = QualifierMapper.mapShort(round.getQualifiers());
         dto.setQualifiers(qualifiers);
+        return dto;
+    }
+
+    public static RoundDriverResultDto mapRoundResult(RoundDriverResult result) {
+        RoundDriverResultDto dto = new RoundDriverResultDto();
+        dto.setId(result.getId());
+        dto.setPlayoffPoints(result.getPlayoffPoints());
+        dto.setQualifierRanking(result.getQualifierRanking());
+        dto.setQualifierPoints(result.getQualifierPoints());
+        dto.setDriver(PersonMapper.mapShort(result.getDriver()));
+        dto.setRoundScore(result.getRoundScore());
         return dto;
     }
 
