@@ -244,6 +244,10 @@ public class PlayoffService {
             return null;
         }
 
+        PlayoffTree tree = battle.getPlayoffStage().getPlayoffTree();
+        tree.setCurrentBattle(battle);
+        playoffTreeRepository.save(tree);
+
         BattleRound roundToJudge = null;
         BattleRoundRun runToJudge = null;
         int runNumber = 0;

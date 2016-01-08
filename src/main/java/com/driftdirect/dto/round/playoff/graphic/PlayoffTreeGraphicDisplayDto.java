@@ -13,6 +13,8 @@ public class PlayoffTreeGraphicDisplayDto {
     private List<PlayoffStageGraphicDisplayDto> stages = new ArrayList<>();
     private List<RoundDriverResultDto> roundResults = new ArrayList<>();
 
+    private BattleGraphicDisplayDto currentBattle;
+
     public Long getId() {
         return id;
     }
@@ -43,5 +45,13 @@ public class PlayoffTreeGraphicDisplayDto {
 
     public void addRoundResult(RoundDriverResultDto resultDto) {
         this.roundResults.add(resultDto);
+    }
+
+    public BattleGraphicDisplayDto getCurrentBattle() {
+        return currentBattle;
+    }
+
+    public void setCurrentBattle(BattleGraphicDisplayDto currentBattle) {
+        this.currentBattle = currentBattle;
     }
 }

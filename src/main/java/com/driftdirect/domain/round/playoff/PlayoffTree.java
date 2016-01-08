@@ -1,6 +1,7 @@
 package com.driftdirect.domain.round.playoff;
 
 import com.driftdirect.domain.round.Round;
+import com.driftdirect.domain.round.battle.Battle;
 import org.hibernate.annotations.SortNatural;
 
 import javax.persistence.*;
@@ -23,6 +24,9 @@ public class PlayoffTree {
 
     @OneToOne(fetch = FetchType.EAGER)
     private Round round;
+
+    @OneToOne
+    private Battle currentBattle;
 
     public Long getId() {
         return id;
@@ -50,5 +54,13 @@ public class PlayoffTree {
 
     public void setRound(Round round) {
         this.round = round;
+    }
+
+    public Battle getCurrentBattle() {
+        return currentBattle;
+    }
+
+    public void setCurrentBattle(Battle currentBattle) {
+        this.currentBattle = currentBattle;
     }
 }

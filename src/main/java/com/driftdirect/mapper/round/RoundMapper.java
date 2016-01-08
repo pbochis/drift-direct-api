@@ -26,6 +26,7 @@ public class RoundMapper {
         dto.setEndDate(round.getEndDate());
         dto.setTicketsUrl(round.getTicketsUrl());
         dto.setSchedule(mapSchedule(round.getScheduele()));
+        dto.setCurrentDriver(QualifierMapper.mapShort(round.getCurrentDriver()));
         if (round.getTrack() != null){
             TrackDto track = new TrackDto();
             track.setId(round.getTrack().getId());

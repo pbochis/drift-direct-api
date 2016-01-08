@@ -10,6 +10,7 @@ import javax.validation.constraints.NotNull;
  */
 public class UserCreateDTO {
     private String username;
+
     private String password;
     @NotNull
     @NotEmpty

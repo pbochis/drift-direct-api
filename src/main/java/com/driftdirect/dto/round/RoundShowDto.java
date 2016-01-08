@@ -17,6 +17,9 @@ public class RoundShowDto {
     private DateTime endDate;
     private String ticketsUrl;
     private TrackDto track;
+
+    private QualifierShortDto currentDriver;
+
     private List<RoundScheduleEntryShowDto> schedule;
 
     private List<QualifierShortDto> qualifiers;
@@ -91,5 +94,13 @@ public class RoundShowDto {
 
     public void setLiveStream(String liveStream) {
         this.liveStream = liveStream;
+    }
+
+    public QualifierShortDto getCurrentDriver() {
+        return currentDriver;
+    }
+
+    public void setCurrentDriver(QualifierShortDto currentDriver) {
+        this.currentDriver = currentDriver;
     }
 }

@@ -47,6 +47,9 @@ public class Round implements Comparable<Round> {
     @JoinColumn(name = "championship_id")
     private Championship championship;
 
+    @OneToOne
+    private Qualifier currentDriver;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "round", cascade = CascadeType.ALL, orphanRemoval = true)
     @SortNatural
     private SortedSet<RoundScheduleEntry> scheduele = new TreeSet<>();
@@ -210,5 +213,13 @@ public class Round implements Comparable<Round> {
 
     public void setRoundResults(List<RoundDriverResult> roundResults) {
         this.roundResults.addAll(roundResults);
+    }
+
+    public Qualifier getCurrentDriver() {
+        return currentDriver;
+    }
+
+    public void setCurrentDriver(Qualifier currentDriver) {
+        this.currentDriver = currentDriver;
     }
 }

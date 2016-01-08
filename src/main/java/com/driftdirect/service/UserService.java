@@ -8,12 +8,11 @@ import com.driftdirect.domain.user.User;
 import com.driftdirect.dto.user.UserCreateDTO;
 import com.driftdirect.dto.user.UserShowDto;
 import com.driftdirect.mapper.UserMapper;
-import com.driftdirect.repository.PersonRepository;
 import com.driftdirect.repository.RoleRepository;
 import com.driftdirect.repository.UserRepository;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
@@ -32,14 +31,14 @@ public class UserService {
     private UserRepository userRepository;
     private PersonService personService;
     private RoleRepository roleRepository;
-    private BCryptPasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
     private MailSenderService mailSenderService;
 
     @Autowired
     public UserService(UserRepository userRepository,
                        PersonService personService,
                        RoleRepository roleRepository,
-                       BCryptPasswordEncoder passwordEncoder,
+                       PasswordEncoder passwordEncoder,
                        MailSenderService mailSenderService){
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;

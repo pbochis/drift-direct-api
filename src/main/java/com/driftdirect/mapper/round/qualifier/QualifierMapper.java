@@ -115,6 +115,8 @@ public class QualifierMapper {
     }
 
     public static QualifierShortDto mapShort(Qualifier qualifier) {
+        if (qualifier == null)
+            return null;
         QualifierShortDto dto = new QualifierShortDto();
         mapInternal(dto, qualifier);
         return dto;

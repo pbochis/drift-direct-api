@@ -8,7 +8,6 @@ import com.driftdirect.domain.round.qualifiers.AwardedPoints;
 import com.driftdirect.domain.round.qualifiers.Qualifier;
 import com.driftdirect.domain.round.qualifiers.Run;
 import com.driftdirect.domain.round.qualifiers.RunJudging;
-import com.driftdirect.domain.user.User;
 import com.driftdirect.dto.comment.CommentCreateDto;
 import com.driftdirect.dto.round.qualifier.QualifierFullDto;
 import com.driftdirect.dto.round.qualifier.QualifierJudgeDto;
@@ -100,6 +99,9 @@ public class QualifierService {
 
     public QualifierJudgeDto startQualifierJudging(Long qualifierId, Person judge) throws AccessDeniedException, PreviousRunJudgingNotCompletedException {
         Qualifier qualifier = qualifierRepository.findOne(qualifierId);
+        Round round = qualifier.getRound();
+        round.setCurrentDriver(qualifier);
+        roundRepository.save(round);
         JudgeParticipation participation = findJudgeParticipation(qualifier, judge);
         if (participation == null){
             throw new AccessDeniedException("You cannot judge at this qualifier");
@@ -173,7 +175,10 @@ public class QualifierService {
 
     private void checkAndNotifyRunResult(Qualifier qualifier, Run run) {
         if (run.getJudgings().size() == 3) {
-            //TODO: notify with GCM
+            //TODO: add GCM notify here
+            Round round = qualifier.getRound();
+            round.setCurrentDriver(qualifier);
+            roundRepository.save(round);
         }
     }
 

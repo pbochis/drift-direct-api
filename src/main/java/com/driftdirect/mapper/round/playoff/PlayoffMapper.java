@@ -31,6 +31,7 @@ public class PlayoffMapper {
         }
         PlayoffTreeGraphicDisplayDto dto = new PlayoffTreeGraphicDisplayDto();
         dto.setId(tree.getId());
+        dto.setCurrentBattle(mapBattle(tree.getCurrentBattle()));
         dto.setRoundResults(tree.getRound().getRoundResults().stream().map(RoundMapper::mapRoundResult).collect(Collectors.toList()));
         for (PlayoffStage stage : tree.getPlayoffStages()) {
             dto.addStage(mapStageForDisplay(stage));
@@ -49,6 +50,9 @@ public class PlayoffMapper {
     }
 
     private static BattleGraphicDisplayDto mapBattle(Battle battle) {
+        if (battle == null) {
+            return null;
+        }
         BattleGraphicDisplayDto dto = new BattleGraphicDisplayDto();
         dto.setId(battle.getId());
         dto.setDriver1(QualifierMapper.mapQualifiedDriver(battle.getDriver1()));
@@ -59,6 +63,9 @@ public class PlayoffMapper {
     }
 
     public static PlayoffBattleFullDto mapBattleFull(Battle battle){
+        if (battle == null) {
+            return null;
+        }
         PlayoffBattleFullDto dto = new PlayoffBattleFullDto();
         dto.setDriver1(QualifierMapper.mapQualifiedDriver(battle.getDriver1()));
         dto.setDriver2(QualifierMapper.mapQualifiedDriver(battle.getDriver2()));
@@ -70,6 +77,8 @@ public class PlayoffMapper {
     }
 
     private static PlayoffBattleRoundFullDto mapBattleRound(BattleRound round){
+        if (round == null)
+            return null;
         PlayoffBattleRoundFullDto dto = new PlayoffBattleRoundFullDto();
         List<Person> firstRunJudges = round.getFirstRun().getDriver1().getJudgings().stream().map(e -> e.getJudge()).collect(Collectors.toList());
         for (Person judge: firstRunJudges){
@@ -83,6 +92,8 @@ public class PlayoffMapper {
     }
 
     private static BattleRoundRunJudgeScores mapScores(BattleRoundRun run, Person judge){
+        if (run == null)
+            return null;
         BattleRoundRunJudgeScores dto = new BattleRoundRunJudgeScores();
         BattleRoundRunDriverJudging firstDriverJudging = null;
         for (BattleRoundRunDriverJudging judging: run.getDriver1().getJudgings()){

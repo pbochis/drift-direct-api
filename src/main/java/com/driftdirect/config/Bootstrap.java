@@ -28,10 +28,13 @@ import com.driftdirect.domain.sponsor.Sponsor;
 import com.driftdirect.domain.user.Authorities;
 import com.driftdirect.domain.user.Role;
 import com.driftdirect.domain.user.User;
+import com.driftdirect.dto.championship.ChampionshipCreateDTO;
 import com.driftdirect.dto.championship.judge.JudgeParticipationCreateDto;
 import com.driftdirect.dto.championship.judge.PointsAllocationCreateDto;
+import com.driftdirect.dto.championship.rules.RulesCreateDto;
 import com.driftdirect.dto.comment.CommentCreateDto;
 import com.driftdirect.dto.person.PersonCreateDto;
+import com.driftdirect.dto.round.RoundCreateDto;
 import com.driftdirect.dto.round.RoundScheduleEntryCreateDto;
 import com.driftdirect.dto.round.playoff.PlayoffBattleRoundDriverJudging;
 import com.driftdirect.dto.round.playoff.PlayoffBattleRoundJudging;
@@ -159,6 +162,29 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
             configSetting.setKey(APPLICATION_INIT);
             configSettingRepository.save(configSetting);
         }
+    }
+
+
+    private void initProductionDatabase() {
+        adminRole = roleRepository.save(new Role(Authorities.ROLE_ADMIN));
+        orgRole = roleRepository.save(new Role(Authorities.ROLE_ORGANIZER));
+        judgeRole = roleRepository.save(new Role(Authorities.ROLE_JUDGE));
+
+        ChampionshipCreateDTO championship = new ChampionshipCreateDTO();
+        championship.setName("D1NZ");
+        championship.setLogo(saveFile("/prod/nzlogo.png").getId());
+        championship.setBackgroundImage(saveFile("/prod/blackBackground.png").getId());
+        championship.setTicketsUrl("https://www.iticket.co.nz/Search?q=d1nz");
+        RulesCreateDto rules = new RulesCreateDto();
+        rules.setRules("https://drive.google.com/file/d/0B6T_MjB4NedAeWdxODJGYU8wblE/view?usp=sharing");
+//        rules.setVideoUrl();
+        championship.setRules(rules);
+
+    }
+
+    private void productionRounds() {
+        RoundCreateDto round = new RoundCreateDto();
+        round.setName("");
     }
 
     private void initDevelopementDatabase(){
@@ -568,6 +594,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         }
         return null;
     }
+
 
     private void initDevUsersAndRoles() {
         adminRole = roleRepository.save(new Role(Authorities.ROLE_ADMIN));
