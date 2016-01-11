@@ -6,14 +6,15 @@ import com.driftdirect.dto.round.RoundCreateDto;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Paul on 11/11/2015.
  */
 public class ChampionshipCreateDTO {
-    List<RoundCreateDto> rounds;
-    List<JudgeParticipationCreateDto> judges;
+    List<RoundCreateDto> rounds = new ArrayList<>();
+    List<JudgeParticipationCreateDto> judges = new ArrayList<>();
     //TODO: add List<ChampionshipJudgeTypeCreateDto> to this
     @NotNull
     @NotEmpty
@@ -80,5 +81,13 @@ public class ChampionshipCreateDTO {
 
     public void setJudges(List<JudgeParticipationCreateDto> judges) {
         this.judges = judges;
+    }
+
+    public void addRound(RoundCreateDto round) {
+        this.rounds.add(round);
+    }
+
+    public void addJudge(JudgeParticipationCreateDto judge) {
+        this.judges.add(judge);
     }
 }

@@ -95,7 +95,7 @@ public class UserService {
     }
 
     private void notifyNewUser(String email, String password) throws MessagingException, IOException {
-        String[] args = new String[]{email, password};
-        mailSenderService.sendWithTemplate(USER_NOTIFY_EMAIL_TEMPLATE, args, email, "Account created");
+//        String[] args = new String[]{email, password};
+//        mailSenderService.sendWithTemplate(USER_NOTIFY_EMAIL_TEMPLATE, args, email, "Account created");
     }
 }

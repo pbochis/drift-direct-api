@@ -100,8 +100,9 @@ public class RoundController {
 
     @RequestMapping(path = RestUrls.ROUND_ID_PLAYOFF_START, method = RequestMethod.POST)
     public ResponseEntity generatePlayoffTree(@PathVariable Long id) {
-        roundService.finishQualifiers(id);
-        playoffService.generatePlayoffTree(id);
+        if (roundService.finishQualifiers(id)) {
+            playoffService.generatePlayoffTree(id);
+        }
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -110,8 +111,9 @@ public class RoundController {
                                                                          @AuthenticationPrincipal User currentUser) {
         PlayoffTreeGraphicDisplayDto playoffs = roundService.getPlayoffs(id);
         if (playoffs == null && securityService.canGeneratePlayoffs(currentUser, id)) {
-            roundService.finishQualifiers(id);
-            playoffs = playoffService.generatePlayoffTree(id);
+            if (roundService.finishQualifiers(id)) {
+                playoffs = playoffService.generatePlayoffTree(id);
+            }
         }
         return new ResponseEntity<>(playoffs, HttpStatus.OK);
     }

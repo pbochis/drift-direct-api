@@ -135,8 +135,14 @@ public class RoundService {
         return RoundMapper.map(roundRepository.findOne(id));
     }
 
-    public void finishQualifiers(Long roundId) {
+    public boolean finishQualifiers(Long roundId) {
         Round round = roundRepository.findOne(roundId);
+        if (round.getQualifiers().size() == 0) return false;
+        for (Qualifier qualifier : round.getQualifiers()) {
+            if (qualifier.getFirstRun().getJudgings().size() != 3 || qualifier.getSecondRun().getJudgings().size() != 3) {
+                return false;
+            }
+        }
         List<Qualifier> qualifiers = round.getQualifiers();
         Collections.sort(qualifiers);
         Championship championship = round.getChampionship();
@@ -148,6 +154,7 @@ public class RoundService {
             }
             createRoundResult(driver.getDriver(), place, round);
         }
+        return true;
     }
 
     private void createRoundResult(Person driver, int place, Round round) {

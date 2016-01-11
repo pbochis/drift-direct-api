@@ -6,6 +6,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,7 +25,7 @@ public class RoundCreateDto {
 
     private TrackCreateDto track;
 
-    private List<RoundScheduleEntryCreateDto> scheduele;
+    private List<RoundScheduleEntryCreateDto> scheduele = new ArrayList<>();
 
     public Long getLogo() {
         return logo;
@@ -64,5 +65,9 @@ public class RoundCreateDto {
 
     public void setTrack(TrackCreateDto track) {
         this.track = track;
+    }
+
+    public void addRoundScheduleEntry(RoundScheduleEntryCreateDto entryCreateDto) {
+        this.scheduele.add(entryCreateDto);
     }
 }

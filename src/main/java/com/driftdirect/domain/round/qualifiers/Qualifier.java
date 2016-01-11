@@ -21,6 +21,7 @@ public class Qualifier implements Comparable<Qualifier> {
     private Run secondRun;
 
     private int finalScore;
+    private int qualifierOrder;
 
     @ManyToOne
     @JoinColumn(name = "round_id", nullable = false)
@@ -76,24 +77,33 @@ public class Qualifier implements Comparable<Qualifier> {
 
     @Override
     public int compareTo(Qualifier o) {
-        if (this.id.equals(o.getId())) {
-            return 0;
-        }
-        if (this.finalScore > o.getFinalScore()) {
-            return 1;
-        }
-        if (this.finalScore < o.getFinalScore()) {
-            return -1;
-        }
-        int a = Math.min(firstRun.getTotalPoints(), secondRun.getTotalPoints());
-        int b = Math.min(o.getFirstRun().getTotalPoints(), o.getSecondRun().getTotalPoints());
+        return this.getQualifierOrder() - o.getQualifierOrder();
+//        if (this.id.equals(o.getId())) {
+//            return 0;
+//        }
+//        if (this.finalScore > o.getFinalScore()) {
+//            return 1;
+//        }
+//        if (this.finalScore < o.getFinalScore()) {
+//            return -1;
+//        }
+//        int a = Math.min(firstRun.getTotalPoints(), secondRun.getTotalPoints());
+//        int b = Math.min(o.getFirstRun().getTotalPoints(), o.getSecondRun().getTotalPoints());
+//
+//        if (a > b) {
+//            return 1;
+//        }
+//        if (a < b) {
+//            return -1;
+//        }
+//        return 0;
+    }
 
-        if (a > b) {
-            return 1;
-        }
-        if (a < b) {
-            return -1;
-        }
-        return 0;
+    public int getQualifierOrder() {
+        return qualifierOrder;
+    }
+
+    public void setQualifierOrder(int qualifierOrder) {
+        this.qualifierOrder = qualifierOrder;
     }
 }

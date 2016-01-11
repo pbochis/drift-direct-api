@@ -43,7 +43,9 @@ public class PersonMapper {
         dto.setId(p.getId());
         dto.setFirstName(p.getFirstName());
         dto.setLastName(p.getLastName());
-        dto.setProfilePicture(p.getProfilePicture().getId());
+        if (p.getProfilePicture() != null) {
+            dto.setProfilePicture(p.getProfilePicture().getId());
+        }
         dto.setTelephone(p.getTelephone());
         dto.setCountry(CountryMapper.map(p.getCountry()));
         dto.setCareerStartDate(p.getCareerStartDate());
@@ -62,7 +64,9 @@ public class PersonMapper {
             details.setWheels(p.getDriverDetails().getWheels());
             details.setTires(p.getDriverDetails().getTires());
             details.setOther(p.getDriverDetails().getOther());
-            details.setTeam(TeamMapper.map(p.getDriverDetails().getTeam()));
+            if (details.getTeam() != null) {
+                details.setTeam(TeamMapper.map(p.getDriverDetails().getTeam()));
+            }
             details.setHorsePower(p.getDriverDetails().getHorsePower());
             dto.setDriverDetails(details);
         }

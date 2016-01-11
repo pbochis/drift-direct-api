@@ -50,6 +50,7 @@ import com.driftdirect.repository.championship.judge.JudgeParticipationRepositor
 import com.driftdirect.repository.round.RoundRepository;
 import com.driftdirect.repository.round.track.TrackLayoutRepository;
 import com.driftdirect.service.UserService;
+import com.driftdirect.service.championship.ChampionshipService;
 import com.driftdirect.service.championship.judge.JudgeParticipationService;
 import com.driftdirect.service.round.RoundService;
 import com.driftdirect.service.round.playoff.PlayoffService;
@@ -57,6 +58,7 @@ import com.driftdirect.service.round.qualifier.QualifierService;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -128,6 +130,9 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
     private PlayoffService playoffService;
 
     @Autowired
+    private ChampionshipService championshipService;
+
+    @Autowired
     public Bootstrap(
             ConfigSettingRepository configSettingRepository, RoleRepository roleRepository,
             UserService userService, Environment environment, ChampionshipRepository championshipRepository,
@@ -156,6 +161,14 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
             System.out.println("********************************** STARTED APP BOOTSTRAP ******************************");
             if (Arrays.asList(this.environment.getActiveProfiles()).contains("dev")){
                 initDevelopementDatabase();
+            } else {
+                try {
+                    initProductionDatabase();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (MessagingException e) {
+                    e.printStackTrace();
+                }
             }
 
             ConfigSetting configSetting = new ConfigSetting();
@@ -165,26 +178,166 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
     }
 
 
-    private void initProductionDatabase() {
+    private User createUser(Role role, String email, String password, String username, String firstName, String lastName, PersonType personType, File picture) throws IOException, MessagingException {
+        UserCreateDTO user = new UserCreateDTO();
+        user.setRole(role.getId());
+        user.setEmail(email);
+        user.setPassword(password);
+        user.setUsername(username);
+        PersonCreateDto person = new PersonCreateDto();
+        person.setFirstName(firstName);
+        person.setLastName(lastName);
+        if (picture != null) {
+            person.setProfilePicture(picture.getId());
+        }
+        person.setCountry(c.getId());
+        person.setPersonType(personType.name());
+        user.setPerson(person);
+        return userService.createFromDto(user);
+    }
+
+    private void initProductionDatabase() throws IOException, MessagingException {
         adminRole = roleRepository.save(new Role(Authorities.ROLE_ADMIN));
         orgRole = roleRepository.save(new Role(Authorities.ROLE_ORGANIZER));
         judgeRole = roleRepository.save(new Role(Authorities.ROLE_JUDGE));
 
+        c = new Country();
+        c.setName("New Zeeland");
+        c.setFlag(saveFile("/prod/nzflag.png"));
+        c = countryRepository.save(c);
+
+        File picture = saveFile("/prod/user.png");
+
+        User admin = createUser(adminRole, "performancezone@yahoo.com", "blackmonster32gtr", "tengudrift", "Florin", "Cozmuta", PersonType.Admin, null);
+        User organizer = createUser(orgRole, "email@example.com", "driftdirect1234", "brendonwhite", "Brendon", "White", PersonType.Organizer, null);
+        User lineJudge = createUser(judgeRole, "email2@example.com", "driftdirect1234", "brendanduncker", "Brendan", "Duncker", PersonType.Judge, saveFile("/prod/lineJudge.png"));
+        User angleJudge = createUser(judgeRole, "email3@example.com", "driftdirect1234", "nickteeboon", "Nick", "Teeboon", PersonType.Judge, saveFile("/prod/angleJudge.png"));
+        User styleJudge = createUser(judgeRole, "email4@example.com", "driftdirect1234", "kylejackways", "Kyle", "Jackways", PersonType.Judge, saveFile("/prod/styleJudge.png"));
+
         ChampionshipCreateDTO championship = new ChampionshipCreateDTO();
         championship.setName("D1NZ");
-        championship.setLogo(saveFile("/prod/nzlogo.png").getId());
+        championship.setLogo(saveFile("/prod/nzLogo.png").getId());
         championship.setBackgroundImage(saveFile("/prod/blackBackground.png").getId());
         championship.setTicketsUrl("https://www.iticket.co.nz/Search?q=d1nz");
+
         RulesCreateDto rules = new RulesCreateDto();
         rules.setRules("https://drive.google.com/file/d/0B6T_MjB4NedAeWdxODJGYU8wblE/view?usp=sharing");
-//        rules.setVideoUrl();
+        rules.setVideoUrl("https://www.youtube.com/watch?v=MseohDk4dqs");
         championship.setRules(rules);
+        championship.addRound(productionRounds());
 
+        JudgeParticipationCreateDto judge1 = new JudgeParticipationCreateDto();
+        judge1.setJudgeType(JudgeType.LINE);
+        judge1.setJudge(lineJudge.getPerson().getId());
+        judge1.addPointsAllocation(createPointsAllocation("Line", 25));
+        judge1.addPointsAllocation(createPointsAllocation("Style", 10));
+
+        JudgeParticipationCreateDto judge2 = new JudgeParticipationCreateDto();
+        judge2.setJudgeType(JudgeType.ANGLE);
+        judge2.setJudge(angleJudge.getPerson().getId());
+        judge2.addPointsAllocation(createPointsAllocation("Angle", 25));
+        judge2.addPointsAllocation(createPointsAllocation("Style", 10));
+
+        JudgeParticipationCreateDto judge3 = new JudgeParticipationCreateDto();
+        judge3.setJudgeType(JudgeType.STYLE);
+        judge3.setJudge(styleJudge.getPerson().getId());
+        judge3.addPointsAllocation(createPointsAllocation("Impact", 10));
+        judge3.addPointsAllocation(createPointsAllocation("Commitment", 10));
+        judge3.addPointsAllocation(createPointsAllocation("Fluidity", 10));
+
+        championship.addJudge(judge1);
+        championship.addJudge(judge2);
+        championship.addJudge(judge3);
+
+        try {
+            championshipService.createFromDto(championship, organizer);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    private void productionRounds() {
+    private PointsAllocationCreateDto createPointsAllocation(String name, int maxPoints) {
+        PointsAllocationCreateDto dto = new PointsAllocationCreateDto();
+        dto.setName(name);
+        dto.setMaxPoints(maxPoints);
+        return dto;
+    }
+
+    private RoundCreateDto productionRounds() {
         RoundCreateDto round = new RoundCreateDto();
-        round.setName("");
+        round.setName("ASB Baypark Stadium");
+        round.setLogo(saveFile("/prod/round2.png").getId());
+        round.setTicketsUrl("https://www.iticket.co.nz/events/2016/jan/the-demon-energy-d1nz-national-drifting-championship-round-2");
+        TrackCreateDto track = new TrackCreateDto();
+        track.setVideoUrl("https://www.iticket.co.nz/events/2016/jan/the-demon-energy-d1nz-national-drifting-championship-round-2");
+        track.setLayout(saveFile("/prod/trackLayout.png").getId());
+        track.setDescription("");
+        track.setJudgingCriteria("");
+        round.setTrack(track);
+
+        round.addRoundScheduleEntry(buildScheduleEntryDto("Pro Sport Practice Sessions", createDate(2016, 1, 8, 11, 5), createDate(2016, 1, 8, 11, 40)));
+        round.addRoundScheduleEntry(buildScheduleEntryDto("Pro Championship practice", createDate(2016, 1, 8, 11, 40), createDate(2016, 1, 8, 12, 15)));
+        round.addRoundScheduleEntry(buildScheduleEntryDto(
+                "Practice Sessions Alternate",
+                createDate(2016, 1, 8, 12, 15),
+                createDate(2016, 1, 8, 17, 30)));
+        round.addRoundScheduleEntry(buildScheduleEntryDto(
+                "Afternoon Track Break",
+                createDate(2016, 1, 8, 17, 30),
+                createDate(2016, 1, 8, 18, 0)));
+
+        round.addRoundScheduleEntry(buildScheduleEntryDto(
+                "Pro Sport Qualifying",
+                createDate(2016, 1, 8, 18, 0),
+                createDate(2016, 1, 8, 19, 0)));
+
+        round.addRoundScheduleEntry(buildScheduleEntryDto(
+                "Pro Championship Qualifying",
+                createDate(2016, 1, 8, 19, 0),
+                createDate(2016, 1, 8, 20, 0)));
+
+        round.addRoundScheduleEntry(buildScheduleEntryDto(
+                "Hot Laps & Open Practice",
+                createDate(2016, 1, 8, 8, 0),
+                createDate(2016, 1, 8, 8, 30)));
+
+        round.addRoundScheduleEntry(buildScheduleEntryDto(
+                "Practice Sessions",
+                createDate(2016, 1, 9, 11, 5),
+                createDate(2016, 1, 9, 15, 30)));
+
+        round.addRoundScheduleEntry(buildScheduleEntryDto(
+                "D1 Pro Sport Series - Top 16 Battle Competition",
+                createDate(2016, 1, 9, 15, 30),
+                createDate(2016, 1, 9, 16, 45)));
+
+        round.addRoundScheduleEntry(buildScheduleEntryDto(
+                "Free Pit walk & Driver signing",
+                createDate(2016, 1, 9, 16, 45),
+                createDate(2016, 1, 9, 18, 30)));
+
+        round.addRoundScheduleEntry(buildScheduleEntryDto(
+                "D1 Pro Championship - Top 32 Battle Competition",
+                createDate(2016, 1, 9, 18, 30),
+                createDate(2016, 1, 9, 22, 0)));
+
+        round.addRoundScheduleEntry(buildScheduleEntryDto(
+                "Podium presentation (Pitlane)",
+                createDate(2016, 1, 9, 22, 0),
+                createDate(2016, 1, 9, 23, 0)));
+        return round;
+    }
+
+    private DateTime createDate(int year, int month, int day, int hour, int minutes) {
+        return new DateTime(year, month, day, hour, minutes, DateTimeZone.forID("Pacific/Auckland"));
+    }
+
+    private RoundScheduleEntryCreateDto buildScheduleEntryDto(String name, DateTime startDate, DateTime endDate) {
+        RoundScheduleEntryCreateDto entryCreateDto = new RoundScheduleEntryCreateDto();
+        entryCreateDto.setName(name);
+        entryCreateDto.setStartDate(startDate);
+        entryCreateDto.setEndDate(endDate);
+        return entryCreateDto;
     }
 
     private void initDevelopementDatabase(){

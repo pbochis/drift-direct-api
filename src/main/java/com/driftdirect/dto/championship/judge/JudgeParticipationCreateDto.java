@@ -4,6 +4,7 @@ import com.driftdirect.domain.championship.judge.JudgeType;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,7 +19,7 @@ public class JudgeParticipationCreateDto {
     private JudgeType judgeType;
 
     @Size(min = 1)
-    private List<PointsAllocationCreateDto> pointsAllocations;
+    private List<PointsAllocationCreateDto> pointsAllocations = new ArrayList<>();
 
     public Long getJudge() {
         return judge;
@@ -58,5 +59,9 @@ public class JudgeParticipationCreateDto {
             points += point.getMaxPoints();
         }
         return points;
+    }
+
+    public void addPointsAllocation(PointsAllocationCreateDto pointsAllocationCreateDto) {
+        this.pointsAllocations.add(pointsAllocationCreateDto);
     }
 }

@@ -25,6 +25,9 @@ import java.util.stream.Collectors;
  */
 public class ChampionshipMapper {
     public static ChampionshipFullDto map(Championship c) {
+        if (c == null) {
+            return null;
+        }
         ChampionshipFullDto dto = new ChampionshipFullDto();
         dto.setId(c.getId());
         dto.setName(c.getName());
@@ -87,6 +90,9 @@ public class ChampionshipMapper {
     }
 
     public static DriverParticipationDto mapDriverParticipation(DriverParticipation participation) {
+        if (participation == null) {
+            return null;
+        }
         DriverParticipationDto dto = new DriverParticipationDto();
         dto.setId(participation.getId());
         dto.setDriver(PersonMapper.mapFull(participation.getDriver()));

@@ -69,6 +69,20 @@ public class QualifierService {
         return qualifier;
     }
 
+    public Qualifier registerDriver(Long roundId, Long driverId, int order) {
+        Round round = roundRepository.findOne(roundId);
+        Person driver = personRepository.findOne(driverId);
+        Qualifier qualifier = new Qualifier();
+        qualifier.setDriver(driver);
+        qualifier.setQualifierOrder(order);
+        qualifier.setRound(round);
+        qualifier.setFirstRun(new Run());
+        qualifier.setSecondRun(new Run());
+        qualifier = qualifierRepository.save(qualifier);
+        driverParticipationService.addDriverParticipation(round.getChampionship(), driver);
+        return qualifier;
+    }
+
     private JudgeParticipation findJudgeParticipation(Qualifier qualifier, Person judge) throws AccessDeniedException {
         JudgeParticipation participation = null;
         for (JudgeParticipation jp : qualifier.getRound().getChampionship().getJudges()) {
