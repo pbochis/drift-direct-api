@@ -17,7 +17,8 @@ buildscript {
 apply plugin: "java"
 apply plugin: "idea"
 apply plugin: "spring-boot"
-
+apply plugin: "war"
+//
 jar {
     baseName = "driftdirect"
     version =  "0.0.1-SNAPSHOT"
@@ -31,6 +32,9 @@ repositories {
     maven { url "https://repo.spring.io/milestone" }
 }
 
+configurations {
+    providedRuntime
+}
 
 dependencies {
     // spring
@@ -53,6 +57,7 @@ dependencies {
     compile "org.springframework.security:spring-security-core:${springSecurityVersion}"
     compile "org.springframework.security:spring-security-config:${springSecurityVersion}"
     compile "org.springframework.security:spring-security-web:${springSecurityVersion}"
+//    compile 'org.springframework.security:spring-security-crypto:4.0.3.RELEASE'
 
     //joda time
     compile 'joda-time:joda-time:2.9.1'
@@ -66,7 +71,7 @@ dependencies {
     //image utils
     compile 'org.imgscalr:imgscalr-lib:4.2'
 
-
+    providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
     testCompile("junit:junit")
 }
 
