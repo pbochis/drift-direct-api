@@ -8,7 +8,7 @@ import com.driftdirect.dto.round.qualifier.run.RunFullDto;
  */
 public class QualifierFullDto {
     private Long id;
-    private int finalScore;
+    private float finalScore;
     private PersonShortShowDto driver;
     private RunFullDto firstRun;
     private RunFullDto secondRun;
@@ -21,11 +21,11 @@ public class QualifierFullDto {
         this.id = id;
     }
 
-    public int getFinalScore() {
+    public float getFinalScore() {
         return finalScore;
     }
 
-    public void setFinalScore(int finalScore) {
+    public void setFinalScore(float finalScore) {
         this.finalScore = finalScore;
     }
 

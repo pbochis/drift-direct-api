@@ -161,7 +161,7 @@ public class QualifierService {
         RunJudging runJudging = new RunJudging();
         runJudging.setJudge(participation);
         runJudging.setRun(run);
-        int totalAwardedPoints = 0;
+        float totalAwardedPoints = 0;
         for (AwardedPointsCreateDto points : runJudgingDto.getAwardedPoints()) {
             AwardedPoints awardedPoints = new AwardedPoints();
             awardedPoints.setAwardedPoints(points.getAwardedPoints());

@@ -20,7 +20,7 @@ public class Qualifier implements Comparable<Qualifier> {
     @OneToOne(cascade = CascadeType.ALL)
     private Run secondRun;
 
-    private int finalScore;
+    private float finalScore;
     private int qualifierOrder;
 
     @ManyToOne
@@ -59,11 +59,11 @@ public class Qualifier implements Comparable<Qualifier> {
         this.secondRun = secondRun;
     }
 
-    public int getFinalScore() {
+    public float getFinalScore() {
         return finalScore;
     }
 
-    public void setFinalScore(int finalScore) {
+    public void setFinalScore(float finalScore) {
         this.finalScore = finalScore;
     }
 

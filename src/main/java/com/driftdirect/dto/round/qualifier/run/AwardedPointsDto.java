@@ -8,7 +8,7 @@ import com.driftdirect.dto.championship.judge.PointsAllocationDto;
 public class AwardedPointsDto {
     private Long id;
     private PointsAllocationDto pointsAllocation;
-    private int awardedPoints;
+    private float awardedPoints;
 
     public Long getId() {
         return id;
@@ -26,11 +26,11 @@ public class AwardedPointsDto {
         this.pointsAllocation = pointsAllocation;
     }
 
-    public int getAwardedPoints() {
+    public float getAwardedPoints() {
         return awardedPoints;
     }
 
-    public void setAwardedPoints(int awardedPoints) {
+    public void setAwardedPoints(float awardedPoints) {
         this.awardedPoints = awardedPoints;
     }
 }

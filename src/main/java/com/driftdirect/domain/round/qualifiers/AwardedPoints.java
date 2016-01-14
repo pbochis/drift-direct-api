@@ -17,7 +17,7 @@ public class AwardedPoints {
     @ManyToOne
     private PointsAllocation allocation;
 
-    private int awardedPoints;
+    private float awardedPoints;
 
     public Long getId() {
         return id;
@@ -35,11 +35,11 @@ public class AwardedPoints {
         this.allocation = allocation;
     }
 
-    public int getAwardedPoints() {
+    public float getAwardedPoints() {
         return awardedPoints;
     }
 
-    public void setAwardedPoints(int awardedPoints) {
+    public void setAwardedPoints(float awardedPoints) {
         this.awardedPoints = awardedPoints;
     }
 }
