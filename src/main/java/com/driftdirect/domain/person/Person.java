@@ -38,7 +38,11 @@ public class Person {
     @Column(name = "career_start_date")
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     private DateTime careerStartDate;
+
+    @Lob
     private String description;
+
+    @Lob
     private String portfolio;
 
     @Enumerated(EnumType.STRING)

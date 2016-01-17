@@ -42,6 +42,7 @@ import com.driftdirect.dto.round.qualifier.run.AwardedPointsCreateDto;
 import com.driftdirect.dto.round.qualifier.run.RunJudgingCreateDto;
 import com.driftdirect.dto.round.track.TrackCreateDto;
 import com.driftdirect.dto.user.UserCreateDTO;
+import com.driftdirect.mapper.CountryMapper;
 import com.driftdirect.repository.*;
 import com.driftdirect.repository.championship.ChampionshipRepository;
 import com.driftdirect.repository.championship.driver.DriverParticipationRepository;
@@ -190,7 +191,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         if (picture != null) {
             person.setProfilePicture(picture.getId());
         }
-        person.setCountry(c.getId());
+        person.setCountry(CountryMapper.map(c));
         person.setPersonType(personType.name());
         user.setPerson(person);
         return userService.createFromDto(user);
@@ -389,6 +390,12 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         c.setName("Romania");
         c.setFlag(fRom);
         c = countryRepository.save(c);
+
+        Country c2 = new Country();
+        c2.setName("New Zeeland");
+        c2.setFlag(fRom);
+        c2 = countryRepository.save(c2);
+
         demon = createSponsor("Demon", "Most rad energy drink", "http://www.demonenergy.co.nz/", saveFile("/img/demon.jpg"));
         raceTech = createSponsor("RaceTech", "Race innovators", "http://racetech.co.nz/shop/index.php?route=common/home", saveFile("/img/racetech.jpg"));
 

@@ -49,6 +49,7 @@ public class RestUrls {
 
     public static final String FILE = "/file";
     public static final String FILE_ID = "/file/{id}";
+    public static final String FILE_ID_NAME = "/file/{id}/name";
 
     public static final String COUNTRY = "/country";
 

@@ -1,5 +1,6 @@
 package com.driftdirect.dto.person;
 
+import com.driftdirect.domain.person.PersonType;
 import com.driftdirect.dto.country.CountryShowDto;
 import com.driftdirect.dto.person.driver.DriverDetailsDto;
 import org.joda.time.DateTime;
@@ -20,6 +21,7 @@ public class PersonFullDto {
     private Long profilePicture;
     private DateTime birthDate;
     private DriverDetailsDto driverDetails;
+    private PersonType personType;
 
     public long getId() {
         return id;
@@ -115,5 +117,13 @@ public class PersonFullDto {
 
     public void setBirthDate(DateTime birthDate) {
         this.birthDate = birthDate;
+    }
+
+    public PersonType getPersonType() {
+        return personType;
+    }
+
+    public void setPersonType(PersonType personType) {
+        this.personType = personType;
     }
 }

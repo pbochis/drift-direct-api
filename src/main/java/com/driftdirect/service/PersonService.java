@@ -46,10 +46,19 @@ public class PersonService {
 
     public Person createFromDto(PersonCreateDto dto){
         Person p = new Person();
+        mapPersonData(p, dto);
+        if (p.getPersonType() == PersonType.Driver) {
+            DriverDetails driverDetails = new DriverDetails();
+            p.setDriverDetails(mapAndSaveDriverDetails(driverDetails, dto.getDriverDetails()));
+        }
+        return personRepository.save(p);
+    }
+
+    private void mapPersonData(Person p, PersonCreateDto dto) {
         p.setFirstName(dto.getFirstName());
         p.setLastName(dto.getLastName());
         if (dto.getCountry() != null){
-            p.setCountry(countryRepository.findOne(dto.getCountry()));
+            p.setCountry(countryRepository.findOne(dto.getCountry().getId()));
         }
         p.setNick(dto.getNick());
         p.setBirthDate(dto.getBirthDate());
@@ -57,18 +66,14 @@ public class PersonService {
         p.setCareerStartDate(dto.getCareerStartDate());
         p.setDescription(dto.getDescription());
         p.setPortfolio(dto.getPortfolio());
+        p.setWebsite(dto.getWebsite());
         p.setPersonType(PersonType.valueOf(dto.getPersonType()));
         if (dto.getProfilePicture() != null){
             p.setProfilePicture(fileRepository.findOne(dto.getProfilePicture()));
         }
-        if (p.getPersonType() == PersonType.Driver){
-            p.setDriverDetails(createDriverDetails(dto.getDriverDetails()));
-        }
-        return personRepository.save(p);
     }
 
-    private DriverDetails createDriverDetails(DriverDetailsCreateDto dto){
-        DriverDetails driverDetails = new DriverDetails();
+    private DriverDetails mapAndSaveDriverDetails(DriverDetails driverDetails, DriverDetailsCreateDto dto) {
         if (dto.getTeam() != null){
             Team team = teamRepository.findOne(dto.getTeam());
             driverDetails.setTeam(team);
@@ -86,14 +91,11 @@ public class PersonService {
 
     public void updatePerson(PersonUpdateDto dto){
         Person person = personRepository.findOne(dto.getId());
-        person.setFirstName(dto.getFirstName());
-        person.setLastName(dto.getLastName());
-        person.setTelephone(dto.getTelephone());
-        person.setCountry(countryRepository.findOne(dto.getCountry()));
-        person.setCareerStartDate(dto.getCareerStartDate());
-        person.setPortfolio(dto.getPortfolio());
-        person.setDescription(dto.getDescription());
-        person.setPersonType(PersonType.valueOf(dto.getPersonType()));
+        mapPersonData(person, dto);
+        if (person.getPersonType() == PersonType.Driver) {
+            DriverDetails driverDetails = person.getDriverDetails() != null ? person.getDriverDetails() : new DriverDetails();
+            person.setDriverDetails(mapAndSaveDriverDetails(driverDetails, dto.getDriverDetails()));
+        }
         personRepository.save(person);
     }
 

@@ -42,6 +42,16 @@ public class FileController {
         return dbi;
     }
 
+    @RequestMapping(path = RestUrls.FILE_ID_NAME, method = RequestMethod.GET)
+    public ResponseEntity<String> fileName(@PathVariable Long id) {
+        File f = fileRepository.findOne(id);
+        if (f != null) {
+            return new ResponseEntity<String>(f.getName(), HttpStatus.OK);
+        }
+        return new ResponseEntity<String>(HttpStatus.OK);
+    }
+
+
     @RequestMapping(path = RestUrls.FILE, method = RequestMethod.POST)
     public ResponseEntity<Long> uploadFile(@RequestBody MultipartFile file) {
         try {

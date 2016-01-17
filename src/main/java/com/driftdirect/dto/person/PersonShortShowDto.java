@@ -1,5 +1,6 @@
 package com.driftdirect.dto.person;
 
+import com.driftdirect.domain.person.PersonType;
 import com.driftdirect.dto.person.driver.DriverDetailsShortShowDto;
 import org.joda.time.DateTime;
 
@@ -16,6 +17,7 @@ public class PersonShortShowDto {
     private String description;
     private Long profilePicture;
     private Long country;
+    private PersonType personType;
 
     private DriverDetailsShortShowDto driverDetails;
 
@@ -89,5 +91,13 @@ public class PersonShortShowDto {
 
     public void setCountry(Long country) {
         this.country = country;
+    }
+
+    public PersonType getPersonType() {
+        return personType;
+    }
+
+    public void setPersonType(PersonType personType) {
+        this.personType = personType;
     }
 }
