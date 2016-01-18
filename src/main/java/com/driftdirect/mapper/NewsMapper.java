@@ -11,7 +11,9 @@ public class NewsMapper {
     public static NewsShowDto map(News news) {
         NewsShowDto dto = new NewsShowDto();
         dto.setId(news.getId());
-        dto.setLogo(news.getLogo().getId());
+        if (news.getLogo() != null) {
+            dto.setLogo(news.getLogo().getId());
+        }
         dto.setName(news.getName());
         dto.setDescription(news.getDescription());
         dto.setUrl(news.getUrl());

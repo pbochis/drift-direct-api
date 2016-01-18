@@ -4,13 +4,17 @@ import com.driftdirect.domain.driver.DriverDetails;
 import com.driftdirect.domain.driver.Team;
 import com.driftdirect.domain.person.Person;
 import com.driftdirect.domain.person.PersonType;
+import com.driftdirect.domain.sponsor.Sponsor;
 import com.driftdirect.dto.person.*;
+import com.driftdirect.dto.sponsor.SponsorShowDto;
 import com.driftdirect.mapper.PersonMapper;
 import com.driftdirect.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -23,14 +27,16 @@ public class PersonService {
     private DriverDetailsRepository driverDetailsRepository;
     private TeamRepository teamRepository;
     private FileRepository fileRepository;
+    private SponsorRepository sponsorRepository;
 
     @Autowired
-    public PersonService(PersonRepository personRepository, FileRepository fileRepository, CountryRepository countryRepository, TeamRepository teamRepository, DriverDetailsRepository driverDetailsRepository) {
+    public PersonService(PersonRepository personRepository, SponsorRepository sponsorRepository, FileRepository fileRepository, CountryRepository countryRepository, TeamRepository teamRepository, DriverDetailsRepository driverDetailsRepository) {
         this.personRepository = personRepository;
         this.countryRepository = countryRepository;
         this.teamRepository = teamRepository;
         this.driverDetailsRepository = driverDetailsRepository;
         this.fileRepository = fileRepository;
+        this.sponsorRepository = sponsorRepository;
     }
     public List<PersonShortShowDto> findAll(){
         return personRepository.findAll().stream().map(PersonMapper::mapShort).collect(Collectors.toList());
@@ -46,10 +52,19 @@ public class PersonService {
 
     public Person createFromDto(PersonCreateDto dto){
         Person p = new Person();
+        mapPersonData(p, dto);
+        if (p.getPersonType() == PersonType.Driver) {
+            DriverDetails driverDetails = new DriverDetails();
+            p.setDriverDetails(mapAndSaveDriverDetails(driverDetails, dto.getDriverDetails()));
+        }
+        return personRepository.save(p);
+    }
+
+    private void mapPersonData(Person p, PersonCreateDto dto) {
         p.setFirstName(dto.getFirstName());
         p.setLastName(dto.getLastName());
         if (dto.getCountry() != null){
-            p.setCountry(countryRepository.findOne(dto.getCountry()));
+            p.setCountry(countryRepository.findOne(dto.getCountry().getId()));
         }
         p.setNick(dto.getNick());
         p.setBirthDate(dto.getBirthDate());
@@ -57,18 +72,14 @@ public class PersonService {
         p.setCareerStartDate(dto.getCareerStartDate());
         p.setDescription(dto.getDescription());
         p.setPortfolio(dto.getPortfolio());
+        p.setWebsite(dto.getWebsite());
         p.setPersonType(PersonType.valueOf(dto.getPersonType()));
         if (dto.getProfilePicture() != null){
             p.setProfilePicture(fileRepository.findOne(dto.getProfilePicture()));
         }
-        if (p.getPersonType() == PersonType.Driver){
-            p.setDriverDetails(createDriverDetails(dto.getDriverDetails()));
-        }
-        return personRepository.save(p);
     }
 
-    private DriverDetails createDriverDetails(DriverDetailsCreateDto dto){
-        DriverDetails driverDetails = new DriverDetails();
+    private DriverDetails mapAndSaveDriverDetails(DriverDetails driverDetails, DriverDetailsCreateDto dto) {
         if (dto.getTeam() != null){
             Team team = teamRepository.findOne(dto.getTeam());
             driverDetails.setTeam(team);
@@ -81,19 +92,23 @@ public class PersonService {
         driverDetails.setWheels(dto.getWheels());
         driverDetails.setTires(dto.getTires());
         driverDetails.setOther(dto.getOther());
+        Set<Sponsor> sponsors = new HashSet<>();
+        if (dto.getSponsors() != null) {
+            for (SponsorShowDto sponsorDto : dto.getSponsors()) {
+                sponsors.add(sponsorRepository.findOne(sponsorDto.getId()));
+            }
+            driverDetails.setSponsors(sponsors);
+        }
         return driverDetailsRepository.save(driverDetails);
     }
 
     public void updatePerson(PersonUpdateDto dto){
         Person person = personRepository.findOne(dto.getId());
-        person.setFirstName(dto.getFirstName());
-        person.setLastName(dto.getLastName());
-        person.setTelephone(dto.getTelephone());
-        person.setCountry(countryRepository.findOne(dto.getCountry()));
-        person.setCareerStartDate(dto.getCareerStartDate());
-        person.setPortfolio(dto.getPortfolio());
-        person.setDescription(dto.getDescription());
-        person.setPersonType(PersonType.valueOf(dto.getPersonType()));
+        mapPersonData(person, dto);
+        if (person.getPersonType() == PersonType.Driver) {
+            DriverDetails driverDetails = person.getDriverDetails() != null ? person.getDriverDetails() : new DriverDetails();
+            person.setDriverDetails(mapAndSaveDriverDetails(driverDetails, dto.getDriverDetails()));
+        }
         personRepository.save(person);
     }
 

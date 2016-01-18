@@ -1,5 +1,9 @@
 package com.driftdirect.dto.person;
 
+import com.driftdirect.dto.sponsor.SponsorShowDto;
+
+import java.util.List;
+
 /**
  * Created by Paul on 11/23/2015.
  */
@@ -13,6 +17,7 @@ public class DriverDetailsCreateDto {
     private String tires;
     private String other;
     private Long team;
+    private List<SponsorShowDto> sponsors;
 
     public String getMake() {
         return make;
@@ -84,5 +89,13 @@ public class DriverDetailsCreateDto {
 
     public void setTeam(Long team) {
         this.team = team;
+    }
+
+    public List<SponsorShowDto> getSponsors() {
+        return sponsors;
+    }
+
+    public void setSponsors(List<SponsorShowDto> sponsors) {
+        this.sponsors = sponsors;
     }
 }

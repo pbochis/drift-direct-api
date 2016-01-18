@@ -42,6 +42,7 @@ import com.driftdirect.dto.round.qualifier.run.AwardedPointsCreateDto;
 import com.driftdirect.dto.round.qualifier.run.RunJudgingCreateDto;
 import com.driftdirect.dto.round.track.TrackCreateDto;
 import com.driftdirect.dto.user.UserCreateDTO;
+import com.driftdirect.mapper.CountryMapper;
 import com.driftdirect.repository.*;
 import com.driftdirect.repository.championship.ChampionshipRepository;
 import com.driftdirect.repository.championship.driver.DriverParticipationRepository;
@@ -96,6 +97,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
     Role orgRole;
     Role judgeRole;
     List<CommentCreateDto> someComments = new ArrayList<>();
+    Set<Sponsor> sponsors = new HashSet<>();
     private Environment environment;
     private ConfigSettingRepository configSettingRepository;
     private RoleRepository roleRepository;
@@ -128,7 +130,6 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
     private CommentRepository commentRepository;
     @Autowired
     private PlayoffService playoffService;
-
     @Autowired
     private ChampionshipService championshipService;
 
@@ -177,7 +178,6 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         }
     }
 
-
     private User createUser(Role role, String email, String password, String username, String firstName, String lastName, PersonType personType, File picture) throws IOException, MessagingException {
         UserCreateDTO user = new UserCreateDTO();
         user.setRole(role.getId());
@@ -190,7 +190,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         if (picture != null) {
             person.setProfilePicture(picture.getId());
         }
-        person.setCountry(c.getId());
+        person.setCountry(CountryMapper.map(c));
         person.setPersonType(personType.name());
         user.setPerson(person);
         return userService.createFromDto(user);
@@ -389,12 +389,20 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         c.setName("Romania");
         c.setFlag(fRom);
         c = countryRepository.save(c);
+
+        Country c2 = new Country();
+        c2.setName("New Zeeland");
+        c2.setFlag(fRom);
+        c2 = countryRepository.save(c2);
+
         demon = createSponsor("Demon", "Most rad energy drink", "http://www.demonenergy.co.nz/", saveFile("/img/demon.jpg"));
         raceTech = createSponsor("RaceTech", "Race innovators", "http://racetech.co.nz/shop/index.php?route=common/home", saveFile("/img/racetech.jpg"));
 
+        sponsors.add(demon);
+        sponsors.add(raceTech);
+
         t = new Team();
         t.setName("Team 1");
-        t.setSponsors(new HashSet<>(Arrays.asList(demon)));
         t = teamRepository.save(t);
     }
 
@@ -418,8 +426,8 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         rules.setVideoUrl("http://www.youtube.com");
         c.setRules(rules);
         c.setOrganizer(organizer.getPerson());
-        c.addNews(createNews("FANGA DAN WINS FIRST MANFEILD DRIFTING TITLE", "A shocking outcome", "http://d1nz.com/d1nz-news/309-fanga-dan-wins-first-manfeild-drifting-title", backgroundImage));
-        c.addNews(createNews("D1 PRO-SPORT: BLAIR GRIBBLE-BOWRING WINS ON DEBUT", "at Manfeild Raceway in Feilding", "http://d1nz.com/d1nz-news/308-d1-pro-sport-blair-gribble-bowring-wins-on-debut", backgroundImage));
+        c.addNews(createNews("FANGA DAN WINS FIRST MANFEILD DRIFTING TITLE", "A shocking outcome", "http://www.d1nz.com/d1nz-news/309-fanga-dan-wins-first-manfeild-drifting-title", backgroundImage));
+        c.addNews(createNews("D1 PRO-SPORT: BLAIR GRIBBLE-BOWRING WINS ON DEBUT", "at Manfeild Raceway in Feilding", "http://www.d1nz.com/d1nz-news/308-d1-pro-sport-blair-gribble-bowring-wins-on-debut", backgroundImage));
         c.addNews(createNews("WHITTAKER TOPS QUALIFYING AT MANFEILD - DEMON D1NZ ROUND 1 2015", "sponsored by redbull", "http://d1nz.com/d1nz-news/307-whittaker-tops-qualifying-at-manfeild-r1-2015", backgroundImage));
         if (sponsors != null)
             for (Sponsor sponsor : sponsors) {
@@ -453,7 +461,10 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         r.setTicketsUrl(ticketsUrl);
         r.setLiveStream(liveStream);
         r = roundRepository.save(r);
-        createSchedule(r, "Registration", new DateTime(year, month, 1, 10, 0), new DateTime(year, month, 1, 10, 0));
+        createSchedule(r, "Registration", new DateTime(year, month, 1, 10, 0), new DateTime(year, month, 1, 11, 0));
+        createSchedule(r, "Registration", new DateTime(year, month, 1, 12, 0), new DateTime(year, month, 1, 13, 0));
+        createSchedule(r, "Registration", new DateTime(year, month, 1, 14, 0), new DateTime(year, month, 1, 15, 0));
+        createSchedule(r, "Registration", new DateTime(year, month, 1, 16, 0), new DateTime(year, month, 1, 17, 0));
         createSchedule(r, "Qualifications", new DateTime(year, month, 2, 10, 0), new DateTime(year, month, 2, 20, 0));
         createSchedule(r, "Playoff", new DateTime(year, month, 3, 10, 0), new DateTime(year, month, 3, 20, 0));
         return r;
@@ -490,6 +501,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         d.setSuspensionMods("43");
         d.setHorsePower(1200);
         d.setTeam(t);
+        d.setSponsors(sponsors);
         d = driverDetailsRepository.save(d);
         Person p = createPerson(name, "A newcommer to the scene, Florin has managed to climb to the top of the charts in a record time. It's a pleasure watching him slide on the road", picture, PersonType.Driver);
         p.setDriverDetails(d);
@@ -584,12 +596,12 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
             qualifiers.add(qualifierService.registerDriver(r1.getId(), p.getId()));
 
         }
-        for (Qualifier qualifier: qualifiers){
-            for (JudgeParticipation jp : c1.getJudges()) {
-                submitRunJudging(qualifier, qualifier.getFirstRun().getId(), jp);
-                submitRunJudging(qualifier, qualifier.getSecondRun().getId(), jp);
-            }
-        }
+//        for (Qualifier qualifier: qualifiers){
+//            for (JudgeParticipation jp : c1.getJudges()) {
+//                submitRunJudging(qualifier, qualifier.getFirstRun().getId(), jp);
+//                submitRunJudging(qualifier, qualifier.getSecondRun().getId(), jp);
+//            }
+//        }
 
         List<Person> judges = c1.getJudges().stream().map(e -> e.getJudge()).collect(Collectors.toList());
 //        roundService.finishQualifiers(r1.getId());

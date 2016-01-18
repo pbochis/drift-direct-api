@@ -16,7 +16,9 @@ public class SponsorMapper {
         dto.setName(sponsor.getName());
         dto.setDescription(sponsor.getDescription());
         dto.setUrl(sponsor.getUrl());
-        dto.setLogo(sponsor.getLogo().getId());
+        if (sponsor.getLogo() != null) {
+            dto.setLogo(sponsor.getLogo().getId());
+        }
         return dto;
     }
 

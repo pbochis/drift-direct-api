@@ -8,7 +8,7 @@ import java.util.List;
 public class RunFullDto {
     private Long id;
     private float entrySpeed;
-    private int totalPoints;
+    private float totalPoints;
 
     private List<RunJudgingDto> judgings;
 
@@ -28,11 +28,11 @@ public class RunFullDto {
         this.entrySpeed = entrySpeed;
     }
 
-    public int getTotalPoints() {
+    public float getTotalPoints() {
         return totalPoints;
     }
 
-    public void setTotalPoints(int totalPoints) {
+    public void setTotalPoints(float totalPoints) {
         this.totalPoints = totalPoints;
     }
 

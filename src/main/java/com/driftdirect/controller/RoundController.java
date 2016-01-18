@@ -105,7 +105,6 @@ public class RoundController {
         }
         return new ResponseEntity(HttpStatus.OK);
     }
-
     @RequestMapping(path = RestUrls.ROUND_ID_PLAYOFF, method = RequestMethod.GET)
     public ResponseEntity<PlayoffTreeGraphicDisplayDto> getRoundPlayoffs(@PathVariable Long id,
                                                                          @AuthenticationPrincipal User currentUser) {

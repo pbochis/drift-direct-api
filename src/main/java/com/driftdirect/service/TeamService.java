@@ -1,7 +1,6 @@
 package com.driftdirect.service;
 
 import com.driftdirect.domain.driver.Team;
-import com.driftdirect.domain.sponsor.Sponsor;
 import com.driftdirect.dto.team.TeamCreateDto;
 import com.driftdirect.dto.team.TeamShowDto;
 import com.driftdirect.dto.team.TeamUpdateDto;
@@ -12,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -33,19 +31,13 @@ public class TeamService {
     public void createFromDto(TeamCreateDto dto){
         Team team = new Team();
         team.setName(dto.getName());
-        for (Long sponsorId: dto.getSponsors()){
-            team.addSponsor(sponsorRepository.findOne(sponsorId));
-        }
         teamRepository.save(team);
     }
 
     public void update(TeamUpdateDto dto){
         Team team = teamRepository.findOne(dto.getId());
         team.setName(dto.getName());
-        team.setSponsors(Collections.emptySet());
-        for (Long sponsorId: dto.getSponsors()){
-            team.addSponsor(sponsorRepository.findOne(sponsorId));
-        }
+        teamRepository.save(team);
     }
 
     public List<TeamShowDto> findAll(){

@@ -8,10 +8,10 @@ import com.driftdirect.dto.person.PersonShortShowDto;
 public class QualifierShortDto {
     private Long id;
     private PersonShortShowDto driver;
-    private Integer points;
+    private Float points;
 
-    private Integer firstRunScore;
-    private Integer secondRunScore;
+    private Float firstRunScore;
+    private Float secondRunScore;
 
     public Long getId() {
         return id;
@@ -29,27 +29,27 @@ public class QualifierShortDto {
         this.driver = driver;
     }
 
-    public Integer getPoints() {
+    public Float getPoints() {
         return points;
     }
 
-    public void setPoints(Integer points) {
+    public void setPoints(Float points) {
         this.points = points;
     }
 
-    public Integer getFirstRunScore() {
+    public Float getFirstRunScore() {
         return firstRunScore;
     }
 
-    public void setFirstRunScore(Integer firstRunScore) {
+    public void setFirstRunScore(Float firstRunScore) {
         this.firstRunScore = firstRunScore;
     }
 
-    public Integer getSecondRunScore() {
+    public Float getSecondRunScore() {
         return secondRunScore;
     }
 
-    public void setSecondRunScore(Integer secondRunScore) {
+    public void setSecondRunScore(Float secondRunScore) {
         this.secondRunScore = secondRunScore;
     }
 }

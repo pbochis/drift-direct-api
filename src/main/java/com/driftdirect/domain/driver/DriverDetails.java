@@ -1,6 +1,10 @@
 package com.driftdirect.domain.driver;
 
+import com.driftdirect.domain.sponsor.Sponsor;
+
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by Paul on 11/20/2015.
@@ -26,6 +30,14 @@ public class DriverDetails {
 
     @ManyToOne
     private Team team;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "driver_sponsor",
+            joinColumns = {@JoinColumn(name = "driver_id")},
+            inverseJoinColumns = {@JoinColumn(name = "sponsor_id")}
+    )
+    private Set<Sponsor> sponsors = new HashSet<>();
 
     public long getId() {
         return id;
@@ -113,5 +125,18 @@ public class DriverDetails {
 
     public void setHorsePower(int horsePower) {
         this.horsePower = horsePower;
+    }
+
+    public Set<Sponsor> getSponsors() {
+        return sponsors;
+    }
+
+    public void setSponsors(Set<Sponsor> sponsors) {
+        this.sponsors.clear();
+        this.sponsors.addAll(sponsors);
+    }
+
+    public void addSponsor(Sponsor sponsor) {
+        sponsors.add(sponsor);
     }
 }

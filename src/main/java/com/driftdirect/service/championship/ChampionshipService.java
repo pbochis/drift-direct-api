@@ -138,7 +138,10 @@ public class ChampionshipService{
         news.setName(newsDto.getName());
         news.setDescription(newsDto.getDescrption());
         news.setUrl(newsDto.getUrl());
-        news.setLogo(fileRepository.findOne(newsDto.getLogo()));
+        if (newsDto.getLogo() != null) {
+
+            news.setLogo(fileRepository.findOne(newsDto.getLogo()));
+        }
         Championship c = championshipRepository.findOne(championshipId);
         c.addNews(news);
         championshipRepository.save(c);

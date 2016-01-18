@@ -16,8 +16,6 @@ public class RestUrls {
 
     public static final String ROUND = "/round";
     public static final String ROUND_ID = "/round/{id}";
-    public static final String ROUND_ID_SHCEDULE = "/round/{id}/schedule";
-    public static final String ROUND_ID_TRACK = "/round/{id}/track";
     public static final String ROUND_ID_REGISTER = "/round/{roundId}/register/{driverId}";
     public static final String ROUND_ID_REGISTER_DESK = "/round/{id}/desk";
     public static final String ROUND_ID_PLAYOFF_START = "/round/{id}/playoff/start";
@@ -49,6 +47,7 @@ public class RestUrls {
 
     public static final String FILE = "/file";
     public static final String FILE_ID = "/file/{id}";
+    public static final String FILE_ID_NAME = "/file/{id}/name";
 
     public static final String COUNTRY = "/country";
 

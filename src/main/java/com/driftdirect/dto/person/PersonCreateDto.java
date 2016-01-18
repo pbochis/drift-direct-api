@@ -1,5 +1,6 @@
 package com.driftdirect.dto.person;
 
+import com.driftdirect.dto.country.CountryShowDto;
 import org.joda.time.DateTime;
 
 /**
@@ -10,12 +11,13 @@ public class PersonCreateDto {
     private String lastName;
     private String telephone;
     private Long profilePicture;
-    private Long country;
+    private CountryShowDto country;
     private DateTime birthDate;
     private DateTime careerStartDate;
     private String portfolio;
     private String description;
     private String nick;
+    private String website;
 
     private String personType;
 
@@ -53,11 +55,11 @@ public class PersonCreateDto {
         this.telephone = telephone;
     }
 
-    public Long getCountry() {
+    public CountryShowDto getCountry() {
         return country;
     }
 
-    public void setCountry(Long country) {
+    public void setCountry(CountryShowDto country) {
         this.country = country;
     }
 
@@ -115,5 +117,13 @@ public class PersonCreateDto {
 
     public void setBirthDate(DateTime birthDate) {
         this.birthDate = birthDate;
+    }
+
+    public String getWebsite() {
+        return website;
+    }
+
+    public void setWebsite(String website) {
+        this.website = website;
     }
 }

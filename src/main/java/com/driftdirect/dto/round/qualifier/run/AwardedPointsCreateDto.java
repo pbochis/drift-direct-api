@@ -5,7 +5,7 @@ package com.driftdirect.dto.round.qualifier.run;
  */
 public class AwardedPointsCreateDto {
     private Long pointsAllocation;
-    private int awardedPoints;
+    private float awardedPoints;
 
     public Long getPointsAllocation() {
         return pointsAllocation;
@@ -15,11 +15,11 @@ public class AwardedPointsCreateDto {
         this.pointsAllocation = pointsAllocation;
     }
 
-    public int getAwardedPoints() {
+    public float getAwardedPoints() {
         return awardedPoints;
     }
 
-    public void setAwardedPoints(int awardedPoints) {
+    public void setAwardedPoints(float awardedPoints) {
         this.awardedPoints = awardedPoints;
     }
 }
