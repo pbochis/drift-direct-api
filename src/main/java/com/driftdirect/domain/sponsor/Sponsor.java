@@ -3,7 +3,6 @@ package com.driftdirect.domain.sponsor;
 import com.driftdirect.domain.file.File;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 
 /**
  * Created by Paul on 11/26/2015.
@@ -15,11 +14,11 @@ public class Sponsor {
     private Long id;
 
     private String name;
+    @Lob
     private String description;
     private String url;
 
     @OneToOne
-    @NotNull
     private File logo;
 
     public Long getId() {

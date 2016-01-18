@@ -1,6 +1,10 @@
 package com.driftdirect.dto.person.driver;
 
+import com.driftdirect.dto.sponsor.SponsorShowDto;
 import com.driftdirect.dto.team.TeamShowDto;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Paul on 11/30/2015.
@@ -17,6 +21,7 @@ public class DriverDetailsDto {
     private String other;
     private int horsePower;
     private TeamShowDto team;
+    private List<SponsorShowDto> sponsors = new ArrayList<>();
 
     public long getId() {
         return id;
@@ -104,5 +109,17 @@ public class DriverDetailsDto {
 
     public void setHorsePower(int horsePower) {
         this.horsePower = horsePower;
+    }
+
+    public List<SponsorShowDto> getSponsors() {
+        return sponsors;
+    }
+
+    public void setSponsors(List<SponsorShowDto> sponsors) {
+        this.sponsors = sponsors;
+    }
+
+    public void addSponsor(SponsorShowDto sponsorShowDto) {
+        this.sponsors.add(sponsorShowDto);
     }
 }

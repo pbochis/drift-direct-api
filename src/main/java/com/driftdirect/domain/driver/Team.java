@@ -1,24 +1,16 @@
 package com.driftdirect.domain.driver;
 
-import com.driftdirect.domain.sponsor.Sponsor;
-
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Created by Paul on 11/20/2015.
  */
 @Entity
 public class Team {
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "team_sponsor",
-            joinColumns = {@JoinColumn(name = "team_id")},
-            inverseJoinColumns = {@JoinColumn(name = "sponsor_id")}
-    )
-    Set<Sponsor> sponsors;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -39,20 +31,5 @@ public class Team {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Set<Sponsor> getSponsors() {
-        return sponsors;
-    }
-
-    public void setSponsors(Set<Sponsor> sponsors) {
-        this.sponsors = sponsors;
-    }
-
-    public void addSponsor(Sponsor sponsor){
-        if (sponsors == null){
-            sponsors = new HashSet<>();
-        }
-        sponsors.add(sponsor);
     }
 }

@@ -33,7 +33,9 @@ public class SponsorService {
         sponsor.setName(dto.getName());
         sponsor.setDescription(dto.getDescription());
         sponsor.setUrl(dto.getUrl());
-        sponsor.setLogo(fileRepository.findOne(dto.getLogo()));
+        if (dto.getLogo() != null) {
+            sponsor.setLogo(fileRepository.findOne(dto.getLogo()));
+        }
         sponsorRepository.save(sponsor);
     }
 

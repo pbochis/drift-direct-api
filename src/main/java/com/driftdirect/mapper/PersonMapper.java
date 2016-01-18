@@ -1,6 +1,7 @@
 package com.driftdirect.mapper;
 
 import com.driftdirect.domain.person.Person;
+import com.driftdirect.domain.sponsor.Sponsor;
 import com.driftdirect.dto.person.PersonFullDto;
 import com.driftdirect.dto.person.PersonShortShowDto;
 import com.driftdirect.dto.person.driver.DriverDetailsDto;
@@ -33,6 +34,9 @@ public class PersonMapper {
             driverDetails.setHorsePower(person.getDriverDetails().getHorsePower());
             if (person.getDriverDetails().getTeam() != null){
                 driverDetails.setTeam(TeamMapper.map(person.getDriverDetails().getTeam()));
+            }
+            for (Sponsor sponsor : person.getDriverDetails().getSponsors()) {
+                driverDetails.addSponsor(SponsorMapper.map(sponsor));
             }
             dto.setDriverDetails(driverDetails);
         }
@@ -68,6 +72,9 @@ public class PersonMapper {
             details.setOther(p.getDriverDetails().getOther());
             if (details.getTeam() != null) {
                 details.setTeam(TeamMapper.map(p.getDriverDetails().getTeam()));
+            }
+            for (Sponsor sponsor : p.getDriverDetails().getSponsors()) {
+                details.addSponsor(SponsorMapper.map(sponsor));
             }
             details.setHorsePower(p.getDriverDetails().getHorsePower());
             dto.setDriverDetails(details);

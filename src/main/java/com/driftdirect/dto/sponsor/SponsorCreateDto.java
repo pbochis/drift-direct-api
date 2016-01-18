@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
  */
 public class SponsorCreateDto {
     @NotNull
-    @Length(min=4, max = 50)
+    @Length(max = 50)
     private String name;
     private String description;
     private String url;

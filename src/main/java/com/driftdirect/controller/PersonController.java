@@ -49,7 +49,6 @@ public class PersonController {
 
     @RequestMapping(path = RestUrls.PERSON_ID, method = RequestMethod.GET)
     public ResponseEntity<PersonFullDto> getPerson(@PathVariable("id") Long id) {
-        System.out.println("********************9");
         return new ResponseEntity<>(personService.findPerson(id), HttpStatus.OK);
     }
 

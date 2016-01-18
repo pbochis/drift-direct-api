@@ -1,7 +1,6 @@
 package com.driftdirect.mapper;
 
 import com.driftdirect.domain.driver.Team;
-import com.driftdirect.domain.sponsor.Sponsor;
 import com.driftdirect.dto.team.TeamShowDto;
 
 import java.util.List;
@@ -15,9 +14,6 @@ public class TeamMapper {
         TeamShowDto dto = new TeamShowDto();
         dto.setName(team.getName());
         dto.setId(team.getId());
-        for (Sponsor sponsor: team.getSponsors()){
-            dto.addSponsor(SponsorMapper.map(sponsor));
-        }
         return dto;
     }
 

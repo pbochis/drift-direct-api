@@ -4,13 +4,17 @@ import com.driftdirect.domain.driver.DriverDetails;
 import com.driftdirect.domain.driver.Team;
 import com.driftdirect.domain.person.Person;
 import com.driftdirect.domain.person.PersonType;
+import com.driftdirect.domain.sponsor.Sponsor;
 import com.driftdirect.dto.person.*;
+import com.driftdirect.dto.sponsor.SponsorShowDto;
 import com.driftdirect.mapper.PersonMapper;
 import com.driftdirect.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -23,14 +27,16 @@ public class PersonService {
     private DriverDetailsRepository driverDetailsRepository;
     private TeamRepository teamRepository;
     private FileRepository fileRepository;
+    private SponsorRepository sponsorRepository;
 
     @Autowired
-    public PersonService(PersonRepository personRepository, FileRepository fileRepository, CountryRepository countryRepository, TeamRepository teamRepository, DriverDetailsRepository driverDetailsRepository) {
+    public PersonService(PersonRepository personRepository, SponsorRepository sponsorRepository, FileRepository fileRepository, CountryRepository countryRepository, TeamRepository teamRepository, DriverDetailsRepository driverDetailsRepository) {
         this.personRepository = personRepository;
         this.countryRepository = countryRepository;
         this.teamRepository = teamRepository;
         this.driverDetailsRepository = driverDetailsRepository;
         this.fileRepository = fileRepository;
+        this.sponsorRepository = sponsorRepository;
     }
     public List<PersonShortShowDto> findAll(){
         return personRepository.findAll().stream().map(PersonMapper::mapShort).collect(Collectors.toList());
@@ -86,6 +92,13 @@ public class PersonService {
         driverDetails.setWheels(dto.getWheels());
         driverDetails.setTires(dto.getTires());
         driverDetails.setOther(dto.getOther());
+        Set<Sponsor> sponsors = new HashSet<>();
+        if (dto.getSponsors() != null) {
+            for (SponsorShowDto sponsorDto : dto.getSponsors()) {
+                sponsors.add(sponsorRepository.findOne(sponsorDto.getId()));
+            }
+            driverDetails.setSponsors(sponsors);
+        }
         return driverDetailsRepository.save(driverDetails);
     }
 
