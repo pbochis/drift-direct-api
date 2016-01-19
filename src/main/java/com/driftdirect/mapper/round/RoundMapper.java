@@ -3,6 +3,7 @@ package com.driftdirect.mapper.round;
 import com.driftdirect.domain.round.Round;
 import com.driftdirect.domain.round.RoundDriverResult;
 import com.driftdirect.domain.round.RoundScheduleEntry;
+import com.driftdirect.domain.round.qualifiers.Qualifier;
 import com.driftdirect.dto.round.*;
 import com.driftdirect.dto.round.qualifier.QualifierShortDto;
 import com.driftdirect.dto.round.track.TrackDto;
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
  * Created by Paul on 11/18/2015.
  */
 public class RoundMapper {
-    public static RoundShowDto map(Round round){
+    public static RoundShowDto map(Round round, List<Qualifier> sortedQualifiers) {
         RoundShowDto dto = new RoundShowDto();
         dto.setId(round.getId());
         dto.setName(round.getName());
@@ -36,8 +37,7 @@ public class RoundMapper {
             track.setJudgingCriteria(round.getTrack().getJudgingCriteria());
             dto.setTrack(track);
         }
-
-        List<QualifierShortDto> qualifiers = QualifierMapper.mapShort(round.getQualifiers());
+        List<QualifierShortDto> qualifiers = QualifierMapper.mapShort(sortedQualifiers);
         dto.setQualifiers(qualifiers);
         return dto;
     }
@@ -71,9 +71,9 @@ public class RoundMapper {
     }
 
 
-    public static List<RoundShowDto> map(List<Round> rounds) {
-        return rounds.stream().map(e -> map(e)).collect(Collectors.toList());
-    }
+//    public static List<RoundShowDto> map(List<Round> rounds) {
+//        return rounds.stream().map(e -> map(e)).collect(Collectors.toList());
+//    }
 
     private static List<RoundScheduleEntryShowDto> mapSchedule(Set<RoundScheduleEntry> schedule) {
         return schedule.stream().map(e -> map(e)).collect(Collectors.toList());

@@ -10,7 +10,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "championship_driver_participation")
-public class DriverParticipation {
+public class DriverParticipation implements Comparable<DriverParticipation> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -54,5 +54,16 @@ public class DriverParticipation {
 
     public void setResults(DriverParticipationResults results) {
         this.results = results;
+    }
+
+    @Override
+    public int compareTo(DriverParticipation o) {
+        if (results == null) {
+            return o.getResults() == null ? 0 : -1;
+        }
+        if (o.getResults() == null) {
+            return 1;
+        }
+        return results.getTotalPoints().compareTo(o.getResults().getTotalPoints());
     }
 }
