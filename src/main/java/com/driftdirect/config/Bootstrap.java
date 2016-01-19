@@ -28,10 +28,8 @@ import com.driftdirect.domain.sponsor.Sponsor;
 import com.driftdirect.domain.user.Authorities;
 import com.driftdirect.domain.user.Role;
 import com.driftdirect.domain.user.User;
-import com.driftdirect.dto.championship.ChampionshipCreateDTO;
 import com.driftdirect.dto.championship.judge.JudgeParticipationCreateDto;
 import com.driftdirect.dto.championship.judge.PointsAllocationCreateDto;
-import com.driftdirect.dto.championship.rules.RulesCreateDto;
 import com.driftdirect.dto.comment.CommentCreateDto;
 import com.driftdirect.dto.person.PersonCreateDto;
 import com.driftdirect.dto.round.RoundCreateDto;
@@ -214,46 +212,46 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         User angleJudge = createUser(judgeRole, "email3@example.com", "driftdirect1234", "nickteeboon", "Nick", "Teeboon", PersonType.Judge, saveFile("/prod/angleJudge.png"));
         User styleJudge = createUser(judgeRole, "email4@example.com", "driftdirect1234", "kylejackways", "Kyle", "Jackways", PersonType.Judge, saveFile("/prod/styleJudge.png"));
 
-        ChampionshipCreateDTO championship = new ChampionshipCreateDTO();
-        championship.setName("D1NZ");
-        championship.setLogo(saveFile("/prod/nzLogo.png").getId());
-        championship.setBackgroundImage(saveFile("/prod/blackBackground.png").getId());
-        championship.setTicketsUrl("https://www.iticket.co.nz/Search?q=d1nz");
-
-        RulesCreateDto rules = new RulesCreateDto();
-        rules.setRules("https://drive.google.com/file/d/0B6T_MjB4NedAeWdxODJGYU8wblE/view?usp=sharing");
-        rules.setVideoUrl("https://www.youtube.com/watch?v=MseohDk4dqs");
-        championship.setRules(rules);
-        championship.addRound(productionRounds());
-
-        JudgeParticipationCreateDto judge1 = new JudgeParticipationCreateDto();
-        judge1.setJudgeType(JudgeType.LINE);
-        judge1.setJudge(lineJudge.getPerson().getId());
-        judge1.addPointsAllocation(createPointsAllocation("Line", 25));
-        judge1.addPointsAllocation(createPointsAllocation("Style", 10));
-
-        JudgeParticipationCreateDto judge2 = new JudgeParticipationCreateDto();
-        judge2.setJudgeType(JudgeType.ANGLE);
-        judge2.setJudge(angleJudge.getPerson().getId());
-        judge2.addPointsAllocation(createPointsAllocation("Angle", 25));
-        judge2.addPointsAllocation(createPointsAllocation("Style", 10));
-
-        JudgeParticipationCreateDto judge3 = new JudgeParticipationCreateDto();
-        judge3.setJudgeType(JudgeType.STYLE);
-        judge3.setJudge(styleJudge.getPerson().getId());
-        judge3.addPointsAllocation(createPointsAllocation("Impact", 10));
-        judge3.addPointsAllocation(createPointsAllocation("Commitment", 10));
-        judge3.addPointsAllocation(createPointsAllocation("Fluidity", 10));
-
-        championship.addJudge(judge1);
-        championship.addJudge(judge2);
-        championship.addJudge(judge3);
-
-        try {
-            championshipService.createFromDto(championship, organizer);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        ChampionshipCreateDTO championship = new ChampionshipCreateDTO();
+//        championship.setName("D1NZ");
+//        championship.setLogo(saveFile("/prod/nzLogo.png").getId());
+//        championship.setBackgroundImage(saveFile("/prod/blackBackground.png").getId());
+//        championship.setTicketsUrl("https://www.iticket.co.nz/Search?q=d1nz");
+//
+//        RulesCreateDto rules = new RulesCreateDto();
+//        rules.setRules("https://drive.google.com/file/d/0B6T_MjB4NedAeWdxODJGYU8wblE/view?usp=sharing");
+//        rules.setVideoUrl("https://www.youtube.com/watch?v=MseohDk4dqs");
+//        championship.setRules(rules);
+//        championship.addRound(productionRounds());
+//
+//        JudgeParticipationCreateDto judge1 = new JudgeParticipationCreateDto();
+//        judge1.setJudgeType(JudgeType.LINE);
+//        judge1.setJudge(lineJudge.getPerson().getId());
+//        judge1.addPointsAllocation(createPointsAllocation("Line", 25));
+//        judge1.addPointsAllocation(createPointsAllocation("Style", 10));
+//
+//        JudgeParticipationCreateDto judge2 = new JudgeParticipationCreateDto();
+//        judge2.setJudgeType(JudgeType.ANGLE);
+//        judge2.setJudge(angleJudge.getPerson().getId());
+//        judge2.addPointsAllocation(createPointsAllocation("Angle", 25));
+//        judge2.addPointsAllocation(createPointsAllocation("Style", 10));
+//
+//        JudgeParticipationCreateDto judge3 = new JudgeParticipationCreateDto();
+//        judge3.setJudgeType(JudgeType.STYLE);
+//        judge3.setJudge(styleJudge.getPerson().getId());
+//        judge3.addPointsAllocation(createPointsAllocation("Impact", 10));
+//        judge3.addPointsAllocation(createPointsAllocation("Commitment", 10));
+//        judge3.addPointsAllocation(createPointsAllocation("Fluidity", 10));
+//
+//        championship.addJudge(judge1);
+//        championship.addJudge(judge2);
+//        championship.addJudge(judge3);
+//
+//        try {
+//            championshipService.createFromDto(championship, organizer);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
     private PointsAllocationCreateDto createPointsAllocation(String name, int maxPoints) {
