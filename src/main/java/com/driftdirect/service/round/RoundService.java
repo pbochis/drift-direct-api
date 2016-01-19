@@ -1,6 +1,7 @@
 package com.driftdirect.service.round;
 
 import com.driftdirect.domain.championship.Championship;
+import com.driftdirect.domain.championship.driver.DriverParticipation;
 import com.driftdirect.domain.person.Person;
 import com.driftdirect.domain.round.Round;
 import com.driftdirect.domain.round.RoundDriverResult;
@@ -18,6 +19,7 @@ import com.driftdirect.mapper.PersonMapper;
 import com.driftdirect.mapper.round.RoundMapper;
 import com.driftdirect.mapper.round.playoff.PlayoffMapper;
 import com.driftdirect.repository.FileRepository;
+import com.driftdirect.repository.championship.driver.DriverParticipationRepository;
 import com.driftdirect.repository.round.RoundDriverResultRepository;
 import com.driftdirect.repository.round.RoundRepository;
 import com.driftdirect.repository.round.RoundScheduleRepository;
@@ -27,6 +29,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,18 +44,21 @@ public class RoundService {
     private FileRepository fileRepository;
     private RoundDriverResultRepository roundDriverResultRepository;
     private QualifiedDriverRepository qualifiedDriverRepository;
+    private DriverParticipationRepository driverParticipationRepository;
 
     @Autowired
     public RoundService(RoundDriverResultRepository roundDriverResultRepository,
                         RoundRepository roundRepository,
                         FileRepository fileRepository,
                         RoundScheduleRepository roundScheduleRepository,
-                        QualifiedDriverRepository qualifiedDriverRepository) {
+                        QualifiedDriverRepository qualifiedDriverRepository,
+                        DriverParticipationRepository driverParticipationRepository) {
         this.roundRepository = roundRepository;
         this.fileRepository = fileRepository;
         this.roundScheduleRepository = roundScheduleRepository;
         this.roundDriverResultRepository = roundDriverResultRepository;
         this.qualifiedDriverRepository = qualifiedDriverRepository;
+        this.driverParticipationRepository = driverParticipationRepository;
     }
 
     public Round createFromDto(Championship c, RoundCreateDto dto) {
@@ -132,7 +138,19 @@ public class RoundService {
     }
 
     public RoundShowDto findRound(long id){
-        return RoundMapper.map(roundRepository.findOne(id));
+        Round round = roundRepository.findOne(id);
+        Championship c = round.getChampionship();
+        List<Qualifier> qualifiers = round.getQualifiers();
+        qualifiers.sort(new Comparator<Qualifier>() {
+            @Override
+            public int compare(Qualifier o1, Qualifier o2) {
+                DriverParticipation p1 = driverParticipationRepository.findByChampionshipIdAndDriverId(c.getId(), o1.getDriver().getId());
+                DriverParticipation p2 = driverParticipationRepository.findByChampionshipIdAndDriverId(c.getId(), o2.getDriver().getId());
+                //compare p2 to p1 because we need reverse
+                return p2.compareTo(p1);
+            }
+        });
+        return RoundMapper.map(round, qualifiers);
     }
 
     public boolean finishQualifiers(Long roundId) {

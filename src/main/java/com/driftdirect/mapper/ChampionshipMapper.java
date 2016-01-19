@@ -10,6 +10,7 @@ import com.driftdirect.dto.championship.ChampionshipRulesDto;
 import com.driftdirect.dto.championship.ChampionshipShortShowDto;
 import com.driftdirect.dto.championship.driver.DriverParticipationDto;
 import com.driftdirect.dto.championship.driver.DriverParticipationResultsDto;
+import com.driftdirect.dto.championship.driver.DriverParticipationShortDto;
 import com.driftdirect.dto.championship.judge.JudgeParticipationDto;
 import com.driftdirect.dto.championship.judge.PointsAllocationDto;
 import com.driftdirect.dto.round.RoundShortShowDto;
@@ -17,6 +18,7 @@ import com.driftdirect.dto.round.RoundStatus;
 import com.driftdirect.mapper.round.RoundMapper;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -57,8 +59,9 @@ public class ChampionshipMapper {
         if (c.getDrivers() != null) {
             dto.setDrivers(c.getDrivers()
                     .stream()
-                    .map(e -> PersonMapper.mapShort(e.getDriver()))
+                    .map(e -> mapShortParticipation(e))
                     .collect(Collectors.toList()));
+            Collections.sort(dto.getDrivers());
         }
 
         if (c.getSponsors() != null) {
@@ -73,6 +76,15 @@ public class ChampionshipMapper {
                     .stream()
                     .map(NewsMapper::map)
                     .collect(Collectors.toList()));
+        }
+        return dto;
+    }
+
+    private static DriverParticipationShortDto mapShortParticipation(DriverParticipation driverParticipation) {
+        DriverParticipationShortDto dto = new DriverParticipationShortDto();
+        dto.setDriver(PersonMapper.mapShort(driverParticipation.getDriver()));
+        if (driverParticipation.getResults() != null) {
+            dto.setPoints(driverParticipation.getResults().getTotalPoints());
         }
         return dto;
     }
