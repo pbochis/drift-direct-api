@@ -42,7 +42,6 @@ public class ChampionshipCreateDTO {
         this.backgroundImage = backgroundImage;
     }
 
-
     public String getTicketsUrl() {
         return ticketsUrl;
     }

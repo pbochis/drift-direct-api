@@ -28,10 +28,8 @@ import com.driftdirect.domain.sponsor.Sponsor;
 import com.driftdirect.domain.user.Authorities;
 import com.driftdirect.domain.user.Role;
 import com.driftdirect.domain.user.User;
-import com.driftdirect.dto.championship.ChampionshipCreateDTO;
 import com.driftdirect.dto.championship.judge.JudgeParticipationCreateDto;
 import com.driftdirect.dto.championship.judge.PointsAllocationCreateDto;
-import com.driftdirect.dto.championship.rules.RulesCreateDto;
 import com.driftdirect.dto.comment.CommentCreateDto;
 import com.driftdirect.dto.person.PersonCreateDto;
 import com.driftdirect.dto.round.RoundCreateDto;
@@ -208,52 +206,52 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
         File picture = saveFile("/prod/user.png");
 
-        User admin = createUser(adminRole, "performancezone@yahoo.com", "blackmonster32gtr", "tengudrift", "Florin", "Cozmuta", PersonType.Admin, null);
+        User admin = createUser(adminRole, "paul.bochis@gmail.com", "blackmonster32gtr", "tengudrift", "Florin", "Cozmuta", PersonType.Admin, null);
         User organizer = createUser(orgRole, "email@example.com", "driftdirect1234", "brendonwhite", "Brendon", "White", PersonType.Organizer, null);
         User lineJudge = createUser(judgeRole, "email2@example.com", "driftdirect1234", "brendanduncker", "Brendan", "Duncker", PersonType.Judge, saveFile("/prod/lineJudge.png"));
         User angleJudge = createUser(judgeRole, "email3@example.com", "driftdirect1234", "nickteeboon", "Nick", "Teeboon", PersonType.Judge, saveFile("/prod/angleJudge.png"));
         User styleJudge = createUser(judgeRole, "email4@example.com", "driftdirect1234", "kylejackways", "Kyle", "Jackways", PersonType.Judge, saveFile("/prod/styleJudge.png"));
 
-        ChampionshipCreateDTO championship = new ChampionshipCreateDTO();
-        championship.setName("D1NZ");
-        championship.setLogo(saveFile("/prod/nzLogo.png").getId());
-        championship.setBackgroundImage(saveFile("/prod/blackBackground.png").getId());
-        championship.setTicketsUrl("https://www.iticket.co.nz/Search?q=d1nz");
-
-        RulesCreateDto rules = new RulesCreateDto();
-        rules.setRules("https://drive.google.com/file/d/0B6T_MjB4NedAeWdxODJGYU8wblE/view?usp=sharing");
-        rules.setVideoUrl("https://www.youtube.com/watch?v=MseohDk4dqs");
-        championship.setRules(rules);
-        championship.addRound(productionRounds());
-
-        JudgeParticipationCreateDto judge1 = new JudgeParticipationCreateDto();
-        judge1.setJudgeType(JudgeType.LINE);
-        judge1.setJudge(lineJudge.getPerson().getId());
-        judge1.addPointsAllocation(createPointsAllocation("Line", 25));
-        judge1.addPointsAllocation(createPointsAllocation("Style", 10));
-
-        JudgeParticipationCreateDto judge2 = new JudgeParticipationCreateDto();
-        judge2.setJudgeType(JudgeType.ANGLE);
-        judge2.setJudge(angleJudge.getPerson().getId());
-        judge2.addPointsAllocation(createPointsAllocation("Angle", 25));
-        judge2.addPointsAllocation(createPointsAllocation("Style", 10));
-
-        JudgeParticipationCreateDto judge3 = new JudgeParticipationCreateDto();
-        judge3.setJudgeType(JudgeType.STYLE);
-        judge3.setJudge(styleJudge.getPerson().getId());
-        judge3.addPointsAllocation(createPointsAllocation("Impact", 10));
-        judge3.addPointsAllocation(createPointsAllocation("Commitment", 10));
-        judge3.addPointsAllocation(createPointsAllocation("Fluidity", 10));
-
-        championship.addJudge(judge1);
-        championship.addJudge(judge2);
-        championship.addJudge(judge3);
-
-        try {
-            championshipService.createFromDto(championship, organizer);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        ChampionshipCreateDTO championship = new ChampionshipCreateDTO();
+//        championship.setName("D1NZ");
+//        championship.setLogo(saveFile("/prod/nzLogo.png").getId());
+//        championship.setBackgroundImage(saveFile("/prod/blackBackground.png").getId());
+//        championship.setTicketsUrl("https://www.iticket.co.nz/Search?q=d1nz");
+//
+//        RulesCreateDto rules = new RulesCreateDto();
+//        rules.setRules("https://drive.google.com/file/d/0B6T_MjB4NedAeWdxODJGYU8wblE/view?usp=sharing");
+//        rules.setVideoUrl("https://www.youtube.com/watch?v=MseohDk4dqs");
+//        championship.setRules(rules);
+//        championship.addRound(productionRounds());
+//
+//        JudgeParticipationCreateDto judge1 = new JudgeParticipationCreateDto();
+//        judge1.setJudgeType(JudgeType.LINE);
+//        judge1.setJudge(lineJudge.getPerson().getId());
+//        judge1.addPointsAllocation(createPointsAllocation("Line", 25));
+//        judge1.addPointsAllocation(createPointsAllocation("Style", 10));
+//
+//        JudgeParticipationCreateDto judge2 = new JudgeParticipationCreateDto();
+//        judge2.setJudgeType(JudgeType.ANGLE);
+//        judge2.setJudge(angleJudge.getPerson().getId());
+//        judge2.addPointsAllocation(createPointsAllocation("Angle", 25));
+//        judge2.addPointsAllocation(createPointsAllocation("Style", 10));
+//
+//        JudgeParticipationCreateDto judge3 = new JudgeParticipationCreateDto();
+//        judge3.setJudgeType(JudgeType.STYLE);
+//        judge3.setJudge(styleJudge.getPerson().getId());
+//        judge3.addPointsAllocation(createPointsAllocation("Impact", 10));
+//        judge3.addPointsAllocation(createPointsAllocation("Commitment", 10));
+//        judge3.addPointsAllocation(createPointsAllocation("Fluidity", 10));
+//
+//        championship.addJudge(judge1);
+//        championship.addJudge(judge2);
+//        championship.addJudge(judge3);
+//
+//        try {
+//            championshipService.createFromDto(championship, organizer);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
     private PointsAllocationCreateDto createPointsAllocation(String name, int maxPoints) {
@@ -596,12 +594,12 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
             qualifiers.add(qualifierService.registerDriver(r1.getId(), p.getId()));
 
         }
-//        for (Qualifier qualifier: qualifiers){
-//            for (JudgeParticipation jp : c1.getJudges()) {
-//                submitRunJudging(qualifier, qualifier.getFirstRun().getId(), jp);
-//                submitRunJudging(qualifier, qualifier.getSecondRun().getId(), jp);
-//            }
-//        }
+        for (Qualifier qualifier : qualifiers) {
+            for (JudgeParticipation jp : c1.getJudges()) {
+                submitRunJudging(qualifier, qualifier.getFirstRun().getId(), jp);
+                submitRunJudging(qualifier, qualifier.getSecondRun().getId(), jp);
+            }
+        }
 
         List<Person> judges = c1.getJudges().stream().map(e -> e.getJudge()).collect(Collectors.toList());
 //        roundService.finishQualifiers(r1.getId());
@@ -666,12 +664,12 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         comments.add(createComment("Good run", true));
         comments.add(createComment("Nice slide", true));
         comments.add(createComment("Torque was cool", true));
-        comments.add(createComment("He was not afraid to commit to the spin", true));
+//        comments.add(createComment("He was not afraid to commit to the spin", true));
         comments.add(createComment("No smoke from tires", true));
         comments.add(createComment("Propper  gear shifting", true));
-        comments.add(createComment("Even though track was wet he did not oversteer", true));
-        comments.add(createComment("Understeered for coolness efect and that pleased the public", true));
-        comments.add(createComment("Got out of his car, waved to the crowd while sliding off the track. Coolest death ever.", true));
+//        comments.add(createComment("Even though track was wet he did not oversteer", true));
+//        comments.add(createComment("Understeered for coolness efect and that pleased the public", true));
+//        comments.add(createComment("Got out of his car, waved to the crowd while sliding off the track. Coolest death ever.", true));
 
 
         comments.add(createComment("Weels off trqack", false));

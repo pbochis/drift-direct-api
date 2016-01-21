@@ -68,7 +68,15 @@ public class SecurityService {
     }
 
     public boolean canRegisterDriver(User user, Long roundId) {
-        return canEditChampionship(user, roundRepository.findOne(roundId).getChampionship().getId());
+        Round round = roundRepository.findOne(roundId);
+        return canEditChampionship(user, round.getChampionship().getId()) || isJudgeForChampionship(user, round.getChampionship());
+    }
+
+    public boolean isJudgeForChampionship(User user, Championship championship) {
+        return championship
+                .getJudges()
+                .stream()
+                .anyMatch(judgeParticipation -> judgeParticipation.getJudge().getId().equals(user.getPerson().getId()));
     }
 
     public boolean canJudgeQualifier(User user, Long qualifierId) throws NoSuchElementException {

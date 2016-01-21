@@ -155,7 +155,7 @@ public class RoundService {
 
     public boolean finishQualifiers(Long roundId) {
         Round round = roundRepository.findOne(roundId);
-        if (round.getQualifiers().size() == 0) return false;
+        if (round.getQualifiers().size() < round.getChampionship().getPlayoffSize()) return false;
         for (Qualifier qualifier : round.getQualifiers()) {
             if (qualifier.getFirstRun().getJudgings().size() != 3 || qualifier.getSecondRun().getJudgings().size() != 3) {
                 return false;
