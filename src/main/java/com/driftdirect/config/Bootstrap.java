@@ -206,7 +206,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
         File picture = saveFile("/prod/user.png");
 
-        User admin = createUser(adminRole, "performancezone@yahoo.com", "blackmonster32gtr", "tengudrift", "Florin", "Cozmuta", PersonType.Admin, null);
+        User admin = createUser(adminRole, "paul.bochis@gmail.com", "blackmonster32gtr", "tengudrift", "Florin", "Cozmuta", PersonType.Admin, null);
         User organizer = createUser(orgRole, "email@example.com", "driftdirect1234", "brendonwhite", "Brendon", "White", PersonType.Organizer, null);
         User lineJudge = createUser(judgeRole, "email2@example.com", "driftdirect1234", "brendanduncker", "Brendan", "Duncker", PersonType.Judge, saveFile("/prod/lineJudge.png"));
         User angleJudge = createUser(judgeRole, "email3@example.com", "driftdirect1234", "nickteeboon", "Nick", "Teeboon", PersonType.Judge, saveFile("/prod/angleJudge.png"));
@@ -594,12 +594,12 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
             qualifiers.add(qualifierService.registerDriver(r1.getId(), p.getId()));
 
         }
-//        for (Qualifier qualifier: qualifiers){
-//            for (JudgeParticipation jp : c1.getJudges()) {
-//                submitRunJudging(qualifier, qualifier.getFirstRun().getId(), jp);
-//                submitRunJudging(qualifier, qualifier.getSecondRun().getId(), jp);
-//            }
-//        }
+        for (Qualifier qualifier : qualifiers) {
+            for (JudgeParticipation jp : c1.getJudges()) {
+                submitRunJudging(qualifier, qualifier.getFirstRun().getId(), jp);
+                submitRunJudging(qualifier, qualifier.getSecondRun().getId(), jp);
+            }
+        }
 
         List<Person> judges = c1.getJudges().stream().map(e -> e.getJudge()).collect(Collectors.toList());
 //        roundService.finishQualifiers(r1.getId());
@@ -664,12 +664,12 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         comments.add(createComment("Good run", true));
         comments.add(createComment("Nice slide", true));
         comments.add(createComment("Torque was cool", true));
-        comments.add(createComment("He was not afraid to commit to the spin", true));
+//        comments.add(createComment("He was not afraid to commit to the spin", true));
         comments.add(createComment("No smoke from tires", true));
         comments.add(createComment("Propper  gear shifting", true));
-        comments.add(createComment("Even though track was wet he did not oversteer", true));
-        comments.add(createComment("Understeered for coolness efect and that pleased the public", true));
-        comments.add(createComment("Got out of his car, waved to the crowd while sliding off the track. Coolest death ever.", true));
+//        comments.add(createComment("Even though track was wet he did not oversteer", true));
+//        comments.add(createComment("Understeered for coolness efect and that pleased the public", true));
+//        comments.add(createComment("Got out of his car, waved to the crowd while sliding off the track. Coolest death ever.", true));
 
 
         comments.add(createComment("Weels off trqack", false));

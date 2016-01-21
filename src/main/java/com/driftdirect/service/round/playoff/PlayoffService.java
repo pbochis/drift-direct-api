@@ -273,7 +273,7 @@ public class PlayoffService {
             previousRun = round.getSecondRun();
         }
         if (roundToJudge == null || runToJudge == null) {
-            throw new NoSuchElementException("The results of this battle round have not been concluded yet. Please wait for the other judges to give their scores.");
+            throw new PreviousRunJudgingNotCompletedException("The results of this battle round have not been concluded yet. Please wait for the other judges to give their scores.");
         }
         PlayoffJudgeDto dto = new PlayoffJudgeDto();
         dto.setBattleId(battleId);
