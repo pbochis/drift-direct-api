@@ -2,14 +2,15 @@ package com.driftdirect.dto.round.qualifier.run;
 
 import com.driftdirect.dto.comment.CommentCreateDto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Paul on 12/22/2015.
  */
 public class RunJudgingCreateDto {
-    private List<AwardedPointsCreateDto> awardedPoints;
-    private List<CommentCreateDto> comments;
+    private List<AwardedPointsCreateDto> awardedPoints = new ArrayList<>();
+    private List<CommentCreateDto> comments = new ArrayList<>();
     private Float entrySpeed;
 
     public List<AwardedPointsCreateDto> getAwardedPoints() {

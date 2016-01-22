@@ -16,9 +16,12 @@ public class Track {
     private Long id;
 
     @NotNull
+    @Lob
     private String description;
     private String videoUrl;
+
     @NotNull
+    @Lob
     private String judgingCriteria;
 
     @OneToOne

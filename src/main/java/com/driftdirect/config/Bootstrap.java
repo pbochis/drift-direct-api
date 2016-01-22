@@ -28,8 +28,10 @@ import com.driftdirect.domain.sponsor.Sponsor;
 import com.driftdirect.domain.user.Authorities;
 import com.driftdirect.domain.user.Role;
 import com.driftdirect.domain.user.User;
+import com.driftdirect.dto.championship.ChampionshipCreateDTO;
 import com.driftdirect.dto.championship.judge.JudgeParticipationCreateDto;
 import com.driftdirect.dto.championship.judge.PointsAllocationCreateDto;
+import com.driftdirect.dto.championship.rules.RulesCreateDto;
 import com.driftdirect.dto.comment.CommentCreateDto;
 import com.driftdirect.dto.person.PersonCreateDto;
 import com.driftdirect.dto.round.RoundCreateDto;
@@ -211,47 +213,70 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         User lineJudge = createUser(judgeRole, "email2@example.com", "driftdirect1234", "brendanduncker", "Brendan", "Duncker", PersonType.Judge, saveFile("/prod/lineJudge.png"));
         User angleJudge = createUser(judgeRole, "email3@example.com", "driftdirect1234", "nickteeboon", "Nick", "Teeboon", PersonType.Judge, saveFile("/prod/angleJudge.png"));
         User styleJudge = createUser(judgeRole, "email4@example.com", "driftdirect1234", "kylejackways", "Kyle", "Jackways", PersonType.Judge, saveFile("/prod/styleJudge.png"));
+        //create champs
+        List<Person> drivers = createDrivers(32);
 
-//        ChampionshipCreateDTO championship = new ChampionshipCreateDTO();
-//        championship.setName("D1NZ");
-//        championship.setLogo(saveFile("/prod/nzLogo.png").getId());
-//        championship.setBackgroundImage(saveFile("/prod/blackBackground.png").getId());
-//        championship.setTicketsUrl("https://www.iticket.co.nz/Search?q=d1nz");
-//
-//        RulesCreateDto rules = new RulesCreateDto();
-//        rules.setRules("https://drive.google.com/file/d/0B6T_MjB4NedAeWdxODJGYU8wblE/view?usp=sharing");
-//        rules.setVideoUrl("https://www.youtube.com/watch?v=MseohDk4dqs");
-//        championship.setRules(rules);
-//        championship.addRound(productionRounds());
-//
-//        JudgeParticipationCreateDto judge1 = new JudgeParticipationCreateDto();
-//        judge1.setJudgeType(JudgeType.LINE);
-//        judge1.setJudge(lineJudge.getPerson().getId());
-//        judge1.addPointsAllocation(createPointsAllocation("Line", 25));
-//        judge1.addPointsAllocation(createPointsAllocation("Style", 10));
-//
-//        JudgeParticipationCreateDto judge2 = new JudgeParticipationCreateDto();
-//        judge2.setJudgeType(JudgeType.ANGLE);
-//        judge2.setJudge(angleJudge.getPerson().getId());
-//        judge2.addPointsAllocation(createPointsAllocation("Angle", 25));
-//        judge2.addPointsAllocation(createPointsAllocation("Style", 10));
-//
-//        JudgeParticipationCreateDto judge3 = new JudgeParticipationCreateDto();
-//        judge3.setJudgeType(JudgeType.STYLE);
-//        judge3.setJudge(styleJudge.getPerson().getId());
-//        judge3.addPointsAllocation(createPointsAllocation("Impact", 10));
-//        judge3.addPointsAllocation(createPointsAllocation("Commitment", 10));
-//        judge3.addPointsAllocation(createPointsAllocation("Fluidity", 10));
-//
-//        championship.addJudge(judge1);
-//        championship.addJudge(judge2);
-//        championship.addJudge(judge3);
-//
-//        try {
-//            championshipService.createFromDto(championship, organizer);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+        Championship qualifierDemo = createProductionDemoChampionship("D1nz - Demo Qualifiers Judging", saveFile("/prod/qualdemo.png"), organizer, lineJudge, angleJudge, styleJudge);
+        if (qualifierDemo != null) {
+            Round qualifierDemoRound = roundRepository.findAll().get(0);
+            for (Person p : drivers) {
+                qualifierService.registerDriver(qualifierDemoRound.getId(), p.getId());
+            }
+        }
+        Championship playoffDemo = createProductionDemoChampionship("D1nz - Demo Battle Judging", saveFile("/prod/playoffdemo.png"), organizer, lineJudge, angleJudge, styleJudge);
+        if (playoffDemo != null) {
+            Round playoffDemoRound = roundRepository.findAll().stream().filter(round -> round.getChampionship().getId().equals(playoffDemo.getId())).findFirst().get();
+            List<Qualifier> qualifiers = new ArrayList<>();
+            for (Person p : drivers) {
+                qualifiers.add(qualifierService.registerDriver(playoffDemoRound.getId(), p.getId()));
+            }
+            for (Qualifier qualifier : qualifiers) {
+                for (JudgeParticipation jp : playoffDemo.getJudges()) {
+                    submitRunJudging(qualifier, qualifier.getFirstRun().getId(), jp);
+                    submitRunJudging(qualifier, qualifier.getSecondRun().getId(), jp);
+                }
+            }
+        }
+    }
+
+    private Championship createProductionDemoChampionship(String name, File logo, User organizer, User lineJudge, User angleJudge, User styleJudge) {
+        ChampionshipCreateDTO championship = new ChampionshipCreateDTO();
+        championship.setName(name);
+        championship.setLogo(logo.getId());
+        championship.setBackgroundImage(saveFile("/prod/blackBackground.png").getId());
+        championship.setTicketsUrl("https://www.iticket.co.nz/Search?q=d1nz");
+
+        RulesCreateDto rules = new RulesCreateDto();
+        rules.setRules("Demo rules");
+        rules.setVideoUrl("https://www.youtube.com/watch?v=MseohDk4dqs");
+        championship.setRules(rules);
+        championship.addRound(productionDemoRound());
+
+        JudgeParticipationCreateDto judge1 = new JudgeParticipationCreateDto();
+        judge1.setJudgeType(JudgeType.LINE);
+        judge1.setJudge(lineJudge.getPerson().getId());
+        judge1.addPointsAllocation(createPointsAllocation("Line", 35));
+
+        JudgeParticipationCreateDto judge2 = new JudgeParticipationCreateDto();
+        judge2.setJudgeType(JudgeType.ANGLE);
+        judge2.setJudge(angleJudge.getPerson().getId());
+        judge2.addPointsAllocation(createPointsAllocation("Angle", 35));
+
+        JudgeParticipationCreateDto judge3 = new JudgeParticipationCreateDto();
+        judge3.setJudgeType(JudgeType.STYLE);
+        judge3.setJudge(styleJudge.getPerson().getId());
+        judge3.addPointsAllocation(createPointsAllocation("Style", 30));
+
+        championship.addJudge(judge1);
+        championship.addJudge(judge2);
+        championship.addJudge(judge3);
+
+        try {
+            return championshipService.createFromDto(championship, organizer);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private PointsAllocationCreateDto createPointsAllocation(String name, int maxPoints) {
@@ -261,68 +286,68 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         return dto;
     }
 
-    private RoundCreateDto productionRounds() {
+    private RoundCreateDto productionDemoRound() {
         RoundCreateDto round = new RoundCreateDto();
-        round.setName("ASB Baypark Stadium");
+        round.setName("Demo round");
         round.setLogo(saveFile("/prod/round2.png").getId());
         round.setTicketsUrl("https://www.iticket.co.nz/events/2016/jan/the-demon-energy-d1nz-national-drifting-championship-round-2");
         TrackCreateDto track = new TrackCreateDto();
         track.setVideoUrl("https://www.iticket.co.nz/events/2016/jan/the-demon-energy-d1nz-national-drifting-championship-round-2");
         track.setLayout(saveFile("/prod/trackLayout.png").getId());
-        track.setDescription("");
-        track.setJudgingCriteria("");
+        track.setDescription("Demo");
+        track.setJudgingCriteria("Demo");
         round.setTrack(track);
 
-        round.addRoundScheduleEntry(buildScheduleEntryDto("Pro Sport Practice Sessions", createDate(2016, 1, 8, 11, 5), createDate(2016, 1, 8, 11, 40)));
-        round.addRoundScheduleEntry(buildScheduleEntryDto("Pro Championship practice", createDate(2016, 1, 8, 11, 40), createDate(2016, 1, 8, 12, 15)));
-        round.addRoundScheduleEntry(buildScheduleEntryDto(
-                "Practice Sessions Alternate",
-                createDate(2016, 1, 8, 12, 15),
-                createDate(2016, 1, 8, 17, 30)));
-        round.addRoundScheduleEntry(buildScheduleEntryDto(
-                "Afternoon Track Break",
-                createDate(2016, 1, 8, 17, 30),
-                createDate(2016, 1, 8, 18, 0)));
-
-        round.addRoundScheduleEntry(buildScheduleEntryDto(
-                "Pro Sport Qualifying",
-                createDate(2016, 1, 8, 18, 0),
-                createDate(2016, 1, 8, 19, 0)));
-
-        round.addRoundScheduleEntry(buildScheduleEntryDto(
-                "Pro Championship Qualifying",
-                createDate(2016, 1, 8, 19, 0),
-                createDate(2016, 1, 8, 20, 0)));
-
-        round.addRoundScheduleEntry(buildScheduleEntryDto(
-                "Hot Laps & Open Practice",
-                createDate(2016, 1, 8, 8, 0),
-                createDate(2016, 1, 8, 8, 30)));
-
-        round.addRoundScheduleEntry(buildScheduleEntryDto(
-                "Practice Sessions",
-                createDate(2016, 1, 9, 11, 5),
-                createDate(2016, 1, 9, 15, 30)));
-
-        round.addRoundScheduleEntry(buildScheduleEntryDto(
-                "D1 Pro Sport Series - Top 16 Battle Competition",
-                createDate(2016, 1, 9, 15, 30),
-                createDate(2016, 1, 9, 16, 45)));
-
-        round.addRoundScheduleEntry(buildScheduleEntryDto(
-                "Free Pit walk & Driver signing",
-                createDate(2016, 1, 9, 16, 45),
-                createDate(2016, 1, 9, 18, 30)));
-
-        round.addRoundScheduleEntry(buildScheduleEntryDto(
-                "D1 Pro Championship - Top 32 Battle Competition",
-                createDate(2016, 1, 9, 18, 30),
-                createDate(2016, 1, 9, 22, 0)));
-
-        round.addRoundScheduleEntry(buildScheduleEntryDto(
-                "Podium presentation (Pitlane)",
-                createDate(2016, 1, 9, 22, 0),
-                createDate(2016, 1, 9, 23, 0)));
+        round.addRoundScheduleEntry(buildScheduleEntryDto("Demo schedule 1", createDate(2016, 1, 8, 11, 5), createDate(2016, 1, 8, 11, 40)));
+        round.addRoundScheduleEntry(buildScheduleEntryDto("Demo schedule 2", createDate(2016, 1, 8, 11, 40), createDate(2016, 1, 8, 12, 15)));
+//        round.addRoundScheduleEntry(buildScheduleEntryDto(
+//                "Practice Sessions Alternate",
+//                createDate(2016, 1, 8, 12, 15),
+//                createDate(2016, 1, 8, 17, 30)));
+//        round.addRoundScheduleEntry(buildScheduleEntryDto(
+//                "Afternoon Track Break",
+//                createDate(2016, 1, 8, 17, 30),
+//                createDate(2016, 1, 8, 18, 0)));
+//
+//        round.addRoundScheduleEntry(buildScheduleEntryDto(
+//                "Pro Sport Qualifying",
+//                createDate(2016, 1, 8, 18, 0),
+//                createDate(2016, 1, 8, 19, 0)));
+//
+//        round.addRoundScheduleEntry(buildScheduleEntryDto(
+//                "Pro Championship Qualifying",
+//                createDate(2016, 1, 8, 19, 0),
+//                createDate(2016, 1, 8, 20, 0)));
+//
+//        round.addRoundScheduleEntry(buildScheduleEntryDto(
+//                "Hot Laps & Open Practice",
+//                createDate(2016, 1, 8, 8, 0),
+//                createDate(2016, 1, 8, 8, 30)));
+//
+//        round.addRoundScheduleEntry(buildScheduleEntryDto(
+//                "Practice Sessions",
+//                createDate(2016, 1, 9, 11, 5),
+//                createDate(2016, 1, 9, 15, 30)));
+//
+//        round.addRoundScheduleEntry(buildScheduleEntryDto(
+//                "D1 Pro Sport Series - Top 16 Battle Competition",
+//                createDate(2016, 1, 9, 15, 30),
+//                createDate(2016, 1, 9, 16, 45)));
+//
+//        round.addRoundScheduleEntry(buildScheduleEntryDto(
+//                "Free Pit walk & Driver signing",
+//                createDate(2016, 1, 9, 16, 45),
+//                createDate(2016, 1, 9, 18, 30)));
+//
+//        round.addRoundScheduleEntry(buildScheduleEntryDto(
+//                "D1 Pro Championship - Top 32 Battle Competition",
+//                createDate(2016, 1, 9, 18, 30),
+//                createDate(2016, 1, 9, 22, 0)));
+//
+//        round.addRoundScheduleEntry(buildScheduleEntryDto(
+//                "Podium presentation (Pitlane)",
+//                createDate(2016, 1, 9, 22, 0),
+//                createDate(2016, 1, 9, 23, 0)));
         return round;
     }
 
@@ -473,11 +498,9 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         person.setFirstName(name.split(" ")[0]);
         person.setLastName(name.split(" ")[1]);
         person.setCountry(c);
-        person.setNick("Nick");
-        person.setProfilePicture(picture != null ? picture : fCiob);
+        person.setProfilePicture(picture);
         person.setPersonType(personType);
         person.setCareerStartDate(new DateTime(2010, 1,1, 0, 0));
-        person.setPortfolio("Winner of the first d1nz championship");
         person.setDescription(description);
         person.setBirthDate(new DateTime(1993, 12, 3, 0, 0));
         return personRepository.save(person);
@@ -489,19 +512,19 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
     private Person createDriver(String name, File picture) {
         DriverDetails d = new DriverDetails();
-        d.setModel("GT86");
-        d.setMake("Toyota");
-        d.setTires("Continental");
-        d.setWheels("Some brand");
-        d.setOther("This guy is super good");
-        d.setEngine("4.2 Petrol Bi-Turbo");
-        d.setSteeringAngle("2");
-        d.setSuspensionMods("43");
-        d.setHorsePower(1200);
-        d.setTeam(t);
-        d.setSponsors(sponsors);
+//        d.setModel("GT86");
+//        d.setMake("Toyota");
+//        d.setTires("Continental");
+//        d.setWheels("Some brand");
+//        d.setOther("This guy is super good");
+//        d.setEngine("4.2 Petrol Bi-Turbo");
+//        d.setSteeringAngle("2");
+//        d.setSuspensionMods("43");
+//        d.setHorsePower(1200);
+//        d.setTeam(t);
+//        d.setSponsors(sponsors);
         d = driverDetailsRepository.save(d);
-        Person p = createPerson(name, "A newcommer to the scene, Florin has managed to climb to the top of the charts in a record time. It's a pleasure watching him slide on the road", picture, PersonType.Driver);
+        Person p = createPerson(name, "", picture, PersonType.Driver);
         p.setDriverDetails(d);
         return personRepository.save(p);
     }
@@ -541,12 +564,12 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
     }
 
     private List<Person> createDrivers(int size) {
-        String[] firstNames = {"John", "Malcolm", "Joshua", "Jim", "Paul", "Alex", "Tom", "Marcus", "Wayne", "Shane", "Christian", "Greg"};
+        String[] firstNames = {"Victor", "Bogdan", "Adolph", "Ahmed", "Aldo", "John", "Malcolm", "Joshua", "Jim", "Paul", "Alex", "Tom", "Marcus", "Wayne", "Shane", "Christian", "Greg"};
         String[] lastNames = {"Guzman", "Fit", "Gallagher", "McClane", "Plit", "DelRey", "Paquito", "Marquiz", "Velasquez"};
         List<Person> drivers = new ArrayList<>();
         Random r = new Random();
         for (int i = 0; i < size; i++) {
-            drivers.add(createDriver(firstNames[r.nextInt(firstNames.length)], lastNames[r.nextInt(lastNames.length)], saveFile("/img/kimi.jpg")));
+            drivers.add(createDriver(firstNames[r.nextInt(firstNames.length)], lastNames[r.nextInt(lastNames.length)], null));
         }
         return drivers;
     }
@@ -697,7 +720,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
             awardedPoints.add(points);
         }
         dto.setAwardedPoints(awardedPoints);
-        dto.setComments(comments);
+//        dto.setComments(comments);
         qualifierService.submitRunJudging(qualifier.getId(), runId, dto, judge.getJudge());
     }
 
