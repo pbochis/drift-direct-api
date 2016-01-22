@@ -58,10 +58,10 @@ public class ChampionshipService{
         this.judgeParticipationService = judgeParticipationService;
     }
 
-    public void createFromDto(ChampionshipCreateDTO dto, User currentUser) throws Exception {
+    public Championship createFromDto(ChampionshipCreateDTO dto, User currentUser) throws Exception {
         Championship c = new Championship();
         c.setOrganizer(currentUser.getPerson());
-        populateAndSave(c, dto);
+        return populateAndSave(c, dto);
     }
 
 //    public void update(ChampionshipUpdateDTO dto) throws Exception {
