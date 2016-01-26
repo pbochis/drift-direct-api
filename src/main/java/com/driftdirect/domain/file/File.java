@@ -1,12 +1,13 @@
 package com.driftdirect.domain.file;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * Created by Paul on 11/28/2015.
  */
 @Entity
-public class File {
+public class File implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
