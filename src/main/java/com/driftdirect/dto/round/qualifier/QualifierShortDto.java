@@ -9,6 +9,7 @@ public class QualifierShortDto {
     private Long id;
     private PersonShortShowDto driver;
     private Float points;
+    private int runsCompleted;
 
     private Float firstRunScore;
     private Float secondRunScore;
@@ -51,5 +52,13 @@ public class QualifierShortDto {
 
     public void setSecondRunScore(Float secondRunScore) {
         this.secondRunScore = secondRunScore;
+    }
+
+    public int getRunsCompleted() {
+        return runsCompleted;
+    }
+
+    public void setRunsCompleted(int runsCompleted) {
+        this.runsCompleted = runsCompleted;
     }
 }

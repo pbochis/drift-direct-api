@@ -10,6 +10,7 @@ public class BattleGraphicDisplayDto {
     private QualifiedDriverDto driver1;
     private QualifiedDriverDto driver2;
     private QualifiedDriverDto winner;
+    private int runsCompleted;
     private int order;
 
     //TODO: add other fields here
@@ -52,5 +53,13 @@ public class BattleGraphicDisplayDto {
 
     public void setWinner(QualifiedDriverDto winner) {
         this.winner = winner;
+    }
+
+    public int getRunsCompleted() {
+        return runsCompleted;
+    }
+
+    public void setRunsCompleted(int runsCompleted) {
+        this.runsCompleted = runsCompleted;
     }
 }
