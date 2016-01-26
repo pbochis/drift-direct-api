@@ -43,8 +43,11 @@ public class ChampionshipController {
     }
 
     @RequestMapping(path = RestUrls.CHAMPIONSHIP_SHORT, method = RequestMethod.GET)
-    public ResponseEntity<List<ChampionshipShortShowDto>> listShort() {
-        return new ResponseEntity<>(championshipService.getShortChampionshipList(), HttpStatus.OK);
+    public ResponseEntity<List<ChampionshipShortShowDto>> listShort(@AuthenticationPrincipal User currentUser) {
+        boolean publishedOnly = true;
+        if (securityService.isAdmin(currentUser) || securityService.isOrganizer(currentUser) || securityService.isJudge(currentUser))
+            publishedOnly = false;
+        return new ResponseEntity<>(championshipService.getShortChampionshipList(publishedOnly), HttpStatus.OK);
     }
 
     @Secured(Authorities.ROLE_ORGANIZER)
@@ -111,6 +114,7 @@ public class ChampionshipController {
         if (!securityService.canEditChampionship(currentUser, id)) {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
         }
+        championshipService.publish(id);
         return new ResponseEntity(HttpStatus.OK);
     }
 }

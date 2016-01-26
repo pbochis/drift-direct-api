@@ -85,8 +85,12 @@ public class ChampionshipService{
         return ChampionshipMapper.map(championshipRepository.findOne(id));
     }
 
-    public List<ChampionshipShortShowDto> getShortChampionshipList() {
-        List<Championship> championships = championshipRepository.findAll();
+    public List<ChampionshipShortShowDto> getShortChampionshipList(boolean publishedOnly) {
+        List<Championship> championships;
+        if (publishedOnly)
+            championships = championshipRepository.findPublishedChampionships();
+        else
+            championships = championshipRepository.findAll();
         return championships
                 .stream()
                 .map(ChampionshipMapper::mapShort)

@@ -500,9 +500,9 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         person.setCountry(c);
         person.setProfilePicture(picture);
         person.setPersonType(personType);
-        person.setCareerStartDate(new DateTime(2010, 1,1, 0, 0));
+//        person.setCareerStartDate(new DateTime(2010, 1,1, 0, 0));
         person.setDescription(description);
-        person.setBirthDate(new DateTime(1993, 12, 3, 0, 0));
+//        person.setBirthDate(new DateTime(1993, 12, 3, 0, 0));
         return personRepository.save(person);
     }
 
