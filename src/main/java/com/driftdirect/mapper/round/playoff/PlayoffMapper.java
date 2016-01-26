@@ -58,6 +58,12 @@ public class PlayoffMapper {
         dto.setDriver1(QualifierMapper.mapQualifiedDriver(battle.getDriver1()));
         dto.setDriver2(QualifierMapper.mapQualifiedDriver(battle.getDriver2()));
         dto.setWinner(QualifierMapper.mapQualifiedDriver(battle.getWinner()));
+        int runsCompleted = 0;
+        for (BattleRound round : battle.getBattleRounds()) {
+            if (round.getFirstRun().getDriver1().getJudgings().size() == 3) runsCompleted++;
+            if (round.getSecondRun().getDriver1().getJudgings().size() == 3) runsCompleted++;
+        }
+        dto.setRunsCompleted(runsCompleted);
         dto.setOrder(battle.getOrder());
         return dto;
     }

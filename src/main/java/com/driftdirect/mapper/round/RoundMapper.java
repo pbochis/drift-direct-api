@@ -5,7 +5,6 @@ import com.driftdirect.domain.round.RoundDriverResult;
 import com.driftdirect.domain.round.RoundScheduleEntry;
 import com.driftdirect.domain.round.qualifiers.Qualifier;
 import com.driftdirect.dto.round.*;
-import com.driftdirect.dto.round.qualifier.QualifierShortDto;
 import com.driftdirect.dto.round.track.TrackDto;
 import com.driftdirect.mapper.PersonMapper;
 import com.driftdirect.mapper.round.qualifier.QualifierMapper;
@@ -37,8 +36,7 @@ public class RoundMapper {
             track.setJudgingCriteria(round.getTrack().getJudgingCriteria());
             dto.setTrack(track);
         }
-        List<QualifierShortDto> qualifiers = QualifierMapper.mapShort(sortedQualifiers);
-        dto.setQualifiers(qualifiers);
+        dto.setQualifiers(QualifierMapper.mapShort(sortedQualifiers));
         return dto;
     }
 

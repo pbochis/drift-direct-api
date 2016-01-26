@@ -16,6 +16,7 @@ public class DriverDetailsCreateDto {
     private String wheels;
     private String tires;
     private String other;
+    private Integer horsePower;
     private Long team;
     private List<SponsorShowDto> sponsors;
 
@@ -97,5 +98,13 @@ public class DriverDetailsCreateDto {
 
     public void setSponsors(List<SponsorShowDto> sponsors) {
         this.sponsors = sponsors;
+    }
+
+    public Integer getHorsePower() {
+        return horsePower;
+    }
+
+    public void setHorsePower(Integer horsePower) {
+        this.horsePower = horsePower;
     }
 }

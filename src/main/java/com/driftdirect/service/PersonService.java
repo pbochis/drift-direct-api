@@ -92,6 +92,7 @@ public class PersonService {
         driverDetails.setWheels(dto.getWheels());
         driverDetails.setTires(dto.getTires());
         driverDetails.setOther(dto.getOther());
+        driverDetails.setHorsePower(dto.getHorsePower());
         Set<Sponsor> sponsors = new HashSet<>();
         if (dto.getSponsors() != null) {
             for (SponsorShowDto sponsorDto : dto.getSponsors()) {

@@ -26,12 +26,16 @@ public class QualifierMapper {
     private static void mapInternal(QualifierShortDto dto, Qualifier qualifier){
         dto.setId(qualifier.getId());
         dto.setDriver(PersonMapper.mapShort(qualifier.getDriver()));
+        int runsCompleted = 0;
         if (qualifier.getFirstRun().getJudgings().size() == 3) {
             dto.setFirstRunScore(qualifier.getFirstRun().getTotalPoints());
+            runsCompleted++;
         }
         if (qualifier.getSecondRun().getJudgings().size() == 3) {
             dto.setSecondRunScore(qualifier.getSecondRun().getTotalPoints());
+            runsCompleted++;
         }
+        dto.setRunsCompleted(runsCompleted);
         dto.setPoints(qualifier.getFinalScore() > 0 ? qualifier.getFinalScore() : null);
     }
 
