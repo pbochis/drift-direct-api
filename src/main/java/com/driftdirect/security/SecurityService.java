@@ -43,6 +43,27 @@ public class SecurityService {
         return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
+    public boolean isAdmin(User user) {
+        if (user == null) {
+            return false;
+        }
+        return user.getRoles().stream().anyMatch(role -> role.getAuthority().equals(Authorities.ROLE_ADMIN));
+    }
+
+    public boolean isOrganizer(User user) {
+        if (user == null) {
+            return false;
+        }
+        return user.getRoles().stream().anyMatch(role -> role.getAuthority().equals(Authorities.ROLE_ORGANIZER));
+    }
+
+    public boolean isJudge(User user) {
+        if (user == null) {
+            return false;
+        }
+        return user.getRoles().stream().anyMatch(role -> role.getAuthority().equals(Authorities.ROLE_JUDGE));
+    }
+
     public boolean canCreateUser(User user, Long createdRole) {
         String role = roleRepository.findOne(createdRole).getAuthority();
         Set<String> userAuthorities = user.getRoles().stream().map(Role::getAuthority).collect(Collectors.toSet());
