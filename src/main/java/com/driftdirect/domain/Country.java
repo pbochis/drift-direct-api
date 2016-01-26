@@ -4,12 +4,13 @@ import com.driftdirect.domain.file.File;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 /**
  * Created by Paul on 11/20/2015.
  */
 @Entity
-public class Country {
+public class Country implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;

@@ -3,12 +3,13 @@ package com.driftdirect.domain.sponsor;
 import com.driftdirect.domain.file.File;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * Created by Paul on 11/26/2015.
  */
 @Entity
-public class Sponsor {
+public class Sponsor implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

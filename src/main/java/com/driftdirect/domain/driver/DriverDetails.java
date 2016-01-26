@@ -3,6 +3,7 @@ package com.driftdirect.domain.driver;
 import com.driftdirect.domain.sponsor.Sponsor;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,7 +12,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "driver_details")
-public class DriverDetails {
+public class DriverDetails implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
