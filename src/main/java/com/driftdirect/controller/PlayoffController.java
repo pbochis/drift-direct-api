@@ -28,6 +28,16 @@ public class PlayoffController {
     private SecurityService securityService;
 //    public static final String PLAYOFF_ID_START = "/playoff/{playoffId}/stage/{stageId}/battle/{battleId}/start";
 
+    @RequestMapping(path = RestUrls.PLAYOFF_ID, method = RequestMethod.DELETE)
+    public ResponseEntity deletePlayoffTree(@PathVariable(value = "id") Long id,
+                                            @AuthenticationPrincipal User currentUser){
+        if (securityService.isAdmin(currentUser) || securityService.isOrganizer(currentUser)){
+            playoffService.delete(id);
+            return new ResponseEntity(HttpStatus.OK);
+        }
+        return new ResponseEntity(HttpStatus.FORBIDDEN);
+    }
+
     @Secured(Authorities.ROLE_JUDGE)
     @RequestMapping(path = RestUrls.PLAYOFF_ID_START, method = RequestMethod.GET)
     public ResponseEntity<PlayoffJudgeDto> startBattleJudging(@PathVariable(value = "battleId") Long battleId,

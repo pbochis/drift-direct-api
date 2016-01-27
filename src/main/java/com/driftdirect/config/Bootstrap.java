@@ -617,7 +617,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
             qualifiers.add(qualifierService.registerDriver(r1.getId(), p.getId()));
 
         }
-        for (int i = 0; i < qualifiers.size() - 4; i++) {
+        for (int i = 0; i < qualifiers.size(); i++) {
             Qualifier qualifier = qualifiers.get(i);
             for (JudgeParticipation jp : c1.getJudges()) {
                 submitRunJudging(qualifier, qualifier.getFirstRun().getId(), jp);
