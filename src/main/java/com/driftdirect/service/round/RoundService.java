@@ -28,7 +28,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -162,7 +161,17 @@ public class RoundService {
             }
         }
         List<Qualifier> qualifiers = round.getQualifiers();
-        Collections.sort(qualifiers);
+        qualifiers.sort((o1, o2) -> {
+            float dif = o2.getFinalScore() - o1.getFinalScore();
+            if (dif != 0) {
+                return dif > 0 ? 1 : -1;
+            }
+            dif = Math.min(o2.getFirstRun().getTotalPoints(), o2.getSecondRun().getTotalPoints()) - Math.min(o1.getFirstRun().getTotalPoints(), o1.getSecondRun().getTotalPoints());
+            if (dif != 0) {
+                return dif > 0 ? 1 : -1;
+            }
+            return 0;
+        });
         Championship championship = round.getChampionship();
         for (int i = 0; i < qualifiers.size(); i++) {
             Qualifier driver = qualifiers.get(i);
