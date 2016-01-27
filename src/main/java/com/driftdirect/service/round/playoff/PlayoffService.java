@@ -71,12 +71,21 @@ public class PlayoffService {
 
     public void delete(Long id){
         PlayoffTree tree = playoffTreeRepository.findOne(id);
-        if (tree.getPlayoffStages().last().getBattles().last().getWinner() != null){
-            return;
+        for (PlayoffStage stage: tree.getPlayoffStages()){
+            for (Battle battle: stage.getBattles()){
+                for (BattleRound battleRound: battle.getBattleRounds()){
+                    battleRound.getFirstRun().getDriver1().setDriver(null);
+                    battleRound.getFirstRun().getDriver2().setDriver(null);
+                    battleRound.getSecondRun().getDriver1().setDriver(null);
+                    battleRound.getSecondRun().getDriver2().setDriver(null);
+                }
+                battle.setDriver1(null);
+                battle.setDriver2(null);
+                battle.setWinner(null);
+            }
         }
         tree.setRound(null);
-        tree = playoffTreeRepository.save(tree);
-        playoffTreeRepository.delete(tree);
+        playoffTreeRepository.save(tree);
     }
 
     public PlayoffTreeGraphicDisplayDto generatePlayoffTree(Long roundId) {
