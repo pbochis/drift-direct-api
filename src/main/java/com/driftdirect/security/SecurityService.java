@@ -79,7 +79,7 @@ public class SecurityService {
         return true;
     }
 
-    public boolean canEditChampionship(User user, Long championshipId) {
+    public boolean isChampionshipOrganizer(User user, Long championshipId) {
         for (Championship c : user.getPerson().getChampionships()) {
             if (c.getId().equals(championshipId)) {
                 return true;
@@ -90,10 +90,16 @@ public class SecurityService {
 
     public boolean canRegisterDriver(User user, Long roundId) {
         Round round = roundRepository.findOne(roundId);
-        return canEditChampionship(user, round.getChampionship().getId()) || isJudgeForChampionship(user, round.getChampionship());
+        return isChampionshipOrganizer(user, round.getChampionship().getId()) || isChampionshipJudge(user, round.getChampionship());
     }
 
-    public boolean isJudgeForChampionship(User user, Championship championship) {
+    public boolean canDeleteQualifier(User user, Long qualifierId) throws NoSuchElementException {
+        Qualifier qualifier = qualifierRepository.findOne(qualifierId);
+        Championship championship = qualifier.getRound().getChampionship();
+        return isChampionshipJudge(user, championship) || isChampionshipOrganizer(user, championship.getId());
+    }
+
+    private boolean isChampionshipJudge(User user, Championship championship) {
         return championship
                 .getJudges()
                 .stream()

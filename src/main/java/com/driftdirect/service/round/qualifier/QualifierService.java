@@ -14,6 +14,7 @@ import com.driftdirect.dto.round.qualifier.QualifierJudgeDto;
 import com.driftdirect.dto.round.qualifier.run.AwardedPointsCreateDto;
 import com.driftdirect.dto.round.qualifier.run.RunJudgingCreateDto;
 import com.driftdirect.exception.PreviousRunJudgingNotCompletedException;
+import com.driftdirect.exception.QualifierAlreadyJudgeException;
 import com.driftdirect.mapper.round.qualifier.QualifierMapper;
 import com.driftdirect.repository.PersonRepository;
 import com.driftdirect.repository.championship.judge.PointsAllocationRepository;
@@ -67,6 +68,19 @@ public class QualifierService {
         qualifier = qualifierRepository.save(qualifier);
         driverParticipationService.addDriverParticipation(round.getChampionship(), driver);
         return qualifier;
+    }
+
+    public void deleteQualifier(Long qualifierId) throws QualifierAlreadyJudgeException {
+        Qualifier qualifier = qualifierRepository.findOne(qualifierId);
+        if (qualifier == null)
+            return;
+        if (qualifier.getFirstRun().getJudgings().size() > 0) {
+            throw new QualifierAlreadyJudgeException("This qualifier is already being judged");
+        }
+        if (qualifier.getSecondRun().getJudgings().size() > 0) {
+            throw new QualifierAlreadyJudgeException("This qualifier is already being judged");
+        }
+        qualifierRepository.delete(qualifier);
     }
 
     public Qualifier registerDriver(Long roundId, Long driverId, int order) {

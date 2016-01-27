@@ -44,7 +44,7 @@ public class RoundController {
     @Secured(Authorities.ROLE_ORGANIZER)
     @RequestMapping(path = RestUrls.ROUND, method = RequestMethod.POST)
     public ResponseEntity createFromDto(@RequestBody @Valid RoundCreateDto dto, @AuthenticationPrincipal User currentUser) {
-//        if (!securityService.canEditChampionship(currentUser, dto.getChampionshipId())) {
+//        if (!securityService.isChampionshipOrganizer(currentUser, dto.getChampionshipId())) {
 //            return new ResponseEntity(HttpStatus.FORBIDDEN);
 //        }
 //        roundService.createFromDto(dto);
