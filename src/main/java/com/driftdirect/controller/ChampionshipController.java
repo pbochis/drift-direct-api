@@ -60,7 +60,7 @@ public class ChampionshipController {
     @Secured(Authorities.ROLE_ORGANIZER)
     @RequestMapping(path = RestUrls.CHAMPIONSHIP, method = RequestMethod.PUT)
     public ResponseEntity updateChampionship(@Valid ChampionshipUpdateDTO c, @AuthenticationPrincipal User currentUser) throws ObjectNotFoundException {
-        if (!securityService.canEditChampionship(currentUser, c.getId())) {
+        if (!securityService.isChampionshipOrganizer(currentUser, c.getId())) {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
         }
 //        championshipService.update(c);
@@ -75,7 +75,7 @@ public class ChampionshipController {
     @Secured(Authorities.ROLE_ORGANIZER)
     @RequestMapping(path = RestUrls.CHAMPIONSHIP_ID, method = RequestMethod.DELETE)
     public ResponseEntity delete(@PathVariable Long id, @AuthenticationPrincipal User currentUser) {
-        if (!securityService.canEditChampionship(currentUser, id)) {
+        if (!securityService.isChampionshipOrganizer(currentUser, id)) {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
         }
         championshipService.delete(id);
@@ -97,7 +97,7 @@ public class ChampionshipController {
     public ResponseEntity addNews(@PathVariable(value = "id") Long id,
                                   @RequestBody @Valid NewsCreateDto news,
                                   @AuthenticationPrincipal User currentUser) {
-        if (!securityService.canEditChampionship(currentUser, id)) {
+        if (!securityService.isChampionshipOrganizer(currentUser, id)) {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
         }
         championshipService.addNews(id, news);
@@ -111,7 +111,7 @@ public class ChampionshipController {
 
     @RequestMapping(path = RestUrls.CHAMPIONSHIP_ID_PUBLISH, method = RequestMethod.POST)
     public ResponseEntity publish(@PathVariable Long id, @AuthenticationPrincipal User currentUser) {
-        if (!securityService.canEditChampionship(currentUser, id)) {
+        if (!securityService.isChampionshipOrganizer(currentUser, id)) {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
         }
         championshipService.publish(id);
