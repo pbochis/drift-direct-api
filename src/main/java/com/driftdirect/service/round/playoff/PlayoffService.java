@@ -69,6 +69,16 @@ public class PlayoffService {
         return PlayoffMapper.mapBattleFull(battleRepository.findOne(id));
     }
 
+    public void delete(Long id){
+        PlayoffTree tree = playoffTreeRepository.findOne(id);
+        if (tree.getPlayoffStages().last().getBattles().last().getWinner() != null){
+            return;
+        }
+        tree.setRound(null);
+        tree = playoffTreeRepository.save(tree);
+        playoffTreeRepository.delete(tree);
+    }
+
     public PlayoffTreeGraphicDisplayDto generatePlayoffTree(Long roundId) {
         Round round = roundRepository.findOne(roundId);
         PlayoffTree tree = new PlayoffTree();
