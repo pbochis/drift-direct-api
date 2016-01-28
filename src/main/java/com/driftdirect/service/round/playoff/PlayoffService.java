@@ -107,22 +107,38 @@ public class PlayoffService {
         stage1.setPlayoffTree(tree);
         stage1.setOrder(1);
         stage1 = playoffStageRepository.save(stage1);
-        addBattle(stage1, qualifiedDrivers, 1, 9, 24);
-        addBattle(stage1, qualifiedDrivers, 2, 1, null);
-        addBattle(stage1, qualifiedDrivers, 3, 10, 23);
-        addBattle(stage1, qualifiedDrivers, 4, 8, null);
-        addBattle(stage1, qualifiedDrivers, 5, 11, 22);
-        addBattle(stage1, qualifiedDrivers, 6, 5, null);
-        addBattle(stage1, qualifiedDrivers, 7, 12, 21);
-        addBattle(stage1, qualifiedDrivers, 8, 4, null);
-        addBattle(stage1, qualifiedDrivers, 9, 13, 20);
-        addBattle(stage1, qualifiedDrivers, 10, 3, null);
-        addBattle(stage1, qualifiedDrivers, 11, 14, 19);
-        addBattle(stage1, qualifiedDrivers, 12, 6, null);
-        addBattle(stage1, qualifiedDrivers, 13, 15, 18);
-        addBattle(stage1, qualifiedDrivers, 14, 7, null);
-        addBattle(stage1, qualifiedDrivers, 15, 16, 17);
-        addBattle(stage1, qualifiedDrivers, 16, 2, null);
+        addBattle(stage1, qualifiedDrivers, 1, 1, 32);
+        addBattle(stage1, qualifiedDrivers, 2, 16, 17);
+        addBattle(stage1, qualifiedDrivers, 3, 8, 25);
+        addBattle(stage1, qualifiedDrivers, 4, 9, 24);
+        addBattle(stage1, qualifiedDrivers, 5, 4, 29);
+        addBattle(stage1, qualifiedDrivers, 6, 13, 20);
+        addBattle(stage1, qualifiedDrivers, 7, 5, 28);
+        addBattle(stage1, qualifiedDrivers, 8, 12, 21);
+        addBattle(stage1, qualifiedDrivers, 9, 2, 31);
+        addBattle(stage1, qualifiedDrivers, 10, 15, 18);
+        addBattle(stage1, qualifiedDrivers, 11, 7, 26);
+        addBattle(stage1, qualifiedDrivers, 12, 10, 23);
+        addBattle(stage1, qualifiedDrivers, 13, 3, 30);
+        addBattle(stage1, qualifiedDrivers, 14, 14, 19);
+        addBattle(stage1, qualifiedDrivers, 15, 6, 27);
+        addBattle(stage1, qualifiedDrivers, 16, 11, 22);
+//        addBattle(stage1, qualifiedDrivers, 1, 9, 24);
+//        addBattle(stage1, qualifiedDrivers, 2, 1, null);
+//        addBattle(stage1, qualifiedDrivers, 3, 10, 23);
+//        addBattle(stage1, qualifiedDrivers, 4, 8, null);
+//        addBattle(stage1, qualifiedDrivers, 5, 11, 22);
+//        addBattle(stage1, qualifiedDrivers, 6, 5, null);
+//        addBattle(stage1, qualifiedDrivers, 7, 12, 21);
+//        addBattle(stage1, qualifiedDrivers, 8, 4, null);
+//        addBattle(stage1, qualifiedDrivers, 9, 13, 20);
+//        addBattle(stage1, qualifiedDrivers, 10, 3, null);
+//        addBattle(stage1, qualifiedDrivers, 11, 14, 19);
+//        addBattle(stage1, qualifiedDrivers, 12, 6, null);
+//        addBattle(stage1, qualifiedDrivers, 13, 15, 18);
+//        addBattle(stage1, qualifiedDrivers, 14, 7, null);
+//        addBattle(stage1, qualifiedDrivers, 15, 16, 17);
+//        addBattle(stage1, qualifiedDrivers, 16, 2, null);
         return stage1;
     }
     private PlayoffStage generateFinalsStage(PlayoffTree tree) {
@@ -162,7 +178,7 @@ public class PlayoffService {
 
     private void addBattle(PlayoffStage stage, List<QualifiedDriver> drivers, int order, int highPlace, Integer lowPlace) {
         QualifiedDriver driver1 = drivers.get(highPlace - 1);
-        QualifiedDriver driver2 = lowPlace == null ? null : drivers.get(lowPlace - 1);
+        QualifiedDriver driver2 = lowPlace > drivers.size() ? null : drivers.get(lowPlace - 1);
         createBattle(stage, order, driver1, driver2);
     }
 
