@@ -37,9 +37,9 @@ public class DriverParticipationShortDto implements Comparable<DriverParticipati
     @Override
     public int compareTo(DriverParticipationShortDto o) {
         if (this.getPoints() > o.getPoints())
-            return 1;
+            return -1;
         if (this.getPoints() == o.getPoints())
             return 0;
-        return -1;
+        return 1;
     }
 }
