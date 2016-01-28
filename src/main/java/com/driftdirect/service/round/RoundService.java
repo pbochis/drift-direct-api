@@ -146,7 +146,7 @@ public class RoundService {
                 DriverParticipation p1 = driverParticipationRepository.findByChampionshipIdAndDriverId(c.getId(), o1.getDriver().getId());
                 DriverParticipation p2 = driverParticipationRepository.findByChampionshipIdAndDriverId(c.getId(), o2.getDriver().getId());
                 //compare p2 to p1 because we need reverse
-                return p2.compareTo(p1);
+                return p1.compareTo(p2);
             }
         });
         return RoundMapper.map(round, qualifiers);
@@ -154,7 +154,7 @@ public class RoundService {
 
     public boolean finishQualifiers(Long roundId) {
         Round round = roundRepository.findOne(roundId);
-        if (round.getQualifiers().size() < round.getChampionship().getPlayoffSize()) return false;
+//        if (round.getQualifiers().size() < round.getChampionship().getPlayoffSize()) return false;
         for (Qualifier qualifier : round.getQualifiers()) {
             if (qualifier.getFirstRun().getJudgings().size() != 3 || qualifier.getSecondRun().getJudgings().size() != 3) {
                 return false;

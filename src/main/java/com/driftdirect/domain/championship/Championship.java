@@ -61,7 +61,7 @@ public class Championship{
     private Set<News> news = new HashSet<>();
 
     //todo: make this customizable in future versions;
-    private Integer playoffSize = 24;
+    private Integer playoffSize = 32;
 
     public Long getId() {
         return id;

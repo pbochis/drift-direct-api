@@ -178,6 +178,16 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
             if (Arrays.asList(this.environment.getActiveProfiles()).contains("dev")){
                 initDevelopementDatabase();
             } else {
+                if (configSettingRepository.findByKey(BAYPARK_RESULTS_REDONE) == null) {
+                    Round round = roundRepository.findOne(7L);
+                    Championship championship = round.getChampionship();
+                    for (RoundDriverResult roundResult : round.getRoundResults()) {
+                        driverParticipationService.addResult(championship, roundResult);
+                    }
+                    ConfigSetting configSetting = new ConfigSetting();
+                    configSetting.setKey(BAYPARK_RESULTS_REDONE);
+                    configSettingRepository.save(configSetting);
+                }
                 try {
                     initProductionDatabase();
                 } catch (IOException e) {
@@ -611,7 +621,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         createDriverParticipation(driver4, c1);
         createDriverParticipation(driver5, c1);
 
-        List<Person> drivers = createDrivers(32);
+        List<Person> drivers = createDrivers(27);
 
         Person judge1 = createPerson("Diana V", "Drifitng judge", saveFile("/img/j1.jpg"), PersonType.Judge);
         createUser("line", "line", "judge@judge.org", judgeRole, judge1.getId());
