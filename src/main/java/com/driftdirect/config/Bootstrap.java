@@ -17,6 +17,7 @@ import com.driftdirect.domain.news.News;
 import com.driftdirect.domain.person.Person;
 import com.driftdirect.domain.person.PersonType;
 import com.driftdirect.domain.round.Round;
+import com.driftdirect.domain.round.RoundDriverResult;
 import com.driftdirect.domain.round.battle.Battle;
 import com.driftdirect.domain.round.battle.BattleRound;
 import com.driftdirect.domain.round.battle.BattleRoundRun;
@@ -52,6 +53,7 @@ import com.driftdirect.repository.round.RoundRepository;
 import com.driftdirect.repository.round.track.TrackLayoutRepository;
 import com.driftdirect.service.UserService;
 import com.driftdirect.service.championship.ChampionshipService;
+import com.driftdirect.service.championship.driver.DriverParticipationService;
 import com.driftdirect.service.championship.judge.JudgeParticipationService;
 import com.driftdirect.service.round.RoundService;
 import com.driftdirect.service.round.playoff.PlayoffService;
@@ -82,6 +84,7 @@ import java.util.stream.Collectors;
 @Transactional
 public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
     private final String APPLICATION_INIT = "init";
+    private final String BAYPARK_RESULTS_REDONE = "baypark_results";
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     File fRom;
@@ -132,6 +135,8 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
     private PlayoffService playoffService;
     @Autowired
     private ChampionshipService championshipService;
+    @Autowired
+    private DriverParticipationService driverParticipationService;
 
     @Autowired
     public Bootstrap(
@@ -158,6 +163,16 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event){
+        if (configSettingRepository.findByKey(BAYPARK_RESULTS_REDONE) == null) {
+            Round round = roundRepository.findOne(7L);
+            Championship championship = round.getChampionship();
+            for (RoundDriverResult roundResult : round.getRoundResults()) {
+                driverParticipationService.addResult(championship, roundResult);
+            }
+            ConfigSetting configSetting = new ConfigSetting();
+            configSetting.setKey(BAYPARK_RESULTS_REDONE);
+            configSettingRepository.save(configSetting);
+        }
         if (configSettingRepository.findByKey(APPLICATION_INIT) == null){
             System.out.println("********************************** STARTED APP BOOTSTRAP ******************************");
             if (Arrays.asList(this.environment.getActiveProfiles()).contains("dev")){

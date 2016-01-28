@@ -6,6 +6,7 @@ import com.driftdirect.domain.championship.driver.DriverParticipationResults;
 import com.driftdirect.domain.person.Person;
 import com.driftdirect.domain.round.RoundDriverResult;
 import com.driftdirect.repository.championship.driver.DriverParticipationRepository;
+import com.driftdirect.repository.championship.driver.DriverParticipationResultsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,10 +18,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class DriverParticipationService {
     private DriverParticipationRepository driverParticipationRepository;
+    private DriverParticipationResultsRepository driverParticipationResultsRepository;
 
     @Autowired
-    public DriverParticipationService(DriverParticipationRepository driverParticipationRepository){
+    public DriverParticipationService(DriverParticipationRepository driverParticipationRepository, DriverParticipationResultsRepository driverParticipationResultsRepository) {
         this.driverParticipationRepository = driverParticipationRepository;
+        this.driverParticipationResultsRepository = driverParticipationResultsRepository;
     }
 
     public void addDriverParticipation(Championship championship, Person driver){
@@ -39,10 +42,10 @@ public class DriverParticipationService {
         if (results == null) {
             results = new DriverParticipationResults();
             driverParticipation.setResults(results);
+            results.setParticipation(driverParticipation);
         }
         results.addPoints(roundResult.getPlayoffPoints());
         results.addPoints(roundResult.getQualifierPoints());
-        driverParticipationRepository.save(driverParticipation);
+        driverParticipationResultsRepository.save(results);
     }
-
 }
