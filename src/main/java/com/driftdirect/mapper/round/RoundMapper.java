@@ -44,6 +44,7 @@ public class RoundMapper {
         RoundDriverResultDto dto = new RoundDriverResultDto();
         dto.setId(result.getId());
         dto.setPlayoffPoints(result.getPlayoffPoints());
+        dto.setPlayoffRanking(result.getPlayoffRanking());
         dto.setQualifierRanking(result.getQualifierRanking());
         dto.setQualifierPoints(result.getQualifierPoints());
         dto.setDriver(PersonMapper.mapShort(result.getDriver()));
