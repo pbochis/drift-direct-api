@@ -4,6 +4,7 @@ import com.driftdirect.domain.championship.Championship;
 import com.driftdirect.domain.championship.ChampionshipRules;
 import com.driftdirect.domain.championship.driver.DriverParticipation;
 import com.driftdirect.domain.news.News;
+import com.driftdirect.domain.person.Person;
 import com.driftdirect.domain.user.User;
 import com.driftdirect.dto.championship.ChampionshipCreateDTO;
 import com.driftdirect.dto.championship.ChampionshipFullDto;
@@ -83,6 +84,19 @@ public class ChampionshipService{
 
     public ChampionshipFullDto findChampionship(long id) {
         return ChampionshipMapper.map(championshipRepository.findOne(id));
+    }
+
+    public List<ChampionshipShortShowDto> getEditableChampionships(Person organizer, boolean isAdmin) {
+        if (isAdmin) {
+            return championshipRepository.findAll()
+                    .stream()
+                    .map(ChampionshipMapper::mapShort)
+                    .collect(Collectors.toList());
+        }
+        return championshipRepository.findEditableChampionships(organizer)
+                .stream()
+                .map(ChampionshipMapper::mapShort)
+                .collect(Collectors.toList());
     }
 
     public List<ChampionshipShortShowDto> getShortChampionshipList(boolean publishedOnly) {
