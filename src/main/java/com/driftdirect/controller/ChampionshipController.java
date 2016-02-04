@@ -10,6 +10,7 @@ import com.driftdirect.dto.championship.driver.DriverParticipationDto;
 import com.driftdirect.dto.championship.judge.JudgeParticipationDto;
 import com.driftdirect.dto.news.NewsCreateDto;
 import com.driftdirect.dto.person.PersonShortShowDto;
+import com.driftdirect.dto.round.RoundCreateDto;
 import com.driftdirect.exception.ObjectNotFoundException;
 import com.driftdirect.security.SecurityService;
 import com.driftdirect.service.championship.ChampionshipService;
@@ -89,6 +90,17 @@ public class ChampionshipController {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
         }
         championshipService.delete(id);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @RequestMapping(path = RestUrls.CHAMPIONSHIP_ID_ROUNDS, method = RequestMethod.POST)
+    public ResponseEntity addRound(@PathVariable Long id,
+                                   @RequestBody RoundCreateDto roundCreateDto,
+                                   @AuthenticationPrincipal User currentUser) {
+        if (!securityService.isChampionshipOrganizer(currentUser, id)) {
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+        }
+        championshipService.addRound(id, roundCreateDto);
         return new ResponseEntity(HttpStatus.OK);
     }
 

@@ -31,7 +31,9 @@ public class RoundMapper {
             TrackDto track = new TrackDto();
             track.setId(round.getTrack().getId());
             track.setDescription(round.getTrack().getDescription());
-            track.setLayout(round.getTrack().getLayout().getId());
+            if (round.getTrack().getLayout() != null) {
+                track.setLayout(round.getTrack().getLayout().getId());
+            }
             track.setVideoUrl(round.getTrack().getVideoUrl());
             track.setJudgingCriteria(round.getTrack().getJudgingCriteria());
             dto.setTrack(track);
@@ -55,7 +57,9 @@ public class RoundMapper {
         RoundShortShowDto dto = new RoundShortShowDto();
         dto.setId(round.getId());
         dto.setName(round.getName());
-        dto.setLogo(round.getLogo().getId());
+        if (round.getLogo() != null) {
+            dto.setLogo(round.getLogo().getId());
+        }
         dto.setStartDate(round.getStartDate());
         dto.setEndDate(round.getEndDate());
         dto.setRoundStatus(status);

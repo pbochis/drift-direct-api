@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 /**
@@ -128,6 +129,14 @@ public class ChampionshipService{
             judgeParticipationService.addJudge(c, judgeParticipationCreateDto);
         }
         return championshipRepository.save(c);
+    }
+
+    public void addRound(Long championshipId, RoundCreateDto roundCreateDto) throws NoSuchElementException {
+        Championship championship = championshipRepository.findOne(championshipId);
+        if (championship == null) {
+            throw new NoSuchElementException("Championship not found");
+        }
+        roundService.createFromDto(championship, roundCreateDto);
     }
 
     public List<PersonShortShowDto> findDrivers(Long championshipId) {
