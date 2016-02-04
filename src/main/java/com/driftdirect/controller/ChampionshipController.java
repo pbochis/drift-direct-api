@@ -60,14 +60,14 @@ public class ChampionshipController {
         return new ResponseEntity<>(championshipService.getShortChampionshipList(publishedOnly), HttpStatus.OK);
     }
 
-    @Secured(Authorities.ROLE_ORGANIZER)
+    @Secured({Authorities.ROLE_ORGANIZER, Authorities.ROLE_ADMIN})
     @RequestMapping(path = RestUrls.CHAMPIONSHIP, method = RequestMethod.POST)
     public ResponseEntity createChampionship(@Valid @RequestBody ChampionshipCreateDTO c, @AuthenticationPrincipal User currentUser) throws Exception {
         championshipService.createFromDto(c, currentUser);
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @Secured(Authorities.ROLE_ORGANIZER)
+    @Secured({Authorities.ROLE_ORGANIZER, Authorities.ROLE_ADMIN})
     @RequestMapping(path = RestUrls.CHAMPIONSHIP, method = RequestMethod.PUT)
     public ResponseEntity updateChampionship(@Valid ChampionshipUpdateDTO c, @AuthenticationPrincipal User currentUser) throws ObjectNotFoundException {
         if (!securityService.isChampionshipOrganizer(currentUser, c.getId())) {
@@ -82,7 +82,7 @@ public class ChampionshipController {
         return new ResponseEntity<>(championshipService.findChampionship(id), HttpStatus.OK);
     }
 
-    @Secured(Authorities.ROLE_ORGANIZER)
+    @Secured({Authorities.ROLE_ORGANIZER, Authorities.ROLE_ADMIN})
     @RequestMapping(path = RestUrls.CHAMPIONSHIP_ID, method = RequestMethod.DELETE)
     public ResponseEntity delete(@PathVariable Long id, @AuthenticationPrincipal User currentUser) {
         if (!securityService.isChampionshipOrganizer(currentUser, id)) {
