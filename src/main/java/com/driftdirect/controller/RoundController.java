@@ -84,12 +84,12 @@ public class RoundController {
 
     @RequestMapping(path = RestUrls.ROUND_ID_REGISTER, method = RequestMethod.POST)
     public ResponseEntity registerDriver(@PathVariable(value = "roundId") Long roundId,
-                                         @PathVariable(value = "driverId") Long driverId,
+                                         @RequestBody List<Long> drivers,
                                          @AuthenticationPrincipal User user) {
         if (!securityService.canRegisterDriver(user, roundId)) {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
         }
-        qualifierService.registerDriver(roundId, driverId);
+        qualifierService.registerDrivers(roundId, drivers);
         return new ResponseEntity(HttpStatus.OK);
     }
 
