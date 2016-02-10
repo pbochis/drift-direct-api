@@ -3,6 +3,9 @@ package com.driftdirect.dto.person;
 import com.driftdirect.dto.country.CountryShowDto;
 import org.joda.time.DateTime;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Paul on 11/21/2015.
  */
@@ -11,6 +14,7 @@ public class PersonCreateDto {
     private String lastName;
     private String telephone;
     private Long profilePicture;
+    private List<Long> gallery = new ArrayList<>();
     private CountryShowDto country;
     private DateTime birthDate;
     private DateTime careerStartDate;
@@ -125,5 +129,13 @@ public class PersonCreateDto {
 
     public void setWebsite(String website) {
         this.website = website;
+    }
+
+    public List<Long> getGallery() {
+        return gallery;
+    }
+
+    public void setGallery(List<Long> gallery) {
+        this.gallery = gallery;
     }
 }
