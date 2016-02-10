@@ -1,5 +1,6 @@
 package com.driftdirect.mapper;
 
+import com.driftdirect.domain.file.File;
 import com.driftdirect.domain.person.Person;
 import com.driftdirect.domain.sponsor.Sponsor;
 import com.driftdirect.dto.person.PersonFullDto;
@@ -59,6 +60,9 @@ public class PersonMapper {
         dto.setDescription(p.getDescription());
         dto.setWebsite(p.getWebsite());
         dto.setBirthDate(p.getBirthDate());
+        for (File file : p.getGallery()) {
+            dto.addPicture(file.getId());
+        }
         if (p.getDriverDetails() != null) {
             DriverDetailsDto details = new DriverDetailsDto();
             details.setId(p.getDriverDetails().getId());

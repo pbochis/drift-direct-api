@@ -73,7 +73,7 @@ public class SecurityService {
         if (role.equals(Authorities.ROLE_ORGANIZER) && !userAuthorities.contains(Authorities.ROLE_ADMIN)) {
             return false;
         }
-        if (role.equals(Authorities.ROLE_JUDGE) && !userAuthorities.contains(Authorities.ROLE_ORGANIZER)) {
+        if (role.equals(Authorities.ROLE_JUDGE) && !(userAuthorities.contains(Authorities.ROLE_ORGANIZER) || userAuthorities.contains(Authorities.ROLE_ADMIN))) {
             return false;
         }
         return true;

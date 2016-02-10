@@ -10,6 +10,7 @@ import org.joda.time.DateTime;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -51,6 +52,14 @@ public class Person implements Serializable {
 
     @OneToOne
     private File profilePicture;
+
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "person_gallery",
+            joinColumns = {@JoinColumn(name = "person_id")},
+            inverseJoinColumns = {@JoinColumn(name = "file_id")}
+    )
+    private List<File> gallery = new ArrayList<>();
 
     //null when the person.personType != PersonType.Driver
     @OneToOne(optional = true)
@@ -177,6 +186,19 @@ public class Person implements Serializable {
 
     public void setNick(String nick) {
         this.nick = nick;
+    }
+
+    public List<File> getGallery() {
+        return gallery;
+    }
+
+    public void setGallery(List<File> gallery) {
+        this.gallery.clear();
+        this.gallery.addAll(gallery);
+    }
+
+    public void addToGallery(File file) {
+        this.gallery.add(file);
     }
 
     @Override

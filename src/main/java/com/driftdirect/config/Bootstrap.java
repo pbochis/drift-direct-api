@@ -458,6 +458,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         c.setName(name);
         c.setTicketsUrl("http://www.d1nz.com");
         c.setLogo(logo);
+        c.setPublished(true);
         c.setBackgroundImage(backgroundImage);
         ChampionshipRules rules = new ChampionshipRules();
         rules.setRules(getRules());
@@ -515,6 +516,8 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         person.setCountry(c);
         person.setProfilePicture(picture);
         person.setPersonType(personType);
+        person.addToGallery(saveFile("/img/kimi.jpg"));
+        person.addToGallery(saveFile("/img/cioban.jpg"));
 //        person.setCareerStartDate(new DateTime(2010, 1,1, 0, 0));
         person.setDescription(description);
 //        person.setBirthDate(new DateTime(1993, 12, 3, 0, 0));
@@ -630,7 +633,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         List<Qualifier> qualifiers = new ArrayList<>();
         for (Person p : drivers) {
             qualifiers.add(qualifierService.registerDriver(r1.getId(), p.getId()));
-
+            int a = 2;
         }
         for (int i = 0; i < qualifiers.size(); i++) {
             Qualifier qualifier = qualifiers.get(i);
