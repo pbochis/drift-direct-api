@@ -10,6 +10,7 @@ import com.driftdirect.dto.championship.driver.DriverParticipationDto;
 import com.driftdirect.dto.championship.judge.JudgeParticipationDto;
 import com.driftdirect.dto.news.NewsCreateDto;
 import com.driftdirect.dto.person.PersonShortShowDto;
+import com.driftdirect.dto.round.RoundCreateDto;
 import com.driftdirect.exception.ObjectNotFoundException;
 import com.driftdirect.security.SecurityService;
 import com.driftdirect.service.championship.ChampionshipService;
@@ -60,14 +61,14 @@ public class ChampionshipController {
         return new ResponseEntity<>(championshipService.getShortChampionshipList(publishedOnly), HttpStatus.OK);
     }
 
-    @Secured(Authorities.ROLE_ORGANIZER)
+    @Secured({Authorities.ROLE_ORGANIZER, Authorities.ROLE_ADMIN})
     @RequestMapping(path = RestUrls.CHAMPIONSHIP, method = RequestMethod.POST)
     public ResponseEntity createChampionship(@Valid @RequestBody ChampionshipCreateDTO c, @AuthenticationPrincipal User currentUser) throws Exception {
         championshipService.createFromDto(c, currentUser);
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @Secured(Authorities.ROLE_ORGANIZER)
+    @Secured({Authorities.ROLE_ORGANIZER, Authorities.ROLE_ADMIN})
     @RequestMapping(path = RestUrls.CHAMPIONSHIP, method = RequestMethod.PUT)
     public ResponseEntity updateChampionship(@Valid ChampionshipUpdateDTO c, @AuthenticationPrincipal User currentUser) throws ObjectNotFoundException {
         if (!securityService.isChampionshipOrganizer(currentUser, c.getId())) {
@@ -82,13 +83,24 @@ public class ChampionshipController {
         return new ResponseEntity<>(championshipService.findChampionship(id), HttpStatus.OK);
     }
 
-    @Secured(Authorities.ROLE_ORGANIZER)
+    @Secured({Authorities.ROLE_ORGANIZER, Authorities.ROLE_ADMIN})
     @RequestMapping(path = RestUrls.CHAMPIONSHIP_ID, method = RequestMethod.DELETE)
     public ResponseEntity delete(@PathVariable Long id, @AuthenticationPrincipal User currentUser) {
         if (!securityService.isChampionshipOrganizer(currentUser, id)) {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
         }
         championshipService.delete(id);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @RequestMapping(path = RestUrls.CHAMPIONSHIP_ID_ROUNDS, method = RequestMethod.POST)
+    public ResponseEntity addRound(@PathVariable Long id,
+                                   @RequestBody RoundCreateDto roundCreateDto,
+                                   @AuthenticationPrincipal User currentUser) {
+        if (!securityService.isChampionshipOrganizer(currentUser, id)) {
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+        }
+        championshipService.addRound(id, roundCreateDto);
         return new ResponseEntity(HttpStatus.OK);
     }
 

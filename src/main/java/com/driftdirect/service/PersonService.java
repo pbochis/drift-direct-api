@@ -2,6 +2,7 @@ package com.driftdirect.service;
 
 import com.driftdirect.domain.driver.DriverDetails;
 import com.driftdirect.domain.driver.Team;
+import com.driftdirect.domain.file.File;
 import com.driftdirect.domain.person.Person;
 import com.driftdirect.domain.person.PersonType;
 import com.driftdirect.domain.sponsor.Sponsor;
@@ -12,6 +13,7 @@ import com.driftdirect.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -77,6 +79,11 @@ public class PersonService {
         if (dto.getProfilePicture() != null){
             p.setProfilePicture(fileRepository.findOne(dto.getProfilePicture()));
         }
+        List<File> gallery = new ArrayList<>();
+        for (Long fileId : dto.getGallery()) {
+            gallery.add(fileRepository.findOne(fileId));
+        }
+        p.setGallery(gallery);
     }
 
     private DriverDetails mapAndSaveDriverDetails(DriverDetails driverDetails, DriverDetailsCreateDto dto) {

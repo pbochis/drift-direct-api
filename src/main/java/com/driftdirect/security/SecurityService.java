@@ -73,13 +73,17 @@ public class SecurityService {
         if (role.equals(Authorities.ROLE_ORGANIZER) && !userAuthorities.contains(Authorities.ROLE_ADMIN)) {
             return false;
         }
-        if (role.equals(Authorities.ROLE_JUDGE) && !userAuthorities.contains(Authorities.ROLE_ORGANIZER)) {
+        if (role.equals(Authorities.ROLE_JUDGE) && !(userAuthorities.contains(Authorities.ROLE_ORGANIZER) || userAuthorities.contains(Authorities.ROLE_ADMIN))) {
             return false;
         }
         return true;
     }
 
     public boolean isChampionshipOrganizer(User user, Long championshipId) {
+        // TODO: permissions should be refactored
+        if (isAdmin(user)) {
+            return true;
+        }
         for (Championship c : user.getPerson().getChampionships()) {
             if (c.getId().equals(championshipId)) {
                 return true;
@@ -89,6 +93,9 @@ public class SecurityService {
     }
 
     public boolean canRegisterDriver(User user, Long roundId) {
+        if (isAdmin(user)) {
+            return true;
+        }
         Round round = roundRepository.findOne(roundId);
         return isChampionshipOrganizer(user, round.getChampionship().getId()) || isChampionshipJudge(user, round.getChampionship());
     }
@@ -96,7 +103,7 @@ public class SecurityService {
     public boolean canDeleteQualifier(User user, Long qualifierId) throws NoSuchElementException {
         Qualifier qualifier = qualifierRepository.findOne(qualifierId);
         Championship championship = qualifier.getRound().getChampionship();
-        return isChampionshipJudge(user, championship) || isChampionshipOrganizer(user, championship.getId());
+        return isChampionshipJudge(user, championship) || isChampionshipOrganizer(user, championship.getId()) || isAdmin(user);
     }
 
     private boolean isChampionshipJudge(User user, Championship championship) {

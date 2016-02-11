@@ -5,6 +5,9 @@ import com.driftdirect.dto.country.CountryShowDto;
 import com.driftdirect.dto.person.driver.DriverDetailsDto;
 import org.joda.time.DateTime;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Paul on 11/30/2015.
  */
@@ -22,6 +25,9 @@ public class PersonFullDto {
     private DateTime birthDate;
     private DriverDetailsDto driverDetails;
     private PersonType personType;
+
+    private List<Long> gallery = new ArrayList<>();
+
 
     public long getId() {
         return id;
@@ -125,5 +131,17 @@ public class PersonFullDto {
 
     public void setPersonType(PersonType personType) {
         this.personType = personType;
+    }
+
+    public List<Long> getGallery() {
+        return gallery;
+    }
+
+    public void setGallery(List<Long> gallery) {
+        this.gallery = gallery;
+    }
+
+    public void addPicture(Long picture) {
+        this.gallery.add(picture);
     }
 }

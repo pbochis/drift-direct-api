@@ -123,22 +123,6 @@ public class PlayoffService {
         addBattle(stage1, qualifiedDrivers, 14, 14, 19);
         addBattle(stage1, qualifiedDrivers, 15, 6, 27);
         addBattle(stage1, qualifiedDrivers, 16, 11, 22);
-//        addBattle(stage1, qualifiedDrivers, 1, 9, 24);
-//        addBattle(stage1, qualifiedDrivers, 2, 1, null);
-//        addBattle(stage1, qualifiedDrivers, 3, 10, 23);
-//        addBattle(stage1, qualifiedDrivers, 4, 8, null);
-//        addBattle(stage1, qualifiedDrivers, 5, 11, 22);
-//        addBattle(stage1, qualifiedDrivers, 6, 5, null);
-//        addBattle(stage1, qualifiedDrivers, 7, 12, 21);
-//        addBattle(stage1, qualifiedDrivers, 8, 4, null);
-//        addBattle(stage1, qualifiedDrivers, 9, 13, 20);
-//        addBattle(stage1, qualifiedDrivers, 10, 3, null);
-//        addBattle(stage1, qualifiedDrivers, 11, 14, 19);
-//        addBattle(stage1, qualifiedDrivers, 12, 6, null);
-//        addBattle(stage1, qualifiedDrivers, 13, 15, 18);
-//        addBattle(stage1, qualifiedDrivers, 14, 7, null);
-//        addBattle(stage1, qualifiedDrivers, 15, 16, 17);
-//        addBattle(stage1, qualifiedDrivers, 16, 2, null);
         return stage1;
     }
     private PlayoffStage generateFinalsStage(PlayoffTree tree) {

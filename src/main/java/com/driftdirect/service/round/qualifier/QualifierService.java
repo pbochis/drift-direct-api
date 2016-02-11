@@ -27,6 +27,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 /**
@@ -55,6 +56,20 @@ public class QualifierService {
         this.driverParticipationService = driverParticipationService;
         this.pointsAllocationRepository = pointsAllocationRepository;
         this.commentService = commentService;
+    }
+
+    public void registerDrivers(Long roundId, List<Long> drivers) {
+        Round round = roundRepository.findOne(roundId);
+        for (Long driverId : drivers) {
+            Person driver = personRepository.findOne(driverId);
+            Qualifier qualifier = new Qualifier();
+            qualifier.setDriver(driver);
+            qualifier.setRound(round);
+            qualifier.setFirstRun(new Run());
+            qualifier.setSecondRun(new Run());
+            qualifierRepository.save(qualifier);
+            driverParticipationService.addDriverParticipation(round.getChampionship(), driver);
+        }
     }
 
     public Qualifier registerDriver(Long roundId, Long driverId) {
