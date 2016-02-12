@@ -3,6 +3,7 @@ package com.driftdirect.controller;
 import com.driftdirect.domain.file.File;
 import com.driftdirect.repository.FileRepository;
 import com.driftdirect.util.RestUrls;
+import org.imgscalr.Scalr;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -10,9 +11,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 /**
@@ -70,11 +74,11 @@ public class FileController {
         byte[] data = f.getData();
 //        Working but not needed because polymer and android know how to resize images
         if (height != null && width != null){
-//            BufferedImage img = ImageIO.read(new ByteArrayInputStream(f.getData()));
-//            BufferedImage rescaled = Scalr.resize(img, Scalr.Method.ULTRA_QUALITY, width, height);
-//            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//            ImageIO.write(rescaled, f.getName().split("\\.")[1], baos);
-//            data = baos.toByteArray();
+            BufferedImage img = ImageIO.read(new ByteArrayInputStream(f.getData()));
+            BufferedImage rescaled = Scalr.resize(img, Scalr.Method.ULTRA_QUALITY, width, height);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(rescaled, f.getName().split("\\.")[1], baos);
+            data = baos.toByteArray();
         }
         return ResponseEntity
                 .ok()
