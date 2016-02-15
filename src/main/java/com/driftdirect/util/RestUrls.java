@@ -52,4 +52,5 @@ public class RestUrls {
 
     public static final String COUNTRY = "/country";
 
+    public static final String GCM_REGISTER = "/gcm/register";
 }
