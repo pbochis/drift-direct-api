@@ -5,5 +5,5 @@ package com.driftdirect.config;
  */
 public class GCMConfig {
     //    public final static String API_KEY = "AIzaSyDkKY_x-2Z0BeMA6kUZeVhPvcXVRP1QJf4";
-    public final static String API_KEY = "AIzaSyASlFawJLpaUmxb9MwtN78Tcfnc2tIa970";
+    public final static String API_KEY = "AIzaSyAdjTIL00JBDcvdL9UBgDVEEbHkpnq26iE";
 }

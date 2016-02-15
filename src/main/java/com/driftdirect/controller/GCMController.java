@@ -23,7 +23,7 @@ public class GCMController {
     }
 
     @RequestMapping(path = RestUrls.GCM_REGISTER, method = RequestMethod.POST)
-    public ResponseEntity registerClient(@RequestBody String key) {
+    public ResponseEntity registerClient(@RequestParam(name = "key", required = true) String key) {
         gcmService.registerClient(key);
         return new ResponseEntity(HttpStatus.OK);
     }
