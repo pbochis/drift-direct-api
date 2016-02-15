@@ -34,13 +34,13 @@ public class GCMService {
             return;
         }
         GCMClient client = new GCMClient();
-        client.setKey(key);
+        client.setClientKey(key);
         gcmClientRepository.save(client);
     }
 
     public void testNotifyAllUsers() throws IOException {
         List<GCMClient> clients = gcmClientRepository.findAll();
-        List<String> keys = clients.stream().map(GCMClient::getKey).collect(Collectors.toList());
+        List<String> keys = clients.stream().map(GCMClient::getClientKey).collect(Collectors.toList());
         Sender sender = new Sender(GCMConfig.API_KEY);
         Message message = new Message.Builder()
                 .addData("Hello", "World")

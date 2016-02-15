@@ -6,14 +6,12 @@ import javax.persistence.*;
  * Created by Paul on 2/15/2016.
  */
 @Entity
-@Table(name = "gcm_client")
 public class GCMClient {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String key;
+    private String clientKey;
 
     public Long getId() {
         return id;
@@ -23,11 +21,11 @@ public class GCMClient {
         this.id = id;
     }
 
-    public String getKey() {
-        return key;
+    public String getClientKey() {
+        return clientKey;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setClientKey(String clientKey) {
+        this.clientKey = clientKey;
     }
 }
