@@ -355,6 +355,11 @@ public class PlayoffService {
         canUpdate = round.getSecondRun().getDriver1().getJudgings().size() == 3 && canUpdate;
         if (!canUpdate)
             return;
+        PlayoffTree tree = battle.getPlayoffStage().getPlayoffTree();
+        if (tree.getCurrentBattle().getId().equals(battle.getId())) {
+            tree.setCurrentBattle(null);
+            //maybe notify here
+        }
         int firstDriverTotalScore = round.getFirstRun().getDriver1().getPoints()
                 + round.getSecondRun().getDriver1().getPoints();
         int secondDriverTotalScore = round.getFirstRun().getDriver2().getPoints()

@@ -220,7 +220,7 @@ public class QualifierService {
         if (run.getJudgings().size() == 3) {
             //TODO: add GCM notify here
             Round round = qualifier.getRound();
-            round.setCurrentDriver(qualifier);
+            round.setCurrentDriver(null);
             roundRepository.save(round);
         }
     }
