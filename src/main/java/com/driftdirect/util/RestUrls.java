@@ -16,10 +16,12 @@ public class RestUrls {
 
     public static final String ROUND = "/round";
     public static final String ROUND_ID = "/round/{id}";
+    public static final String ROUND_ID_EDIT = "/round/{id}/edit";
     public static final String ROUND_ID_REGISTER = "/round/{roundId}/register";
     public static final String ROUND_ID_REGISTER_DESK = "/round/{id}/desk";
     public static final String ROUND_ID_PLAYOFF_START = "/round/{id}/playoff/start";
     public static final String ROUND_ID_PLAYOFF = "/round/{id}/playoffs";
+    public static final String ROUND_ID_SCHEDULE = "/round/{id}/schedule";
 
     public static final String QUALIFIER_ID = "/qualifier/{id}";
     public static final String QUALIFIER_ID_SUBMIT = "/qualifier/{id}/submit/run/{runId}";

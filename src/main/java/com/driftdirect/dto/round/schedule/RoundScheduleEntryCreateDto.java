@@ -1,4 +1,4 @@
-package com.driftdirect.dto.round;
+package com.driftdirect.dto.round.schedule;
 
 import org.joda.time.DateTime;
 

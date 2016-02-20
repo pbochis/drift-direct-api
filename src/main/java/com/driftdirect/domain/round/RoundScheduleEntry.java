@@ -67,6 +67,14 @@ public class RoundScheduleEntry implements Comparable<RoundScheduleEntry> {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof RoundScheduleEntry)) {
+            return false;
+        }
+        return this.getId().equals(((RoundScheduleEntry) obj).getId());
+    }
+
+    @Override
     public int compareTo(RoundScheduleEntry o) {
         if (startDate.isBefore(o.getStartDate()))
             return -1;

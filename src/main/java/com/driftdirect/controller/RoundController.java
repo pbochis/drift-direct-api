@@ -7,6 +7,7 @@ import com.driftdirect.dto.round.RoundCreateDto;
 import com.driftdirect.dto.round.RoundShowDto;
 import com.driftdirect.dto.round.RoundUpdateDto;
 import com.driftdirect.dto.round.playoff.graphic.PlayoffTreeGraphicDisplayDto;
+import com.driftdirect.dto.round.schedule.RoundScheduleEntryUpdateDto;
 import com.driftdirect.security.SecurityService;
 import com.driftdirect.service.round.RoundService;
 import com.driftdirect.service.round.playoff.PlayoffService;
@@ -98,6 +99,12 @@ public class RoundController {
         return new ResponseEntity<List<PersonShortShowDto>>(roundService.getPersonsForRegisterDesk(roundId), HttpStatus.OK);
     }
 
+    @RequestMapping(path = RestUrls.ROUND_ID_SCHEDULE, method = RequestMethod.PUT)
+    public ResponseEntity updateSchedule(@RequestBody RoundScheduleEntryUpdateDto dto) {
+
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
     @RequestMapping(path = RestUrls.ROUND_ID_PLAYOFF_START, method = RequestMethod.POST)
     public ResponseEntity generatePlayoffTree(@PathVariable Long id) {
         if (roundService.finishQualifiers(id)) {
@@ -115,6 +122,25 @@ public class RoundController {
             }
         }
         return new ResponseEntity<>(playoffs, HttpStatus.OK);
+    }
+
+    @RequestMapping(path = RestUrls.ROUND_ID_EDIT, method = RequestMethod.GET)
+    public ResponseEntity<RoundUpdateDto> getEditModel(@PathVariable Long id,
+                                                       @AuthenticationPrincipal User currentUser) {
+        if (!securityService.canEditRound(currentUser, id)) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+        return new ResponseEntity<RoundUpdateDto>(roundService.getEditModel(id), HttpStatus.OK);
+    }
+
+    @RequestMapping(path = RestUrls.ROUND_ID, method = RequestMethod.PUT)
+    public ResponseEntity updateRound(@RequestBody RoundUpdateDto roundUpdateDto,
+                                      @AuthenticationPrincipal User currentUser) {
+        if (!securityService.canEditRound(currentUser, roundUpdateDto.getId())) {
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+        }
+        roundService.updateRound(roundUpdateDto);
+        return new ResponseEntity(HttpStatus.OK);
     }
 }
 
