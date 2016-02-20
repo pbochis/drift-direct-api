@@ -99,6 +99,14 @@ public class Qualifier implements Comparable<Qualifier> {
 //        return 0;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Qualifier)) {
+            return false;
+        }
+        return this.id.equals(((Qualifier) obj).getId());
+    }
+
     public int getQualifierOrder() {
         return qualifierOrder;
     }

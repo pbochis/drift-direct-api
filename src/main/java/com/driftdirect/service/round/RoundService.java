@@ -287,7 +287,6 @@ public class RoundService {
         qualifiedDriver.setRanking(ranking);
         qualifiedDriver.setRound(round);
         qualifiedDriverRepository.save(qualifiedDriver);
-
     }
 
     public PlayoffTreeGraphicDisplayDto getPlayoffs(Long roundId) {

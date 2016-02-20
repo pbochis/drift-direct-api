@@ -29,6 +29,14 @@ public class GCMService {
         this.gcmClientRepository = gcmClientRepository;
     }
 
+    public void notifyTopic(String topic) throws IOException {
+        Sender sender = new Sender(GCMConfig.API_KEY);
+        Message message = new Message.Builder()
+                .addData("hello", "iancu")
+                .build();
+        Result result = sender.sendNoRetry(message, topic);
+    }
+
     public void registerClient(String key) {
         if (gcmClientRepository.findByKey(key) != null) {
             return;
@@ -46,6 +54,7 @@ public class GCMService {
                 .addData("Hello", "World")
                 .build();
         MulticastResult result = sender.send(message, keys, 1);
+
         //pune breakpoint aici daca nu mere
         int a = 2;
     }
