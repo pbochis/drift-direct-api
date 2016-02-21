@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -163,7 +164,7 @@ public class MockController {
     }
 
     @RequestMapping(path = "/mock/playoff/score/{id}/{stage}", method = RequestMethod.GET)
-    public void scorePlayoff(@PathVariable(value = "id") Long roundId, @PathVariable(value = "stage") int stageOrder) {
+    public void scorePlayoff(@PathVariable(value = "id") Long roundId, @PathVariable(value = "stage") int stageOrder) throws IOException {
         Round round = roundRepository.findOne(roundId);
         List<Person> judges = round.getChampionship().getJudges().stream().map(e -> e.getJudge()).collect(Collectors.toList());
         PlayoffTree tree = round.getPlayoffTree();

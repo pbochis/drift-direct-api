@@ -79,6 +79,11 @@ public class SecurityService {
         return true;
     }
 
+    public boolean canEditRound(User user, Long roundId) {
+        Round round = roundRepository.findOne(roundId);
+        return user.getPerson().equals(round.getChampionship().getOrganizer());
+    }
+
     public boolean isChampionshipOrganizer(User user, Long championshipId) {
         // TODO: permissions should be refactored
         if (isAdmin(user)) {

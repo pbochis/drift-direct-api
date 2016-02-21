@@ -1,6 +1,7 @@
 package com.driftdirect.dto.round;
 
 
+import com.driftdirect.dto.round.schedule.RoundScheduleEntryCreateDto;
 import com.driftdirect.dto.round.track.TrackCreateDto;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -22,6 +23,8 @@ public class RoundCreateDto {
     @NotNull
     @NotEmpty
     private String ticketsUrl;
+
+    private String liveStream;
 
     private TrackCreateDto track;
 
@@ -69,5 +72,13 @@ public class RoundCreateDto {
 
     public void addRoundScheduleEntry(RoundScheduleEntryCreateDto entryCreateDto) {
         this.scheduele.add(entryCreateDto);
+    }
+
+    public String getLiveStream() {
+        return liveStream;
+    }
+
+    public void setLiveStream(String liveStream) {
+        this.liveStream = liveStream;
     }
 }

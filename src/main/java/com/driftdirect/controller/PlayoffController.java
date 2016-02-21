@@ -15,6 +15,8 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 /**
  * Created by Paul on 1/5/2016.
  */
@@ -41,7 +43,7 @@ public class PlayoffController {
     @Secured(Authorities.ROLE_JUDGE)
     @RequestMapping(path = RestUrls.PLAYOFF_ID_START, method = RequestMethod.GET)
     public ResponseEntity<PlayoffJudgeDto> startBattleJudging(@PathVariable(value = "battleId") Long battleId,
-                                                              @AuthenticationPrincipal User currentUser) throws PreviousRunJudgingNotCompletedException {
+                                                              @AuthenticationPrincipal User currentUser) throws PreviousRunJudgingNotCompletedException, IOException {
         if (!securityService.canJudgePlayoff(currentUser, battleId)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
@@ -58,7 +60,7 @@ public class PlayoffController {
     @RequestMapping(path = RestUrls.PLAYOFF_ID_SUBMIT, method = RequestMethod.POST)
     public ResponseEntity submitBattleRunJudging(@PathVariable(value = "battleId") Long battleId,
                                                  @RequestBody PlayoffBattleRoundJudging battleRoundJudging,
-                                                 @AuthenticationPrincipal User currentUser) {
+                                                 @AuthenticationPrincipal User currentUser) throws IOException {
         if (!securityService.canJudgePlayoff(currentUser, battleId)) {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
         }

@@ -71,6 +71,9 @@ dependencies {
     //image utils
     compile 'org.imgscalr:imgscalr-lib:4.2'
 
+    //gcm dependency
+    compile 'com.google.gcm:gcm-server:1.0.0'
+
     providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 
     testCompile("junit:junit")

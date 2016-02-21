@@ -104,11 +104,15 @@ public class Round implements Comparable<Round> {
 
     public void setScheduele(SortedSet<RoundScheduleEntry> scheduele) {
         this.scheduele.clear();
-        this.scheduele = scheduele;
+        this.scheduele.addAll(scheduele);
     }
 
     public void addScheduele(RoundScheduleEntry scheduleEntry) {
         this.scheduele.add(scheduleEntry);
+    }
+
+    public void removeScheduele(RoundScheduleEntry scheduleEntry) {
+        this.scheduele.remove(scheduleEntry);
     }
 
     public Championship getChampionship() {

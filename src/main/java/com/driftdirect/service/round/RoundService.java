@@ -11,10 +11,13 @@ import com.driftdirect.domain.round.qualifiers.Qualifier;
 import com.driftdirect.domain.round.track.Track;
 import com.driftdirect.dto.person.PersonShortShowDto;
 import com.driftdirect.dto.round.RoundCreateDto;
-import com.driftdirect.dto.round.RoundScheduleEntryCreateDto;
 import com.driftdirect.dto.round.RoundShowDto;
+import com.driftdirect.dto.round.RoundUpdateDto;
 import com.driftdirect.dto.round.playoff.graphic.PlayoffTreeGraphicDisplayDto;
+import com.driftdirect.dto.round.schedule.RoundScheduleEntryCreateDto;
+import com.driftdirect.dto.round.schedule.RoundScheduleEntryUpdateDto;
 import com.driftdirect.dto.round.track.TrackCreateDto;
+import com.driftdirect.dto.round.track.TrackUpdateDto;
 import com.driftdirect.mapper.PersonMapper;
 import com.driftdirect.mapper.round.RoundMapper;
 import com.driftdirect.mapper.round.playoff.PlayoffMapper;
@@ -24,12 +27,15 @@ import com.driftdirect.repository.round.RoundDriverResultRepository;
 import com.driftdirect.repository.round.RoundRepository;
 import com.driftdirect.repository.round.RoundScheduleRepository;
 import com.driftdirect.repository.round.qualifier.QualifiedDriverRepository;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.Comparator;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 /**
@@ -63,9 +69,44 @@ public class RoundService {
     public Round createFromDto(Championship c, RoundCreateDto dto) {
         Round round = new Round();
         round.setChampionship(c);
+        return populateAndSave(round, dto);
+    }
+
+    public Round updateRound(RoundUpdateDto dto) {
+        Round round = roundRepository.findOne(dto.getId());
+        round.setName(dto.getName());
+        round.setTicketsUrl(dto.getTicketsUrl());
+        round.setLogo(fileRepository.findOne(dto.getLogo()));
+        round.setLiveStream(dto.getLiveStream());
+        populateTrack(round.getTrack(), dto.getTrack());
+        updateRoundSchedule(round, dto);
+        round = roundRepository.save(round);
+        return round;
+    }
+
+    private void updateRoundSchedule(Round round, RoundUpdateDto dto) {
+        SortedSet<RoundScheduleEntry> schedule = new TreeSet<>();
+        DateTime startDate = null;
+        DateTime endDate = null;
+        for (RoundScheduleEntryUpdateDto entryUpdateDto : dto.getScheduele()) {
+            RoundScheduleEntry entry = roundScheduleRepository.findOne(entryUpdateDto.getId());
+            entry.setName(entryUpdateDto.getName());
+            entry.setStartDate(entryUpdateDto.getStartDate());
+            entry.setEndDate(entryUpdateDto.getEndDate());
+            schedule.add(roundScheduleRepository.save(entry));
+            startDate = (startDate == null || entry.getStartDate().isBefore(startDate)) ? entry.getStartDate() : startDate;
+            endDate = (endDate == null || entry.getEndDate().isAfter(endDate)) ? entry.getEndDate() : endDate;
+        }
+        round.setStartDate(startDate);
+        round.setEndDate(endDate);
+        round.setScheduele(schedule);
+    }
+
+    private Round populateAndSave(Round round, RoundCreateDto dto) {
         round.setName(dto.getName());
         round.setLogo(fileRepository.findOne(dto.getLogo()));
         round.setTicketsUrl(dto.getTicketsUrl());
+        round.setLiveStream(dto.getLiveStream());
         round.setTrack(createTrack(dto.getTrack()));
         round = roundRepository.save(round);
         for (RoundScheduleEntryCreateDto schedule : dto.getScheduele()) {
@@ -74,26 +115,43 @@ public class RoundService {
         return round;
     }
 
-    public Track createTrack(TrackCreateDto trackCreateDto) {
-        Track track = new Track();
+    public RoundUpdateDto getEditModel(Long roundId) {
+        Round round = roundRepository.findOne(roundId);
+        RoundUpdateDto dto = new RoundUpdateDto();
+        dto.setId(roundId);
+        dto.setName(round.getName());
+        dto.setLogo(round.getLogo().getId());
+        dto.setTicketsUrl(round.getTicketsUrl());
+        TrackUpdateDto track = new TrackUpdateDto();
+        track.setId(round.getTrack().getId());
+        track.setVideoUrl(round.getTrack().getVideoUrl());
+        track.setJudgingCriteria(round.getTrack().getJudgingCriteria());
+        track.setLayout(round.getTrack().getLayout().getId());
+        track.setDescription(round.getTrack().getDescription());
+        dto.setTrack(track);
+        for (RoundScheduleEntry scheduleEntry : round.getScheduele()) {
+            RoundScheduleEntryUpdateDto entryUpdateDto = new RoundScheduleEntryUpdateDto();
+            entryUpdateDto.setId(scheduleEntry.getId());
+            entryUpdateDto.setStartDate(scheduleEntry.getStartDate());
+            entryUpdateDto.setEndDate(scheduleEntry.getEndDate());
+            entryUpdateDto.setName(scheduleEntry.getName());
+            dto.addRoundScheduleEntry(entryUpdateDto);
+        }
+        return dto;
+    }
+
+    private void populateTrack(Track track, TrackCreateDto trackCreateDto) {
         track.setDescription(trackCreateDto.getDescription());
         track.setLayout(fileRepository.findOne(trackCreateDto.getLayout()));
         track.setVideoUrl(trackCreateDto.getVideoUrl());
         track.setJudgingCriteria(trackCreateDto.getJudgingCriteria());
-        return track;
     }
 
-//    public RoundShowDto update(RoundUpdateDto dto) {
-//        Round round = roundRepository.findOne(dto.getId());
-//        Championship championship = championshipRepository.findOne(dto.getChampionshipId());
-//        round.setChampionship(championship);
-//        round.setName(dto.getName());
-//        round.setLogo(fileRepository.findOne(dto.getLogo()));
-//        round.setStartDate(dto.getStartDate());
-//        round.setEndDate(dto.getEndDate());
-//        round.setTicketsUrl(dto.getTicketsUrl());
-//        return RoundMapper.map(roundRepository.save(round));
-//    }
+    public Track createTrack(TrackCreateDto trackCreateDto) {
+        Track track = new Track();
+        populateTrack(track, trackCreateDto);
+        return track;
+    }
 
     public void addTrack(Round round, TrackCreateDto trackCreateDto) {
         Track track = new Track();
@@ -111,16 +169,35 @@ public class RoundService {
         roundScheduleEntry.setStartDate(dto.getStartDate());
         roundScheduleEntry.setEndDate(dto.getEndDate());
         roundScheduleEntry.setRound(round);
-        roundScheduleRepository.save(roundScheduleEntry);
+        roundScheduleEntry = roundScheduleRepository.save(roundScheduleEntry);
+        updateRoundDates(round, roundScheduleEntry);
+    }
+
+//    public void updateRoundSchedule(RoundScheduleEntryUpdateDto dto) {
+//        RoundScheduleEntry roundScheduleEntry = roundScheduleRepository.findOne(dto.getId());
+//        roundScheduleEntry.setName(dto.getName());
+//        roundScheduleEntry.setStartDate(dto.getStartDate());
+//        roundScheduleEntry.setEndDate(dto.getEndDate());
+//        roundScheduleEntry = roundScheduleRepository.save(roundScheduleEntry);
+//        updateRoundDates(roundScheduleEntry.getRound(), roundScheduleEntry);
+//    }
+
+    private void updateRoundDates(Round round, RoundScheduleEntry scheduleEntry) {
+        boolean updateRound = false;
         if (round.getStartDate() == null && round.getEndDate() == null) {
-            round.setStartDate(dto.getStartDate());
-            round.setEndDate(dto.getEndDate());
-        } else if (round.getStartDate() != null && round.getStartDate().isAfter(dto.getStartDate())) {
-            round.setStartDate(dto.getStartDate());
-        } else if (round.getEndDate() != null && round.getEndDate().isBefore(dto.getEndDate())) {
-            round.setEndDate(dto.getEndDate());
+            round.setStartDate(scheduleEntry.getStartDate());
+            round.setEndDate(scheduleEntry.getEndDate());
+            updateRound = true;
+        } else if (round.getStartDate() != null && round.getStartDate().isAfter(scheduleEntry.getStartDate())) {
+            round.setStartDate(scheduleEntry.getStartDate());
+            updateRound = true;
+        } else if (round.getEndDate() != null && round.getEndDate().isBefore(scheduleEntry.getEndDate())) {
+            round.setEndDate(scheduleEntry.getEndDate());
+            updateRound = true;
         }
-        roundRepository.save(round);
+        if (updateRound) {
+            roundRepository.save(round);
+        }
     }
 
     public void delete(Long id){
@@ -210,7 +287,6 @@ public class RoundService {
         qualifiedDriver.setRanking(ranking);
         qualifiedDriver.setRound(round);
         qualifiedDriverRepository.save(qualifiedDriver);
-
     }
 
     public PlayoffTreeGraphicDisplayDto getPlayoffs(Long roundId) {
