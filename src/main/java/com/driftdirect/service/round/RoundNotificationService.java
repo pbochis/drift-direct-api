@@ -21,8 +21,13 @@ public class RoundNotificationService {
         this.gcmService = gcmService;
     }
 
-    public void notifyCurrentDriverUpdated(Long roundId) throws IOException {
+    public void notifyCurrentQualifierUpdated(Long roundId) throws IOException {
         String topic = topicBuilder.buildQualificationsTopic(roundId);
+        gcmService.notifyTopic(topic);
+    }
+
+    public void notifyCurrentBattleUpdated(Long roundId) throws IOException {
+        String topic = topicBuilder.buildBattlesTopic(roundId);
         gcmService.notifyTopic(topic);
     }
 }

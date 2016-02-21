@@ -17,6 +17,8 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 /**
  * Created by Paul on 12/22/2015.
  */
@@ -41,7 +43,7 @@ public class QualifierController {
     public ResponseEntity submitRunJudging(@PathVariable(value = "id") Long id,
                                                 @PathVariable(value = "runId") Long runId,
                                                 @RequestBody RunJudgingCreateDto runJudging,
-                                                @AuthenticationPrincipal User currentUser) {
+                                                @AuthenticationPrincipal User currentUser) throws IOException {
 
         if (!securityService.canJudgeQualifier(currentUser, id)) {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
@@ -53,7 +55,7 @@ public class QualifierController {
     @Secured(Authorities.ROLE_JUDGE)
     @RequestMapping(value = RestUrls.QUALIFIER_ID_START, method = RequestMethod.GET)
     public ResponseEntity<QualifierJudgeDto> startJudging(@PathVariable(value = "id") Long id,
-                                                          @AuthenticationPrincipal User currentUser) throws PreviousRunJudgingNotCompletedException {
+                                                          @AuthenticationPrincipal User currentUser) throws PreviousRunJudgingNotCompletedException, IOException {
         return new ResponseEntity<>(qualifierService.startQualifierJudging(id, currentUser.getPerson()), HttpStatus.OK);
     }
 

@@ -111,10 +111,13 @@ public class Battle implements Comparable<Battle> {
 
     @Override
     public boolean equals(Object obj) {
+        if (obj == null){
+            return false;
+        }
         if (!(obj instanceof Battle)) {
             return false;
         }
-        return order == ((Battle) obj).getOrder();
+        return id.equals(((Battle) obj).getId());
     }
 
     @Override

@@ -166,7 +166,11 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         if (configSettingRepository.findByKey(APPLICATION_INIT) == null){
             System.out.println("********************************** STARTED APP BOOTSTRAP ******************************");
             if (Arrays.asList(this.environment.getActiveProfiles()).contains("dev")){
-                initDevelopementDatabase();
+                try {
+                    initDevelopementDatabase();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             } else {
                 if (configSettingRepository.findByKey(BAYPARK_RESULTS_REDONE) == null) {
                     Round round = roundRepository.findOne(7L);
@@ -378,7 +382,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         return entryCreateDto;
     }
 
-    private void initDevelopementDatabase(){
+    private void initDevelopementDatabase() throws IOException {
         fCiob = saveFile("/img/cioban.jpg");
         fRom = saveFile("/img/rom.jpg");
         bImg = saveFile("/img/drift.jpg");
@@ -592,7 +596,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         return drivers;
     }
 
-    private void initChampionshipAndRounds(){
+    private void initChampionshipAndRounds() throws IOException {
         Championship c1 = createChampionship("DN1Z", saveFile("/img/championship_test.png"), bImg, demon, raceTech);
         Championship c2 = createChampionship("Romania Drift Allstars", saveFile("/img/allstars.jpg"), bImg);
         //TODO: refactor this
@@ -648,7 +652,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 //        mockPlayoffs(r1.getId(), judges);
     }
 
-    private void mockPlayoffs(Long roundId, List<Person> judges) {
+    private void mockPlayoffs(Long roundId, List<Person> judges) throws IOException {
         initSomeComments();
         playoffService.generatePlayoffTree(roundId);
         Round round = roundRepository.findOne(roundId);
@@ -728,7 +732,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
     }
 
-    private void submitRunJudging(Qualifier qualifier, Long runId, JudgeParticipation judge) {
+    private void submitRunJudging(Qualifier qualifier, Long runId, JudgeParticipation judge) throws IOException {
         Random r = new Random();
         RunJudgingCreateDto dto = new RunJudgingCreateDto();
         List<AwardedPointsCreateDto> awardedPoints = new ArrayList<>();

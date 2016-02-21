@@ -25,11 +25,13 @@ import com.driftdirect.repository.round.playoff.PlayoffStageRepository;
 import com.driftdirect.repository.round.playoff.PlayoffTreeRepository;
 import com.driftdirect.service.CommentService;
 import com.driftdirect.service.championship.driver.DriverParticipationService;
+import com.driftdirect.service.round.RoundNotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.SortedSet;
@@ -48,6 +50,8 @@ public class PlayoffService {
     private RoundDriverResultRepository roundResultRepository;
     private CommentService commentService;
     private DriverParticipationService driverParticipationService;
+    private RoundNotificationService roundNotificationService;
+
     @Autowired
     public PlayoffService(RoundDriverResultRepository roundResultRepository,
                           PlayoffTreeRepository playoffTreeRepository,
@@ -55,7 +59,8 @@ public class PlayoffService {
                           PlayoffStageRepository playoffStageRepository,
                           BattleRepository battleRepository,
                           CommentService commentService,
-                          DriverParticipationService driverParticipationService) {
+                          DriverParticipationService driverParticipationService,
+                          RoundNotificationService roundNotificationService) {
         this.playoffTreeRepository = playoffTreeRepository;
         this.roundRepository = roundRepository;
         this.playoffStageRepository = playoffStageRepository;
@@ -63,6 +68,7 @@ public class PlayoffService {
         this.commentService = commentService;
         this.roundResultRepository = roundResultRepository;
         this.driverParticipationService = driverParticipationService;
+        this.roundNotificationService = roundNotificationService;
     }
 
     public PlayoffBattleFullDto findBattle(Long id){
@@ -253,7 +259,26 @@ public class PlayoffService {
         return battle.getWinner() != null;
     }
 
-    public PlayoffJudgeDto startPlayoffJudging(Person judge, Long battleId) throws NoSuchElementException, PreviousRunJudgingNotCompletedException {
+    private void updateCurrentBattleAndNotify(PlayoffTree tree, Battle battle) throws IOException {
+        Round round = tree.getRound();
+        boolean notify = false;
+        if (battle == null){
+            if (tree.getCurrentBattle() == null){
+                return;
+            }else{
+                notify = true;
+            }
+        }else if (!battle.equals(tree.getCurrentBattle())){
+            notify = true;
+        }
+        if (notify){
+            tree.setCurrentBattle(battle);
+            tree = playoffTreeRepository.save(tree);
+            roundNotificationService.notifyCurrentBattleUpdated(round.getId());
+        }
+    }
+
+    public PlayoffJudgeDto startPlayoffJudging(Person judge, Long battleId) throws NoSuchElementException, PreviousRunJudgingNotCompletedException, IOException {
         Battle battle = battleRepository.findOne(battleId);
         if (battle == null){
             throw new NoSuchElementException("No such battle!");
@@ -263,9 +288,7 @@ public class PlayoffService {
             return null;
         }
 
-        PlayoffTree tree = battle.getPlayoffStage().getPlayoffTree();
-        tree.setCurrentBattle(battle);
-        playoffTreeRepository.save(tree);
+        updateCurrentBattleAndNotify(battle.getPlayoffStage().getPlayoffTree(), battle);
 
         BattleRound roundToJudge = null;
         BattleRoundRun runToJudge = null;
@@ -327,7 +350,7 @@ public class PlayoffService {
         throw new NoSuchElementException("No such playoff round!");
     }
 
-    public void submitPlayoffJudging(Person judge, Long battleId, PlayoffBattleRoundJudging judging) throws NoSuchElementException {
+    public void submitPlayoffJudging(Person judge, Long battleId, PlayoffBattleRoundJudging judging) throws NoSuchElementException, IOException {
         Battle battle = battleRepository.findOne(battleId);
         BattleRound round = findRound(battle, judging.getRoundId());
         BattleRoundRun run = null;
@@ -348,7 +371,7 @@ public class PlayoffService {
         }
     }
 
-    private void checkAndUpdateFinalScores(Battle battle) {
+    private void checkAndUpdateFinalScores(Battle battle) throws IOException {
         //Firstly, add the points for each driver;
         BattleRound round = battle.getBattleRounds().get(battle.getBattleRounds().size() - 1);
         boolean canUpdate = round.getFirstRun().getDriver1().getJudgings().size() == 3;
@@ -356,10 +379,7 @@ public class PlayoffService {
         if (!canUpdate)
             return;
         PlayoffTree tree = battle.getPlayoffStage().getPlayoffTree();
-        if (tree.getCurrentBattle().getId().equals(battle.getId())) {
-            tree.setCurrentBattle(null);
-            //maybe notify here
-        }
+       updateCurrentBattleAndNotify(tree, null);
         int firstDriverTotalScore = round.getFirstRun().getDriver1().getPoints()
                 + round.getSecondRun().getDriver1().getPoints();
         int secondDriverTotalScore = round.getFirstRun().getDriver2().getPoints()

@@ -145,19 +145,25 @@ public class QualifierService {
         return run;
     }
 
-    private void updateCurrentDriver(Qualifier qualifier) throws IOException {
-        Round round = qualifier.getRound();
+    private void updateCurrentDriver(Round round, Qualifier qualifier) throws IOException {
+        if (qualifier == null){
+            if (round.getCurrentDriver() != null){
+                round.setCurrentDriver(null);
+                roundRepository.save(round);
+                roundNotificationService.notifyCurrentQualifierUpdated(round.getId());
+            }
+        }
         Qualifier currentDriver = round.getCurrentDriver();
         if (currentDriver == null || !currentDriver.equals(qualifier)) {
             round.setCurrentDriver(qualifier);
             roundRepository.save(round);
-            roundNotificationService.notifyCurrentDriverUpdated(round.getId());
+            roundNotificationService.notifyCurrentQualifierUpdated(round.getId());
         }
     }
 
     public QualifierJudgeDto startQualifierJudging(Long qualifierId, Person judge) throws AccessDeniedException, PreviousRunJudgingNotCompletedException, IOException {
         Qualifier qualifier = qualifierRepository.findOne(qualifierId);
-        updateCurrentDriver(qualifier);
+        updateCurrentDriver(qualifier.getRound(), qualifier);
         JudgeParticipation participation = findJudgeParticipation(qualifier, judge);
         if (participation == null){
             throw new AccessDeniedException("You cannot judge at this qualifier");
@@ -187,7 +193,7 @@ public class QualifierService {
         return run;
     }
 
-    public void submitRunJudging(Long qualifierId, Long runId, RunJudgingCreateDto runJudgingDto, Person judge) throws AccessDeniedException, NoSuchElementException {
+    public void submitRunJudging(Long qualifierId, Long runId, RunJudgingCreateDto runJudgingDto, Person judge) throws AccessDeniedException, NoSuchElementException, IOException {
         //TODO: continue this with more details(such as entry speed and judge role separation)
         Qualifier qualifier = qualifierRepository.findOne(qualifierId);
         Run run = findRun(qualifier, runId);
@@ -229,12 +235,11 @@ public class QualifierService {
         qualifierRepository.save(qualifier);
     }
 
-    private void checkAndNotifyRunResult(Qualifier qualifier, Run run) {
+    private void checkAndNotifyRunResult(Qualifier qualifier, Run run) throws IOException {
         if (run.getJudgings().size() == 3) {
             //TODO: add GCM notify here
             Round round = qualifier.getRound();
-            round.setCurrentDriver(null);
-            roundRepository.save(round);
+            updateCurrentDriver(round, null);
         }
     }
 
