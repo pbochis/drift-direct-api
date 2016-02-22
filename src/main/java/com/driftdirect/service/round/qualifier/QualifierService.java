@@ -151,6 +151,7 @@ public class QualifierService {
                 round.setCurrentDriver(null);
                 roundRepository.save(round);
                 roundNotificationService.notifyCurrentQualifierUpdated(round.getId());
+                return;
             }
         }
         Qualifier currentDriver = round.getCurrentDriver();
