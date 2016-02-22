@@ -210,21 +210,17 @@ public class QualifierService {
         RunJudging runJudging = new RunJudging();
         runJudging.setJudge(participation);
         runJudging.setRun(run);
-        float totalAwardedPoints = 0;
         for (AwardedPointsCreateDto points : runJudgingDto.getAwardedPoints()) {
             AwardedPoints awardedPoints = new AwardedPoints();
             awardedPoints.setAwardedPoints(points.getAwardedPoints());
             awardedPoints.setAllocation(pointsAllocationRepository.findOne(points.getPointsAllocation()));
             runJudging.addAwardedPoints(awardedPoints);
-            totalAwardedPoints += points.getAwardedPoints();
         }
         for (CommentCreateDto comment: runJudgingDto.getComments()) {
             runJudging.addComment(commentService.findOrCreate(comment));
         }
         run.addJudging(runJudging);
-        run.addPoints(totalAwardedPoints);
         qualifierRepository.save(qualifier);
-        updateQualifierScores(qualifier);
         checkAndNotifyRunResult(qualifier, run);
     }
 
@@ -239,6 +235,15 @@ public class QualifierService {
     private void checkAndNotifyRunResult(Qualifier qualifier, Run run) throws IOException {
         if (run.getJudgings().size() == 3) {
             //TODO: add GCM notify here
+            //update run scores
+            float runPoints = 0;
+            for (RunJudging judging : run.getJudgings()) {
+                for (AwardedPoints points : judging.getAwardedPoints()) {
+                    runPoints += points.getAwardedPoints();
+                }
+            }
+            run.setTotalPoints(runPoints);
+            updateQualifierScores(qualifier);
             Round round = qualifier.getRound();
             updateCurrentDriver(round, null);
         }
