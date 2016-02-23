@@ -92,7 +92,7 @@ public class PlayoffMapper {
         }
         List<Person> secondRunJudges = round.getSecondRun().getDriver1().getJudgings().stream().map(e -> e.getJudge()).collect(Collectors.toList());
         for (Person judge: secondRunJudges){
-            dto.addSecondRunScore(mapScores(round.getFirstRun(), judge));
+            dto.addSecondRunScore(mapScores(round.getSecondRun(), judge));
         }
         return dto;
     }

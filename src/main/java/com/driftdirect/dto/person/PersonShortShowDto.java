@@ -4,6 +4,9 @@ import com.driftdirect.domain.person.PersonType;
 import com.driftdirect.dto.person.driver.DriverDetailsShortShowDto;
 import org.joda.time.DateTime;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Paul on 11/23/2015.
  */
@@ -18,6 +21,8 @@ public class PersonShortShowDto {
     private Long profilePicture;
     private Long country;
     private PersonType personType;
+
+    private List<Long> gallery;
 
     private DriverDetailsShortShowDto driverDetails;
 
@@ -99,5 +104,20 @@ public class PersonShortShowDto {
 
     public void setPersonType(PersonType personType) {
         this.personType = personType;
+    }
+
+    public List<Long> getGallery() {
+        return gallery;
+    }
+
+    public void setGallery(List<Long> gallery) {
+        this.gallery = gallery;
+    }
+
+    public void addToGallery(Long item) {
+        if (this.gallery == null) {
+            this.gallery = new ArrayList<>();
+        }
+        gallery.add(item);
     }
 }

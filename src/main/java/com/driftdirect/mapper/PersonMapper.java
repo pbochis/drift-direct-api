@@ -41,6 +41,10 @@ public class PersonMapper {
             }
             dto.setDriverDetails(driverDetails);
         }
+
+        for (File f : person.getGallery()) {
+            dto.addToGallery(f.getId());
+        }
         return dto;
     }
 
