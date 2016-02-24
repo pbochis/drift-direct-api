@@ -268,17 +268,24 @@ public class RoundService {
         roundResult.setDriver(driver);
         roundResult.setQualifierRanking(place);
         roundResult.setRound(round);
-        if (place == 1) roundResult.setQualifierPoints(12);
-        else if (place == 2) roundResult.setQualifierPoints(10);
-        else if (place == 3) roundResult.setQualifierPoints(8);
-        else if (place == 4) roundResult.setQualifierPoints(6);
-        else if (place == 5 || place == 6) roundResult.setQualifierPoints(4);
-        else if (place == 7 || place == 8) roundResult.setQualifierPoints(3);
-        else if (place >= 9 && place <= 12) roundResult.setQualifierPoints(2);
-        else if (place >= 13 && place <= 16) roundResult.setQualifierPoints(1);
-        else if (place >= 17 && place <= 24) roundResult.setQualifierPoints(0.5F);
-        else roundResult.setQualifierPoints(0F);
+        roundResult.setQualifierPoints(getPointsForRanking(place));
         roundDriverResultRepository.save(roundResult);
+    }
+
+    public float getPointsForRanking(int place) {
+        if (place == 1)
+            return 7;
+        if (place == 2)
+            return 6;
+        if (place == 3)
+            return 5;
+        if (place >= 4 && place <= 8)
+            return 4;
+        if (place >= 9 && place <= 16)
+            return 3;
+        if (place >= 17 && place <= 32)
+            return 2;
+        return 0;
     }
 
     private void createQualifiedDriver(Person driver, int ranking, Round round) {
