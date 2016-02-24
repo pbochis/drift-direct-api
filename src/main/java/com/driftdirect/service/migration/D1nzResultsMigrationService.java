@@ -42,7 +42,7 @@ public class D1nzResultsMigrationService {
     private DriverParticipationRepository driverParticipationRepository;
 
     public void doMigration() {
-        Championship d1nz = championshipRepository.findOne(1L);
+        Championship d1nz = championshipRepository.findOne(4L);
         //Step 1: clear championship results
         for (DriverParticipation participation : d1nz.getDrivers()) {
             DriverParticipationResults results = participation.getResults();
