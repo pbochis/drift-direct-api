@@ -529,16 +529,20 @@ public class PlayoffService {
         driverParticipationService.addResult(round.getChampionship(), result);
     }
 
-    private float getPointsForRanking(int ranking) {
-        float points = 0F;
-        if (ranking == 1) points = 100F;
-        else if (ranking == 2) points = 88F;
-        else if (ranking == 3) points = 78F;
-        else if (ranking == 4) points = 69F;
-        else if (ranking >= 5 && ranking <= 8) points = 61F;
-        else if (ranking >= 9 && ranking <= 16) points = 54F;
-        else points = 24F;
-        return points;
+    public float getPointsForRanking(int ranking) {
+        if (ranking == 1)
+            return 100;
+        if (ranking == 2)
+            return 80;
+        if (ranking == 3)
+            return 68;
+        if (ranking == 4)
+            return 60;
+        if (ranking >= 5 && ranking <= 8)
+            return 48;
+        if (ranking >= 9 && ranking <= 16)
+            return 32;
+        return 16;
     }
 
     // That means that this judge submitted scores for all the battle rounds already created.
