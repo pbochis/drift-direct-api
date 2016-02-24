@@ -484,7 +484,8 @@ public class PlayoffService {
                 throw new AccessDeniedException("You have already judged this battle run!");
             }
         }
-        driver.addPoints(driverJudging.getPoints());
+        //not here
+//        driver.addPoints(driverJudging.getPoints());
         BattleRoundRunDriverJudging newJudging = new BattleRoundRunDriverJudging();
         newJudging.setJudge(judge);
         newJudging.setPoints(driverJudging.getPoints());
@@ -492,6 +493,14 @@ public class PlayoffService {
             newJudging.addComment(commentService.findOrCreate(comment));
         }
         driver.addJudging(newJudging);
+        if (driver.getJudgings().size() == 3) {
+            //update final points now that all judges submited
+            int points = 0;
+            for (BattleRoundRunDriverJudging judging : driver.getJudgings()) {
+                points += judging.getPoints();
+            }
+            driver.setPoints(points);
+        }
     }
 
     private void generateFinalResults(PlayoffTree tree) {
