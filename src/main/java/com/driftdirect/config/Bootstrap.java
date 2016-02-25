@@ -643,23 +643,28 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         createJudgeParticipation(judge3, c1, JudgeType.STYLE, 20);
 
         initComments();
-        judgeQualifiers(c1, r1, drivers);
-        judgeQualifiers(c1, r2, drivers);
+        judgeQualifiers(c1, r1, drivers, 0, 3);
+//        judgeQualifiers(c1, r2, drivers, 3, 0);
     }
 
-    private void judgeQualifiers(Championship championship, Round round, List<Person> drivers) throws IOException {
+    private void judgeQualifiers(Championship championship, Round round, List<Person> drivers, int remainder, int zeros) throws IOException {
         List<Qualifier> qualifiers = new ArrayList<>();
         for (Person p : drivers) {
             qualifiers.add(qualifierService.registerDriver(round.getId(), p.getId()));
         }
-        for (int i = 0; i < qualifiers.size(); i++) {
+        for (int i = 0; i < qualifiers.size() - remainder; i++) {
             Qualifier qualifier = qualifiers.get(i);
             for (JudgeParticipation jp : championship.getJudges()) {
-                submitRunJudging(qualifier, qualifier.getFirstRun().getId(), jp);
-                submitRunJudging(qualifier, qualifier.getSecondRun().getId(), jp);
+                if (zeros > 0) {
+                    submitRunJudging(qualifier, qualifier.getFirstRun().getId(), jp, true);
+                    submitRunJudging(qualifier, qualifier.getSecondRun().getId(), jp, true);
+                } else {
+                    submitRunJudging(qualifier, qualifier.getFirstRun().getId(), jp);
+                    submitRunJudging(qualifier, qualifier.getSecondRun().getId(), jp);
+                }
             }
+            zeros--;
         }
-
     }
 
     private void mockPlayoffs(Long roundId, List<Person> judges) throws IOException {
@@ -743,12 +748,20 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
     }
 
     private void submitRunJudging(Qualifier qualifier, Long runId, JudgeParticipation judge) throws IOException {
+        submitRunJudging(qualifier, runId, judge, false);
+    }
+
+    private void submitRunJudging(Qualifier qualifier, Long runId, JudgeParticipation judge, boolean zero) throws IOException {
         Random r = new Random();
         RunJudgingCreateDto dto = new RunJudgingCreateDto();
         List<AwardedPointsCreateDto> awardedPoints = new ArrayList<>();
         for (PointsAllocation allocation : judge.getPointsAllocations()) {
             AwardedPointsCreateDto points = new AwardedPointsCreateDto();
-            points.setAwardedPoints(r.nextInt(allocation.getMaxPoints()) + 1);
+            if (zero) {
+                points.setAwardedPoints(0);
+            } else {
+                points.setAwardedPoints(r.nextInt(allocation.getMaxPoints()) + 1);
+            }
             points.setPointsAllocation(allocation.getId());
             awardedPoints.add(points);
         }

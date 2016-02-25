@@ -43,6 +43,9 @@ public class D1nzResultsMigrationService {
 
     public void doMigration() {
         Championship d1nz = championshipRepository.findOne(4L);
+        if (d1nz == null) {
+            return;
+        }
         //Step 1: clear championship results
         for (DriverParticipation participation : d1nz.getDrivers()) {
             DriverParticipationResults results = participation.getResults();
@@ -57,7 +60,7 @@ public class D1nzResultsMigrationService {
 
             for (RoundDriverResult roundResult : round.getRoundResults()) {
                 //Step 2.1: set correct points for this round
-                float qualifierPoints = roundService.getPointsForRanking(roundResult.getQualifierRanking());
+                float qualifierPoints = roundService.getPointsForRanking(roundResult.getQualifierRanking(), false);
                 float playoffPoints = playoffService.getPointsForRanking(roundResult.getPlayoffRanking());
                 roundResult.setQualifierPoints(qualifierPoints);
                 roundResult.setPlayoffPoints(playoffPoints);

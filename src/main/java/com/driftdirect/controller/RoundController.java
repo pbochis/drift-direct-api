@@ -106,21 +106,20 @@ public class RoundController {
     }
 
     @RequestMapping(path = RestUrls.ROUND_ID_PLAYOFF_START, method = RequestMethod.POST)
-    public ResponseEntity generatePlayoffTree(@PathVariable Long id) {
+    public ResponseEntity generatePlayoffTree(@PathVariable Long id,
+                                              @AuthenticationPrincipal User currentUser) {
+        if (!securityService.canGeneratePlayoffs(currentUser, id)) {
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+        }
         if (roundService.finishQualifiers(id)) {
             playoffService.generatePlayoffTree(id);
+            return new ResponseEntity(HttpStatus.CREATED);
         }
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity(HttpStatus.PRECONDITION_FAILED);
     }
     @RequestMapping(path = RestUrls.ROUND_ID_PLAYOFF, method = RequestMethod.GET)
-    public ResponseEntity<PlayoffTreeGraphicDisplayDto> getRoundPlayoffs(@PathVariable Long id,
-                                                                         @AuthenticationPrincipal User currentUser) {
+    public ResponseEntity<PlayoffTreeGraphicDisplayDto> getRoundPlayoffs(@PathVariable Long id) {
         PlayoffTreeGraphicDisplayDto playoffs = roundService.getPlayoffs(id);
-        if (playoffs == null && securityService.canGeneratePlayoffs(currentUser, id)) {
-            if (roundService.finishQualifiers(id)) {
-                playoffs = playoffService.generatePlayoffTree(id);
-            }
-        }
         return new ResponseEntity<>(playoffs, HttpStatus.OK);
     }
 

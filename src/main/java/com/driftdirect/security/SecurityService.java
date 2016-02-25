@@ -146,10 +146,13 @@ public class SecurityService {
     }
 
     public boolean canGeneratePlayoffs(User user, Long roundId) {
-        Round round = roundRepository.findOne(roundId);
+        if (isAdmin(user)) {
+            return true;
+        }
         if (user == null) {
             return false;
         }
+        Round round = roundRepository.findOne(roundId);
         if (round == null) {
             return false;
         }
