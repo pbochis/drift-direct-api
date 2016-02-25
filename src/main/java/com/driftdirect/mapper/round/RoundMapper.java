@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
  * Created by Paul on 11/18/2015.
  */
 public class RoundMapper {
-    public static RoundShowDto map(Round round, List<Qualifier> sortedQualifiers) {
+    public static RoundShowDto map(Round round, List<Qualifier> sortedQualifiers, List<Qualifier> sortedResults) {
         RoundShowDto dto = new RoundShowDto();
         dto.setId(round.getId());
         dto.setName(round.getName());
@@ -39,6 +39,7 @@ public class RoundMapper {
             dto.setTrack(track);
         }
         dto.setQualifiers(QualifierMapper.mapShort(sortedQualifiers));
+        dto.setQualificationResults(QualifierMapper.mapShort(sortedResults));
         return dto;
     }
 

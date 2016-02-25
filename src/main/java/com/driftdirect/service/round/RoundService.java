@@ -2,6 +2,7 @@ package com.driftdirect.service.round;
 
 import com.driftdirect.domain.championship.Championship;
 import com.driftdirect.domain.championship.driver.DriverParticipation;
+import com.driftdirect.domain.championship.driver.DriverParticipationResults;
 import com.driftdirect.domain.person.Person;
 import com.driftdirect.domain.round.Round;
 import com.driftdirect.domain.round.RoundDriverResult;
@@ -32,10 +33,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Comparator;
-import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -173,15 +171,6 @@ public class RoundService {
         updateRoundDates(round, roundScheduleEntry);
     }
 
-//    public void updateRoundSchedule(RoundScheduleEntryUpdateDto dto) {
-//        RoundScheduleEntry roundScheduleEntry = roundScheduleRepository.findOne(dto.getId());
-//        roundScheduleEntry.setName(dto.getName());
-//        roundScheduleEntry.setStartDate(dto.getStartDate());
-//        roundScheduleEntry.setEndDate(dto.getEndDate());
-//        roundScheduleEntry = roundScheduleRepository.save(roundScheduleEntry);
-//        updateRoundDates(roundScheduleEntry.getRound(), roundScheduleEntry);
-//    }
-
     private void updateRoundDates(Round round, RoundScheduleEntry scheduleEntry) {
         boolean updateRound = false;
         if (round.getStartDate() == null && round.getEndDate() == null) {
@@ -226,7 +215,21 @@ public class RoundService {
                 return p1.compareTo(p2);
             }
         });
-        return RoundMapper.map(round, qualifiers);
+        List<Qualifier> results = new ArrayList<>(round.getQualifiers());
+        results.sort((q1, q2) -> {
+            float dif = q2.getFinalScore() - q1.getFinalScore();
+            if (dif != 0) {
+                return dif > 0 ? 1 : -1;
+            }
+            dif = Math.min(q2.getFirstRun().getTotalPoints(), q2.getSecondRun().getTotalPoints()) - Math.min(q1.getFirstRun().getTotalPoints(), q1.getSecondRun().getTotalPoints());
+            if (dif != 0) {
+                return dif > 0 ? 1 : -1;
+            }
+            float driver1ChampPoints = getChampionshipPoints(q1);
+            float driver2ChampPoints = getChampionshipPoints(q2);
+            return ((driver2ChampPoints - driver1ChampPoints) > 0) ? 1 : -1;
+        });
+        return RoundMapper.map(round, qualifiers, results);
     }
 
     public boolean finishQualifiers(Long roundId) {
@@ -239,6 +242,7 @@ public class RoundService {
                 return false;
             }
         }
+        Championship championship = round.getChampionship();
         List<Qualifier> qualifiers = round.getQualifiers();
         qualifiers.sort((o1, o2) -> {
             float dif = o2.getFinalScore() - o1.getFinalScore();
@@ -249,30 +253,49 @@ public class RoundService {
             if (dif != 0) {
                 return dif > 0 ? 1 : -1;
             }
-            return 0;
+            float driver1ChampPoints = getChampionshipPoints(o1);
+            float driver2ChampPoints = getChampionshipPoints(o2);
+            return driver2ChampPoints - driver1ChampPoints > 0 ? 1 : -1;
         });
-        Championship championship = round.getChampionship();
+
         for (int i = 0; i < qualifiers.size(); i++) {
             Qualifier driver = qualifiers.get(i);
             int place = i + 1;
-            if (place <= championship.getPlayoffSize()) {
+            boolean dnq = true;
+            if (place <= championship.getPlayoffSize() && driver.getFinalScore() > 0) {
                 createQualifiedDriver(driver.getDriver(), place, round);
+                dnq = false;
             }
-            createRoundResult(driver.getDriver(), place, round);
+            createRoundResult(driver.getDriver(), place, round, dnq);
         }
         return true;
     }
 
-    private void createRoundResult(Person driver, int place, Round round) {
+    private float getChampionshipPoints(Qualifier qualifier) {
+        Championship c = qualifier.getRound().getChampionship();
+        DriverParticipation participation = driverParticipationRepository.findByChampionshipIdAndDriverId(c.getId(), qualifier.getDriver().getId());
+        if (participation == null) {
+            return 0;
+        }
+        DriverParticipationResults results = participation.getResults();
+        if (results == null) {
+            return 0;
+        }
+        return results.getTotalPoints();
+    }
+
+    private void createRoundResult(Person driver, int place, Round round, boolean dnq) {
         RoundDriverResult roundResult = new RoundDriverResult();
         roundResult.setDriver(driver);
         roundResult.setQualifierRanking(place);
         roundResult.setRound(round);
-        roundResult.setQualifierPoints(getPointsForRanking(place));
+        roundResult.setQualifierPoints(getPointsForRanking(place, dnq));
         roundDriverResultRepository.save(roundResult);
     }
 
-    public float getPointsForRanking(int place) {
+    public float getPointsForRanking(int place, boolean dnq) {
+        if (dnq)
+            return 1;
         if (place == 1)
             return 7;
         if (place == 2)

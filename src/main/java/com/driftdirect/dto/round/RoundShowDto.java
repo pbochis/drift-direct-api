@@ -23,6 +23,7 @@ public class RoundShowDto {
     private List<RoundScheduleEntryShowDto> schedule;
 
     private List<QualifierShortDto> qualifiers;
+    private List<QualifierShortDto> qualificationResults;
 
     public List<QualifierShortDto> getQualifiers() {
         return qualifiers;
@@ -102,5 +103,13 @@ public class RoundShowDto {
 
     public void setCurrentDriver(QualifierShortDto currentDriver) {
         this.currentDriver = currentDriver;
+    }
+
+    public List<QualifierShortDto> getQualificationResults() {
+        return qualificationResults;
+    }
+
+    public void setQualificationResults(List<QualifierShortDto> qualificationResults) {
+        this.qualificationResults = qualificationResults;
     }
 }
