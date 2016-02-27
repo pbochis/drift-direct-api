@@ -18,6 +18,7 @@ public class PlayoffTree {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    //ToDO: replace this with Map<int, PlayoffStage>, int being playoffstage.order
     @OneToMany(cascade = CascadeType.ALL)
     @SortNatural
     private SortedSet<PlayoffStage> playoffStages = new TreeSet<>();

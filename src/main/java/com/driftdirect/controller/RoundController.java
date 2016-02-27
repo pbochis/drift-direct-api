@@ -120,6 +120,9 @@ public class RoundController {
     @RequestMapping(path = RestUrls.ROUND_ID_PLAYOFF, method = RequestMethod.GET)
     public ResponseEntity<PlayoffTreeGraphicDisplayDto> getRoundPlayoffs(@PathVariable Long id) {
         PlayoffTreeGraphicDisplayDto playoffs = roundService.getPlayoffs(id);
+        if (playoffs == null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
         return new ResponseEntity<>(playoffs, HttpStatus.OK);
     }
 
