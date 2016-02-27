@@ -87,7 +87,13 @@ public class RoundService {
         DateTime startDate = null;
         DateTime endDate = null;
         for (RoundScheduleEntryUpdateDto entryUpdateDto : dto.getScheduele()) {
-            RoundScheduleEntry entry = roundScheduleRepository.findOne(entryUpdateDto.getId());
+            RoundScheduleEntry entry;
+            if (entryUpdateDto.getId() == null) {
+                entry = new RoundScheduleEntry();
+                entry.setRound(round);
+            } else {
+                entry = roundScheduleRepository.findOne(entryUpdateDto.getId());
+            }
             entry.setName(entryUpdateDto.getName());
             entry.setStartDate(entryUpdateDto.getStartDate());
             entry.setEndDate(entryUpdateDto.getEndDate());
