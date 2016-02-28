@@ -239,9 +239,10 @@ public class RoundService {
     }
 
     public boolean finishQualifiers(Long roundId) {
+        //TODO:  need to lock this so that there are no duplicates generated.
         Round round = roundRepository.findOne(roundId);
         // replace this magic number with a minimum size for qualified drivers
-        if (round.getQualifiers().size() < 24)
+        if (round.getQualifiers().size() < 16)
             return false;
         for (Qualifier qualifier : round.getQualifiers()) {
             if (qualifier.getFirstRun().getJudgings().size() != 3 || qualifier.getSecondRun().getJudgings().size() != 3) {

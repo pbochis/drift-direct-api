@@ -1,10 +1,12 @@
 package com.driftdirect.service.migration;
 
+import com.driftdirect.domain.ConfigSetting;
 import com.driftdirect.domain.championship.Championship;
 import com.driftdirect.domain.championship.driver.DriverParticipation;
 import com.driftdirect.domain.championship.driver.DriverParticipationResults;
 import com.driftdirect.domain.round.Round;
 import com.driftdirect.domain.round.RoundDriverResult;
+import com.driftdirect.repository.ConfigSettingRepository;
 import com.driftdirect.repository.championship.ChampionshipRepository;
 import com.driftdirect.repository.championship.driver.DriverParticipationRepository;
 import com.driftdirect.repository.championship.driver.DriverParticipationResultsRepository;
@@ -22,6 +24,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class D1nzResultsMigrationService {
 
+    private final String D1NZ_RESULTS_RECALCULATED = "d1nz_recalculated";
+
+    @Autowired
+    private ConfigSettingRepository configSettingRepository;
 
     @Autowired
     private ChampionshipRepository championshipRepository;
@@ -42,6 +48,9 @@ public class D1nzResultsMigrationService {
     private DriverParticipationRepository driverParticipationRepository;
 
     public void doMigration() {
+        if (configSettingRepository.findByKey(D1NZ_RESULTS_RECALCULATED) != null) {
+            return;
+        }
         Championship d1nz = championshipRepository.findOne(4L);
         if (d1nz == null) {
             return;
@@ -73,6 +82,10 @@ public class D1nzResultsMigrationService {
                 driverParticipationResultsRepository.save(champResults);
             }
         }
+
+        ConfigSetting configSetting = new ConfigSetting();
+        configSetting.setKey(D1NZ_RESULTS_RECALCULATED);
+        configSettingRepository.save(configSetting);
     }
 
 }

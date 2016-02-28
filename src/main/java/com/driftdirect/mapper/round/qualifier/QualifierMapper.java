@@ -15,6 +15,7 @@ import com.driftdirect.mapper.ChampionshipMapper;
 import com.driftdirect.mapper.PersonMapper;
 import com.driftdirect.mapper.comment.CommentMapper;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -88,12 +89,13 @@ public class QualifierMapper {
         dto.setId(run.getId());
         dto.setEntrySpeed(run.getEntrySpeed());
         dto.setTotalPoints(run.getTotalPoints());
-        dto.setJudgings(run
+        List<RunJudgingDto> judgings = run
             .getJudgings()
             .stream()
             .map(QualifierMapper::mapRunJuding)
-            .collect(Collectors.toList())
-        );
+                .collect(Collectors.toList());
+        Collections.sort(judgings);
+        dto.setJudgings(judgings);
         return dto;
     }
 
