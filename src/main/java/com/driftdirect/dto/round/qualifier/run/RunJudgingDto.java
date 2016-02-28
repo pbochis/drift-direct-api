@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by Paul on 12/21/2015.
  */
-public class RunJudgingDto {
+public class RunJudgingDto implements Comparable<RunJudgingDto> {
     private Long id;
     private JudgeParticipationDto judgeParticipation;
     private List<AwardedPointsDto> awardedPoints;
@@ -44,5 +44,10 @@ public class RunJudgingDto {
 
     public void setComments(List<CommentDto> comments) {
         this.comments = comments;
+    }
+
+    @Override
+    public int compareTo(RunJudgingDto o) {
+        return judgeParticipation.getJudgeType().compareTo(o.getJudgeParticipation().getJudgeType());
     }
 }

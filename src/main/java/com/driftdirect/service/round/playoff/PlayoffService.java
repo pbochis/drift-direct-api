@@ -95,6 +95,7 @@ public class PlayoffService {
     }
 
     public PlayoffTreeGraphicDisplayDto generatePlayoffTree(Long roundId) {
+        //TODO: Migrate drivers to round 2 if two battles in a row are autowin(cases where drivers are < 24)
         Round round = roundRepository.findOne(roundId);
         PlayoffTree tree = new PlayoffTree();
         tree.setRound(round);
