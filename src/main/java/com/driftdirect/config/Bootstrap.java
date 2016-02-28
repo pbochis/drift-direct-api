@@ -55,6 +55,7 @@ import com.driftdirect.service.UserService;
 import com.driftdirect.service.championship.ChampionshipService;
 import com.driftdirect.service.championship.driver.DriverParticipationService;
 import com.driftdirect.service.championship.judge.JudgeParticipationService;
+import com.driftdirect.service.migration.D1nzMissingBattleMigrationService;
 import com.driftdirect.service.migration.D1nzResultsMigrationService;
 import com.driftdirect.service.round.RoundService;
 import com.driftdirect.service.round.playoff.PlayoffService;
@@ -85,7 +86,7 @@ import java.util.*;
 public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
     private final String APPLICATION_INIT = "init";
     private final String BAYPARK_RESULTS_REDONE = "baypark_results";
-    private final String D1NZ_RESULTS_RECALCULATED = "d1nz_recalculated";
+
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -141,6 +142,9 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
     private DriverParticipationService driverParticipationService;
     @Autowired
     private D1nzResultsMigrationService d1nzResultsMigrationService;
+    @Autowired
+    private D1nzMissingBattleMigrationService d1nzMissingBattleMigrationService;
+
 
     @Autowired
     public Bootstrap(
@@ -165,14 +169,14 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         this.resultsRepository = resultsRepository;
     }
 
+    private void runMigrationServices() {
+        d1nzResultsMigrationService.doMigration();
+        d1nzMissingBattleMigrationService.doMigration();
+    }
+
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event){
-        if (configSettingRepository.findByKey(D1NZ_RESULTS_RECALCULATED) == null) {
-            d1nzResultsMigrationService.doMigration();
-            ConfigSetting configSetting = new ConfigSetting();
-            configSetting.setKey(D1NZ_RESULTS_RECALCULATED);
-            configSettingRepository.save(configSetting);
-        }
+        runMigrationServices();
         if (configSettingRepository.findByKey(APPLICATION_INIT) == null){
             System.out.println("********************************** STARTED APP BOOTSTRAP ******************************");
             if (Arrays.asList(this.environment.getActiveProfiles()).contains("dev")){
@@ -628,8 +632,6 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         createDriverParticipation(driver4, c1);
         createDriverParticipation(driver5, c1);
 
-        List<Person> drivers = createDrivers(27);
-
         Person judge1 = createPerson("Diana V", "Drifitng judge", saveFile("/img/j1.jpg"), PersonType.Judge);
         createUser("line", "line", "judge@judge.org", judgeRole, judge1.getId());
         createJudgeParticipation(judge1, c1, JudgeType.LINE, 30, 10);
@@ -643,6 +645,8 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         createJudgeParticipation(judge3, c1, JudgeType.STYLE, 20);
 
         initComments();
+        List<Person> drivers = createDrivers(20);
+
         judgeQualifiers(c1, r1, drivers, 0, 3);
 //        judgeQualifiers(c1, r2, drivers, 3, 0);
     }

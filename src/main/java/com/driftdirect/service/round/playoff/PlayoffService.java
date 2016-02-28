@@ -105,7 +105,49 @@ public class PlayoffService {
         tree.addStage(generateStage(4, 3, tree));
         tree.addStage(generateStage(2, 4, tree));
         tree.addStage(generateFinalsStage(tree));
+        updateVoidBattles(tree);
         return PlayoffMapper.mapPlayoffForDisplay(playoffTreeRepository.save(tree));
+    }
+
+    private void updateVoidBattles(PlayoffTree tree) {
+        //TODO: Fix battle tree to accept less than 16 drivers
+        PlayoffStage stage = findStage(tree, 1);
+        int battleNumber = stage.getBattles().size();
+        for (int i = 1; i <= battleNumber; i++) {
+            Battle battle = findBattle(stage, i);
+            Battle pairBattle = findPairBattle(battle);
+            if (battle.getWinner() != null && pairBattle.getWinner() != null) {
+                moveWinnerUp(battle);
+            }
+        }
+    }
+
+    private PlayoffStage findStage(PlayoffTree tree, int order) {
+        for (PlayoffStage stage : tree.getPlayoffStages()) {
+            if (stage.getOrder() == order) {
+                return stage;
+            }
+        }
+        return null;
+    }
+
+    private Battle findPairBattle(Battle battle) {
+        int pairBattleOrder = -1;
+        if (battle.getOrder() % 2 == 1) {
+            pairBattleOrder = battle.getOrder() + 1;
+        } else {
+            pairBattleOrder = battle.getOrder() - 1;
+        }
+        return findBattle(battle.getPlayoffStage(), pairBattleOrder);
+    }
+
+    private Battle findBattle(PlayoffStage stage, int order) {
+        for (Battle stageBattle : stage.getBattles()) {
+            if (stageBattle.getOrder() == order) {
+                return stageBattle;
+            }
+        }
+        return null;
     }
 
     private PlayoffStage generateFirstStage(Round round, PlayoffTree tree) {
@@ -168,7 +210,7 @@ public class PlayoffService {
     }
 
     private void addBattle(PlayoffStage stage, List<QualifiedDriver> drivers, int order, int highPlace, Integer lowPlace) {
-        QualifiedDriver driver1 = drivers.get(highPlace - 1);
+        QualifiedDriver driver1 = highPlace > drivers.size() ? null : drivers.get(highPlace - 1);
         QualifiedDriver driver2 = lowPlace > drivers.size() ? null : drivers.get(lowPlace - 1);
         createBattle(stage, order, driver1, driver2);
     }
@@ -408,7 +450,7 @@ public class PlayoffService {
         }
     }
 
-    private void moveWinnerUp(Battle battle) {
+    public void moveWinnerUp(Battle battle) {
         if (battle.getPlayoffStage().getBattles().size() == 1) {
             //the winner of this battle is the winner of the championship. Grats.
             return;
@@ -427,7 +469,7 @@ public class PlayoffService {
             }
         }
         // found pair battle
-        // if it doesn't have a winner, then the battle forom the next stage will be decided when pairBattle will
+        // if it doesn't have a winner, then the battle from the next stage will be decided when pairBattle will
         // have a winner.
         if (pairBattle.getWinner() == null) {
             return;
@@ -458,6 +500,10 @@ public class PlayoffService {
                 if (nextStageBattle.getOrder() == nextBattleOrder) {
                     newBattle = nextStageBattle;
                 }
+            }
+            if (newBattle.getDriver1() != null && newBattle.getDriver2() != null) {
+                //that means this has already been generated
+                return;
             }
             newBattle.setDriver1(winner1);
             newBattle.setDriver2(winner2);
