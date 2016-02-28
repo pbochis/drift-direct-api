@@ -4,10 +4,6 @@ import com.driftdirect.domain.user.Role;
 import com.driftdirect.domain.user.User;
 import com.driftdirect.dto.user.UserShowDto;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -21,6 +17,9 @@ public class UserMapper {
         dto.setRoles(user.getRoles().stream().map(Role::getAuthority).collect(Collectors.toSet()));
         dto.setFirstName(user.getPerson().getFirstName());
         dto.setLastName(user.getPerson().getLastName());
+        if (user.getPerson().getProfilePicture() != null) {
+            dto.setProfilePicture(user.getPerson().getProfilePicture().getId());
+        }
         return dto;
     }
 

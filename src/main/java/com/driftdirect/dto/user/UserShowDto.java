@@ -1,7 +1,5 @@
 package com.driftdirect.dto.user;
 
-import com.driftdirect.domain.user.Role;
-
 import java.util.Set;
 
 /**
@@ -12,6 +10,8 @@ public class UserShowDto {
     private String email;
     private String firstName;
     private String lastName;
+
+    private Long profilePicture;
 
     private Set<String> roles;
 
@@ -53,5 +53,13 @@ public class UserShowDto {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public Long getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(Long profilePicture) {
+        this.profilePicture = profilePicture;
     }
 }
