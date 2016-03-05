@@ -1,15 +1,20 @@
 package com.driftdirect.mapper.round;
 
+import com.driftdirect.domain.file.File;
+import com.driftdirect.domain.news.ImageLink;
+import com.driftdirect.domain.person.Person;
 import com.driftdirect.domain.round.Round;
 import com.driftdirect.domain.round.RoundDriverResult;
 import com.driftdirect.domain.round.RoundScheduleEntry;
 import com.driftdirect.domain.round.qualifiers.Qualifier;
 import com.driftdirect.dto.round.*;
 import com.driftdirect.dto.round.track.TrackDto;
+import com.driftdirect.mapper.ImageLinkMapper;
 import com.driftdirect.mapper.PersonMapper;
 import com.driftdirect.mapper.round.qualifier.QualifierMapper;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -17,7 +22,7 @@ import java.util.stream.Collectors;
  * Created by Paul on 11/18/2015.
  */
 public class RoundMapper {
-    public static RoundShowDto map(Round round, List<Qualifier> sortedQualifiers, List<Qualifier> sortedResults) {
+    public static RoundShowDto map(Round round, List<Qualifier> sortedQualifiers, List<Qualifier> sortedResults, Map<Person, Float> partialScores) {
         RoundShowDto dto = new RoundShowDto();
         dto.setId(round.getId());
         dto.setName(round.getName());
@@ -40,6 +45,23 @@ public class RoundMapper {
         }
         dto.setQualifiers(QualifierMapper.mapShort(sortedQualifiers));
         dto.setQualificationResults(QualifierMapper.mapShort(sortedResults));
+
+        for (File f : round.getGallery()) {
+            dto.addToGallery(f.getId());
+        }
+
+        for (ImageLink gallery : round.getOfficialGalleries()) {
+            dto.addGallery(ImageLinkMapper.map(gallery));
+        }
+
+        for (ImageLink highlight : round.getHighlights()) {
+            dto.addHighlight(ImageLinkMapper.map(highlight));
+        }
+
+        for (Person driver : partialScores.keySet()) {
+            dto.addPartialResult(new RoundDriverPartialResultDto(PersonMapper.mapShort(driver), partialScores.get(driver)));
+        }
+
         return dto;
     }
 

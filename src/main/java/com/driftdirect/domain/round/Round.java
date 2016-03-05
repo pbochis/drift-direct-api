@@ -2,6 +2,7 @@ package com.driftdirect.domain.round;
 
 import com.driftdirect.domain.championship.Championship;
 import com.driftdirect.domain.file.File;
+import com.driftdirect.domain.news.ImageLink;
 import com.driftdirect.domain.round.playoff.PlayoffTree;
 import com.driftdirect.domain.round.qualifiers.QualifiedDriver;
 import com.driftdirect.domain.round.qualifiers.Qualifier;
@@ -66,7 +67,21 @@ public class Round implements Comparable<Round> {
     @OneToOne(fetch = FetchType.EAGER, mappedBy = "round", cascade = CascadeType.ALL, orphanRemoval = true)
     private PlayoffTree playoffTree;
 
-    public long getId() {
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "round_gallery",
+            joinColumns = {@JoinColumn(name = "round_id")},
+            inverseJoinColumns = {@JoinColumn(name = "file_id")}
+    )
+    private List<File> gallery = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.EAGER)
+    private List<ImageLink> highlights = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.EAGER)
+    private List<ImageLink> officialGalleries = new ArrayList<>();
+
+    public Long getId() {
         return id;
     }
 
@@ -225,5 +240,36 @@ public class Round implements Comparable<Round> {
 
     public void setCurrentDriver(Qualifier currentDriver) {
         this.currentDriver = currentDriver;
+    }
+
+    public List<File> getGallery() {
+        return gallery;
+    }
+
+    public void setGallery(List<File> gallery) {
+        this.gallery.clear();
+        this.gallery.addAll(gallery);
+    }
+
+    public void addToGallery(File file) {
+        this.gallery.add(file);
+    }
+
+    public List<ImageLink> getOfficialGalleries() {
+        return officialGalleries;
+    }
+
+    public void setOfficialGalleries(List<ImageLink> officialGalleries) {
+        this.officialGalleries.clear();
+        this.officialGalleries.addAll(officialGalleries);
+    }
+
+    public List<ImageLink> getHighlights() {
+        return highlights;
+    }
+
+    public void setHighlights(List<ImageLink> highlights) {
+        this.highlights.clear();
+        this.highlights.addAll(highlights);
     }
 }

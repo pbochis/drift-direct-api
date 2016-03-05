@@ -235,7 +235,22 @@ public class RoundService {
             float driver2ChampPoints = getChampionshipPoints(q2);
             return ((driver2ChampPoints - driver1ChampPoints) > 0) ? 1 : -1;
         });
-        return RoundMapper.map(round, qualifiers, results);
+        //TODO: do a query here
+        Map<Person, Float> partialScores = new HashMap<>();
+        for (Round pastRound : round.getChampionship().getRounds()) {
+            if (pastRound.getId().equals(round.getId()) || round.getStartDate().isBefore(pastRound.getEndDate())) {
+                continue;
+            }
+            for (RoundDriverResult driverResult : pastRound.getRoundResults()) {
+                if (partialScores.get(driverResult.getPerson()) == null) {
+                    partialScores.put(driverResult.getPerson(), driverResult.getRoundScore());
+                } else {
+                    partialScores.put(driverResult.getPerson(), partialScores.get(driverResult.getPerson()) + driverResult.getRoundScore());
+                }
+            }
+        }
+
+        return RoundMapper.map(round, qualifiers, results, partialScores);
     }
 
     public boolean finishQualifiers(Long roundId) {
