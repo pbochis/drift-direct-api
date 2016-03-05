@@ -8,7 +8,7 @@ import com.driftdirect.dto.championship.ChampionshipShortShowDto;
 import com.driftdirect.dto.championship.ChampionshipUpdateDTO;
 import com.driftdirect.dto.championship.driver.DriverParticipationDto;
 import com.driftdirect.dto.championship.judge.JudgeParticipationDto;
-import com.driftdirect.dto.news.NewsCreateDto;
+import com.driftdirect.dto.news.ImageLinkCreateDto;
 import com.driftdirect.dto.person.PersonShortShowDto;
 import com.driftdirect.dto.round.RoundCreateDto;
 import com.driftdirect.exception.ObjectNotFoundException;
@@ -117,7 +117,7 @@ public class ChampionshipController {
 
     @RequestMapping(path = RestUrls.CHAMPIONSHIP_ID_NEWS, method = RequestMethod.POST)
     public ResponseEntity addNews(@PathVariable(value = "id") Long id,
-                                  @RequestBody @Valid NewsCreateDto news,
+                                  @RequestBody @Valid ImageLinkCreateDto news,
                                   @AuthenticationPrincipal User currentUser) {
         if (!securityService.isChampionshipOrganizer(currentUser, id)) {
             return new ResponseEntity(HttpStatus.FORBIDDEN);

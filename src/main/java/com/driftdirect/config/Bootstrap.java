@@ -13,7 +13,7 @@ import com.driftdirect.domain.comment.Comment;
 import com.driftdirect.domain.driver.DriverDetails;
 import com.driftdirect.domain.driver.Team;
 import com.driftdirect.domain.file.File;
-import com.driftdirect.domain.news.News;
+import com.driftdirect.domain.news.ImageLink;
 import com.driftdirect.domain.person.Person;
 import com.driftdirect.domain.person.PersonType;
 import com.driftdirect.domain.round.Round;
@@ -462,13 +462,13 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         t = teamRepository.save(t);
     }
 
-    private News createNews(String name, String description, String url, File logo) {
-        News news = new News();
-        news.setName(name);
-        news.setDescription(description);
-        news.setLogo(logo);
-        news.setUrl(url);
-        return news;
+    private ImageLink createNews(String name, String description, String url, File logo) {
+        ImageLink imageLink = new ImageLink();
+        imageLink.setName(name);
+        imageLink.setDescription(description);
+        imageLink.setLogo(logo);
+        imageLink.setUrl(url);
+        return imageLink;
     }
 
     private Championship createChampionship(String name, File logo, File backgroundImage, Sponsor... sponsors) {

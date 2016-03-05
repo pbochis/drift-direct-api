@@ -74,7 +74,7 @@ public class ChampionshipMapper {
         if (c.getNews() != null) {
             dto.setNews(c.getNews()
                     .stream()
-                    .map(NewsMapper::map)
+                    .map(ImageLinkMapper::map)
                     .collect(Collectors.toList()));
         }
         return dto;

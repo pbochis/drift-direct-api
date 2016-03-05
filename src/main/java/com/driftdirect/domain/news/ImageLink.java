@@ -1,14 +1,28 @@
-package com.driftdirect.dto.news;
+package com.driftdirect.domain.news;
+
+import com.driftdirect.domain.file.File;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 /**
  * Created by Paul on 12/6/2015.
  */
-public class NewsShowDto {
+@Entity
+@Table(name = "image_link")
+public class ImageLink {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotNull
     private String name;
     private String description;
-    private Long logo;
+    @NotNull
     private String url;
+
+    @OneToOne
+    private File logo;
 
     public Long getId() {
         return id;
@@ -34,11 +48,11 @@ public class NewsShowDto {
         this.description = description;
     }
 
-    public Long getLogo() {
+    public File getLogo() {
         return logo;
     }
 
-    public void setLogo(Long logo) {
+    public void setLogo(File logo) {
         this.logo = logo;
     }
 

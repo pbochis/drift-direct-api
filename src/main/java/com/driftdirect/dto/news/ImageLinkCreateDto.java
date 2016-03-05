@@ -5,7 +5,7 @@ import javax.validation.constraints.NotNull;
 /**
  * Created by Paul on 12/6/2015.
  */
-public class NewsCreateDto {
+public class ImageLinkCreateDto {
     @NotNull
     private String name;
     private String descrption;
