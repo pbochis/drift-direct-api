@@ -5,7 +5,7 @@ import com.driftdirect.dto.person.PersonShortShowDto;
 /**
  * Created by Paul on 3/5/2016.
  */
-public class RoundDriverPartialResultDto {
+public class RoundDriverPartialResultDto implements Comparable<RoundDriverPartialResultDto> {
     private PersonShortShowDto driver;
     private Float score;
 
@@ -28,5 +28,10 @@ public class RoundDriverPartialResultDto {
 
     public void setScore(Float score) {
         this.score = score;
+    }
+
+    @Override
+    public int compareTo(RoundDriverPartialResultDto o) {
+        return score - o.getScore() > 0 ? 1 : -1;
     }
 }

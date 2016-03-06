@@ -2,6 +2,7 @@ package com.driftdirect.controller;
 
 import com.driftdirect.domain.user.Authorities;
 import com.driftdirect.domain.user.User;
+import com.driftdirect.dto.news.ImageLinkCreateDto;
 import com.driftdirect.dto.person.PersonShortShowDto;
 import com.driftdirect.dto.round.RoundCreateDto;
 import com.driftdirect.dto.round.RoundShowDto;
@@ -142,6 +143,28 @@ public class RoundController {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
         }
         roundService.updateRound(roundUpdateDto);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @RequestMapping(path = RestUrls.ROUND_ID_HIGHLIGHTS, method = RequestMethod.POST)
+    public ResponseEntity addHighlights(@PathVariable(value = "id") Long id,
+                                        @RequestBody @Valid ImageLinkCreateDto highlights,
+                                        @AuthenticationPrincipal User currentUser) {
+        if (!securityService.canEditRound(currentUser, id)) {
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+        }
+        roundService.addHighlights(id, highlights);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @RequestMapping(path = RestUrls.ROUND_ID_GALLERY, method = RequestMethod.POST)
+    public ResponseEntity addGallery(@PathVariable(value = "id") Long id,
+                                     @RequestBody @Valid ImageLinkCreateDto gallery,
+                                     @AuthenticationPrincipal User currentUser) {
+        if (!securityService.canEditRound(currentUser, id)) {
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+        }
+        roundService.addOfficialGalery(id, gallery);
         return new ResponseEntity(HttpStatus.OK);
     }
 }

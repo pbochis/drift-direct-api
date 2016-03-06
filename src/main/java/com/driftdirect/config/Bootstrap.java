@@ -145,6 +145,8 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
     @Autowired
     private D1nzMissingBattleMigrationService d1nzMissingBattleMigrationService;
 
+    @Autowired
+    private NewsRepository imageLinkRepository;
 
     @Autowired
     public Bootstrap(
@@ -462,7 +464,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         t = teamRepository.save(t);
     }
 
-    private ImageLink createNews(String name, String description, String url, File logo) {
+    private ImageLink createImageLink(String name, String description, String url, File logo) {
         ImageLink imageLink = new ImageLink();
         imageLink.setName(name);
         imageLink.setDescription(description);
@@ -483,9 +485,9 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         rules.setVideoUrl("http://www.youtube.com");
         c.setRules(rules);
         c.setOrganizer(organizer.getPerson());
-        c.addNews(createNews("FANGA DAN WINS FIRST MANFEILD DRIFTING TITLE", "A shocking outcome", "http://www.d1nz.com/d1nz-news/309-fanga-dan-wins-first-manfeild-drifting-title", backgroundImage));
-        c.addNews(createNews("D1 PRO-SPORT: BLAIR GRIBBLE-BOWRING WINS ON DEBUT", "at Manfeild Raceway in Feilding", "http://www.d1nz.com/d1nz-news/308-d1-pro-sport-blair-gribble-bowring-wins-on-debut", backgroundImage));
-        c.addNews(createNews("WHITTAKER TOPS QUALIFYING AT MANFEILD - DEMON D1NZ ROUND 1 2015", "sponsored by redbull", "http://d1nz.com/d1nz-news/307-whittaker-tops-qualifying-at-manfeild-r1-2015", backgroundImage));
+        c.addNews(createImageLink("FANGA DAN WINS FIRST MANFEILD DRIFTING TITLE", "A shocking outcome", "http://www.d1nz.com/d1nz-news/309-fanga-dan-wins-first-manfeild-drifting-title", backgroundImage));
+        c.addNews(createImageLink("D1 PRO-SPORT: BLAIR GRIBBLE-BOWRING WINS ON DEBUT", "at Manfeild Raceway in Feilding", "http://www.d1nz.com/d1nz-news/308-d1-pro-sport-blair-gribble-bowring-wins-on-debut", backgroundImage));
+        c.addNews(createImageLink("WHITTAKER TOPS QUALIFYING AT MANFEILD - DEMON D1NZ ROUND 1 2015", "sponsored by redbull", "http://d1nz.com/d1nz-news/307-whittaker-tops-qualifying-at-manfeild-r1-2015", backgroundImage));
         if (sponsors != null)
             for (Sponsor sponsor : sponsors) {
                 c.addSponsor(sponsor);
@@ -517,6 +519,14 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         r.setLogo(logo);
         r.setTicketsUrl(ticketsUrl);
         r.setLiveStream(liveStream);
+        r.addToGallery(saveFile("/img/baypark.jpg"));
+        r.addToGallery(saveFile("/img/cioban.jpg"));
+        r.addToGallery(saveFile("/img/allstars.jpg"));
+        r.addHighlight(createImageLink("Round highlight1", "Shit was cool", "http://www.youtube.com", saveFile("/img/baypark.jpg")));
+        r.addHighlight(createImageLink("Round highlight2", "Shit was cool", "http://www.youtube.com", saveFile("/img/baypark.jpg")));
+        r.addOfficialGallery(createImageLink("Official Gallery1", "Shit was cool", "http://www.youtube.com", saveFile("/img/baypark.jpg")));
+        r.addOfficialGallery(createImageLink("Official Gallery2", "Shit was cool", "http://www.youtube.com", saveFile("/img/baypark.jpg")));
+
         r = roundRepository.save(r);
         createSchedule(r, "Registration", new DateTime(year, month, 1, 10, 0), new DateTime(year, month, 1, 11, 0));
         createSchedule(r, "Registration", new DateTime(year, month, 1, 12, 0), new DateTime(year, month, 1, 13, 0));
@@ -648,7 +658,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         List<Person> drivers = createDrivers(20);
 
         judgeQualifiers(c1, r1, drivers, 0, 3);
-//        judgeQualifiers(c1, r2, drivers, 3, 0);
+        judgeQualifiers(c1, r2, drivers, 0, 0);
     }
 
     private void judgeQualifiers(Championship championship, Round round, List<Person> drivers, int remainder, int zeros) throws IOException {

@@ -164,7 +164,7 @@ public class RoundShowDto {
     }
 
     public void addGallery(ImageLinkShowDto galleries) {
-        this.highlights.add(galleries);
+        this.officialGalleries.add(galleries);
     }
 
     public List<RoundDriverPartialResultDto> getPartialResults() {

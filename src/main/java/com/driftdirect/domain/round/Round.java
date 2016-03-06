@@ -67,7 +67,7 @@ public class Round implements Comparable<Round> {
     @OneToOne(fetch = FetchType.EAGER, mappedBy = "round", cascade = CascadeType.ALL, orphanRemoval = true)
     private PlayoffTree playoffTree;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany()
     @JoinTable(
             name = "round_gallery",
             joinColumns = {@JoinColumn(name = "round_id")},
@@ -75,10 +75,20 @@ public class Round implements Comparable<Round> {
     )
     private List<File> gallery = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "round_highlights",
+            joinColumns = {@JoinColumn(name = "round_id")},
+            inverseJoinColumns = {@JoinColumn(name = "image_link_id")}
+    )
     private List<ImageLink> highlights = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "round_official_galleries",
+            joinColumns = {@JoinColumn(name = "round_id")},
+            inverseJoinColumns = {@JoinColumn(name = "image_link_id")}
+    )
     private List<ImageLink> officialGalleries = new ArrayList<>();
 
     public Long getId() {
@@ -271,5 +281,13 @@ public class Round implements Comparable<Round> {
     public void setHighlights(List<ImageLink> highlights) {
         this.highlights.clear();
         this.highlights.addAll(highlights);
+    }
+
+    public void addHighlight(ImageLink highlight) {
+        this.highlights.add(highlight);
+    }
+
+    public void addOfficialGallery(ImageLink officialGallery) {
+        this.officialGalleries.add(officialGallery);
     }
 }

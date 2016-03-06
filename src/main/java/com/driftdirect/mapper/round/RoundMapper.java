@@ -13,9 +13,7 @@ import com.driftdirect.mapper.ImageLinkMapper;
 import com.driftdirect.mapper.PersonMapper;
 import com.driftdirect.mapper.round.qualifier.QualifierMapper;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -58,9 +56,12 @@ public class RoundMapper {
             dto.addHighlight(ImageLinkMapper.map(highlight));
         }
 
+        List<RoundDriverPartialResultDto> partialResults = new ArrayList<>();
         for (Person driver : partialScores.keySet()) {
-            dto.addPartialResult(new RoundDriverPartialResultDto(PersonMapper.mapShort(driver), partialScores.get(driver)));
+            partialResults.add(new RoundDriverPartialResultDto(PersonMapper.mapShort(driver), partialScores.get(driver)));
         }
+        Collections.sort(partialResults);
+        dto.setPartialResults(partialResults);
 
         return dto;
     }
