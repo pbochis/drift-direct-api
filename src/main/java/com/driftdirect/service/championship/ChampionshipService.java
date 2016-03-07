@@ -163,7 +163,7 @@ public class ChampionshipService{
     public void addNews(Long championshipId, ImageLinkCreateDto newsDto) {
         ImageLink imageLink = new ImageLink();
         imageLink.setName(newsDto.getName());
-        imageLink.setDescription(newsDto.getDescrption());
+        imageLink.setDescription(newsDto.getDescription());
         imageLink.setUrl(newsDto.getUrl());
         if (newsDto.getLogo() != null) {
 

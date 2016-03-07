@@ -3,6 +3,7 @@ package com.driftdirect.service.round;
 import com.driftdirect.domain.championship.Championship;
 import com.driftdirect.domain.championship.driver.DriverParticipation;
 import com.driftdirect.domain.championship.driver.DriverParticipationResults;
+import com.driftdirect.domain.file.File;
 import com.driftdirect.domain.news.ImageLink;
 import com.driftdirect.domain.person.Person;
 import com.driftdirect.domain.round.Round;
@@ -200,7 +201,7 @@ public class RoundService {
     public void addHighlights(Long roundId, ImageLinkCreateDto highlightsDto) {
         ImageLink imageLink = new ImageLink();
         imageLink.setName(highlightsDto.getName());
-        imageLink.setDescription(highlightsDto.getDescrption());
+        imageLink.setDescription(highlightsDto.getDescription());
         imageLink.setUrl(highlightsDto.getUrl());
         if (highlightsDto.getLogo() != null) {
             imageLink.setLogo(fileRepository.findOne(highlightsDto.getLogo()));
@@ -213,13 +214,23 @@ public class RoundService {
     public void addOfficialGalery(Long roundId, ImageLinkCreateDto galleryCreateDto) {
         ImageLink imageLink = new ImageLink();
         imageLink.setName(galleryCreateDto.getName());
-        imageLink.setDescription(galleryCreateDto.getDescrption());
+        imageLink.setDescription(galleryCreateDto.getDescription());
         imageLink.setUrl(galleryCreateDto.getUrl());
         if (galleryCreateDto.getLogo() != null) {
             imageLink.setLogo(fileRepository.findOne(galleryCreateDto.getLogo()));
         }
         Round round = roundRepository.findOne(roundId);
         round.addOfficialGallery(imageLink);
+        roundRepository.save(round);
+    }
+
+    public void updateOrSetPhotos(Long roundId, List<Long> gallery) {
+        Round round = roundRepository.findOne(roundId);
+        List<File> photoGallery = new ArrayList<>();
+        for (Long imageId : gallery) {
+            photoGallery.add(fileRepository.findOne(imageId));
+        }
+        round.setGallery(photoGallery);
         roundRepository.save(round);
     }
 

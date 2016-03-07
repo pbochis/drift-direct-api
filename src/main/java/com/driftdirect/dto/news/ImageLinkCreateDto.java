@@ -9,7 +9,9 @@ import javax.validation.constraints.Size;
 public class ImageLinkCreateDto {
     @NotNull
     private String name;
-    private String descrption;
+
+    private String description;
+
     @NotNull
     @Size(min = 5)
     private String url;
@@ -24,12 +26,12 @@ public class ImageLinkCreateDto {
         this.name = name;
     }
 
-    public String getDescrption() {
-        return descrption;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDescrption(String descrption) {
-        this.descrption = descrption;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getUrl() {

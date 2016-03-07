@@ -167,6 +167,17 @@ public class RoundController {
         roundService.addOfficialGalery(id, gallery);
         return new ResponseEntity(HttpStatus.OK);
     }
+
+    @RequestMapping(path = RestUrls.ROUND_ID_PHOTOS, method = RequestMethod.POST)
+    public ResponseEntity addPhotos(@PathVariable Long id,
+                                    @RequestBody List<Long> gallery,
+                                    @AuthenticationPrincipal User currentUser) {
+        if (!securityService.canEditRound(currentUser, id)) {
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+        }
+        roundService.updateOrSetPhotos(id, gallery);
+        return new ResponseEntity(HttpStatus.OK);
+    }
 }
 
 

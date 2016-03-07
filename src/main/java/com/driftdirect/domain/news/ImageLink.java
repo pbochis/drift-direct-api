@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
  * Created by Paul on 12/6/2015.
  */
 @Entity
-@Table(name = "image_link")
+@Table(name = "News")
 public class ImageLink {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

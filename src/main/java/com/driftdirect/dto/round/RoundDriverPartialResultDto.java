@@ -32,6 +32,6 @@ public class RoundDriverPartialResultDto implements Comparable<RoundDriverPartia
 
     @Override
     public int compareTo(RoundDriverPartialResultDto o) {
-        return score - o.getScore() > 0 ? 1 : -1;
+        return score - o.getScore() < 0 ? 1 : -1;
     }
 }

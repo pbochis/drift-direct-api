@@ -24,6 +24,7 @@ public class RestUrls {
     public static final String ROUND_ID_SCHEDULE = "/round/{id}/schedule";
     public static final String ROUND_ID_HIGHLIGHTS = "/round/{id}/highlights";
     public static final String ROUND_ID_GALLERY = "/round/{id}/gallery";
+    public static final String ROUND_ID_PHOTOS = "/round/{id}/photos";
 
     public static final String QUALIFIER_ID = "/qualifier/{id}";
     public static final String QUALIFIER_ID_SUBMIT = "/qualifier/{id}/submit/run/{runId}";
