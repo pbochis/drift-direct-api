@@ -2,6 +2,7 @@ package com.driftdirect.domain.round;
 
 import com.driftdirect.domain.championship.Championship;
 import com.driftdirect.domain.file.File;
+import com.driftdirect.domain.news.ImageLink;
 import com.driftdirect.domain.round.playoff.PlayoffTree;
 import com.driftdirect.domain.round.qualifiers.QualifiedDriver;
 import com.driftdirect.domain.round.qualifiers.Qualifier;
@@ -66,7 +67,31 @@ public class Round implements Comparable<Round> {
     @OneToOne(fetch = FetchType.EAGER, mappedBy = "round", cascade = CascadeType.ALL, orphanRemoval = true)
     private PlayoffTree playoffTree;
 
-    public long getId() {
+    @OneToMany()
+    @JoinTable(
+            name = "round_gallery",
+            joinColumns = {@JoinColumn(name = "round_id")},
+            inverseJoinColumns = {@JoinColumn(name = "file_id")}
+    )
+    private List<File> gallery = new ArrayList<>();
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "round_highlights",
+            joinColumns = {@JoinColumn(name = "round_id")},
+            inverseJoinColumns = {@JoinColumn(name = "image_link_id")}
+    )
+    private List<ImageLink> highlights = new ArrayList<>();
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "round_official_galleries",
+            joinColumns = {@JoinColumn(name = "round_id")},
+            inverseJoinColumns = {@JoinColumn(name = "image_link_id")}
+    )
+    private List<ImageLink> officialGalleries = new ArrayList<>();
+
+    public Long getId() {
         return id;
     }
 
@@ -225,5 +250,44 @@ public class Round implements Comparable<Round> {
 
     public void setCurrentDriver(Qualifier currentDriver) {
         this.currentDriver = currentDriver;
+    }
+
+    public List<File> getGallery() {
+        return gallery;
+    }
+
+    public void setGallery(List<File> gallery) {
+        this.gallery.clear();
+        this.gallery.addAll(gallery);
+    }
+
+    public void addToGallery(File file) {
+        this.gallery.add(file);
+    }
+
+    public List<ImageLink> getOfficialGalleries() {
+        return officialGalleries;
+    }
+
+    public void setOfficialGalleries(List<ImageLink> officialGalleries) {
+        this.officialGalleries.clear();
+        this.officialGalleries.addAll(officialGalleries);
+    }
+
+    public List<ImageLink> getHighlights() {
+        return highlights;
+    }
+
+    public void setHighlights(List<ImageLink> highlights) {
+        this.highlights.clear();
+        this.highlights.addAll(highlights);
+    }
+
+    public void addHighlight(ImageLink highlight) {
+        this.highlights.add(highlight);
+    }
+
+    public void addOfficialGallery(ImageLink officialGallery) {
+        this.officialGalleries.add(officialGallery);
     }
 }

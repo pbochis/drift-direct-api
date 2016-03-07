@@ -1,15 +1,21 @@
 package com.driftdirect.dto.news;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * Created by Paul on 12/6/2015.
  */
-public class NewsCreateDto {
+public class ImageLinkCreateDto {
     @NotNull
     private String name;
-    private String descrption;
+
+    private String description;
+
+    @NotNull
+    @Size(min = 5)
     private String url;
+    @NotNull
     private Long logo;
 
     public String getName() {
@@ -20,12 +26,12 @@ public class NewsCreateDto {
         this.name = name;
     }
 
-    public String getDescrption() {
-        return descrption;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDescrption(String descrption) {
-        this.descrption = descrption;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getUrl() {

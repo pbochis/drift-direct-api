@@ -1,9 +1,11 @@
 package com.driftdirect.dto.round;
 
+import com.driftdirect.dto.news.ImageLinkShowDto;
 import com.driftdirect.dto.round.qualifier.QualifierShortDto;
 import com.driftdirect.dto.round.track.TrackDto;
 import org.joda.time.DateTime;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,6 +19,9 @@ public class RoundShowDto {
     private DateTime endDate;
     private String ticketsUrl;
     private TrackDto track;
+    private RoundStatus roundStatus;
+
+    private List<Long> gallery = new ArrayList<>();
 
     private QualifierShortDto currentDriver;
 
@@ -24,6 +29,11 @@ public class RoundShowDto {
 
     private List<QualifierShortDto> qualifiers;
     private List<QualifierShortDto> qualificationResults;
+
+    private List<ImageLinkShowDto> officialGalleries = new ArrayList<>();
+    private List<ImageLinkShowDto> highlights = new ArrayList<>();
+
+    private List<RoundDriverPartialResultDto> partialResults = new ArrayList<>();
 
     public List<QualifierShortDto> getQualifiers() {
         return qualifiers;
@@ -111,5 +121,61 @@ public class RoundShowDto {
 
     public void setQualificationResults(List<QualifierShortDto> qualificationResults) {
         this.qualificationResults = qualificationResults;
+    }
+
+    public List<Long> getGallery() {
+        return gallery;
+    }
+
+    public void setGallery(List<Long> gallery) {
+        this.gallery = gallery;
+    }
+
+    public void addToGallery(Long image) {
+        this.gallery.add(image);
+    }
+
+    public RoundStatus getRoundStatus() {
+        return roundStatus;
+    }
+
+    public void setRoundStatus(RoundStatus roundStatus) {
+        this.roundStatus = roundStatus;
+    }
+
+    public List<ImageLinkShowDto> getOfficialGalleries() {
+        return officialGalleries;
+    }
+
+    public void setOfficialGalleries(List<ImageLinkShowDto> officialGalleries) {
+        this.officialGalleries = officialGalleries;
+    }
+
+    public List<ImageLinkShowDto> getHighlights() {
+        return highlights;
+    }
+
+    public void setHighlights(List<ImageLinkShowDto> highlights) {
+        this.highlights = highlights;
+    }
+
+    public void addHighlight(ImageLinkShowDto highlight) {
+        this.highlights.add(highlight);
+    }
+
+    public void addGallery(ImageLinkShowDto galleries) {
+        this.officialGalleries.add(galleries);
+    }
+
+    public List<RoundDriverPartialResultDto> getPartialResults() {
+        return partialResults;
+    }
+
+    public void setPartialResults(List<RoundDriverPartialResultDto> partialResults) {
+        this.partialResults = partialResults;
+    }
+
+    public void addPartialResult(RoundDriverPartialResultDto partialResult) {
+        this.partialResults.add(partialResult);
     }
 }

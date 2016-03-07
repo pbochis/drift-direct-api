@@ -3,6 +3,8 @@ package com.driftdirect.service.round;
 import com.driftdirect.domain.championship.Championship;
 import com.driftdirect.domain.championship.driver.DriverParticipation;
 import com.driftdirect.domain.championship.driver.DriverParticipationResults;
+import com.driftdirect.domain.file.File;
+import com.driftdirect.domain.news.ImageLink;
 import com.driftdirect.domain.person.Person;
 import com.driftdirect.domain.round.Round;
 import com.driftdirect.domain.round.RoundDriverResult;
@@ -10,6 +12,7 @@ import com.driftdirect.domain.round.RoundScheduleEntry;
 import com.driftdirect.domain.round.qualifiers.QualifiedDriver;
 import com.driftdirect.domain.round.qualifiers.Qualifier;
 import com.driftdirect.domain.round.track.Track;
+import com.driftdirect.dto.news.ImageLinkCreateDto;
 import com.driftdirect.dto.person.PersonShortShowDto;
 import com.driftdirect.dto.round.RoundCreateDto;
 import com.driftdirect.dto.round.RoundShowDto;
@@ -195,6 +198,42 @@ public class RoundService {
         }
     }
 
+    public void addHighlights(Long roundId, ImageLinkCreateDto highlightsDto) {
+        ImageLink imageLink = new ImageLink();
+        imageLink.setName(highlightsDto.getName());
+        imageLink.setDescription(highlightsDto.getDescription());
+        imageLink.setUrl(highlightsDto.getUrl());
+        if (highlightsDto.getLogo() != null) {
+            imageLink.setLogo(fileRepository.findOne(highlightsDto.getLogo()));
+        }
+        Round round = roundRepository.findOne(roundId);
+        round.addHighlight(imageLink);
+        roundRepository.save(round);
+    }
+
+    public void addOfficialGalery(Long roundId, ImageLinkCreateDto galleryCreateDto) {
+        ImageLink imageLink = new ImageLink();
+        imageLink.setName(galleryCreateDto.getName());
+        imageLink.setDescription(galleryCreateDto.getDescription());
+        imageLink.setUrl(galleryCreateDto.getUrl());
+        if (galleryCreateDto.getLogo() != null) {
+            imageLink.setLogo(fileRepository.findOne(galleryCreateDto.getLogo()));
+        }
+        Round round = roundRepository.findOne(roundId);
+        round.addOfficialGallery(imageLink);
+        roundRepository.save(round);
+    }
+
+    public void updateOrSetPhotos(Long roundId, List<Long> gallery) {
+        Round round = roundRepository.findOne(roundId);
+        List<File> photoGallery = new ArrayList<>();
+        for (Long imageId : gallery) {
+            photoGallery.add(fileRepository.findOne(imageId));
+        }
+        round.setGallery(photoGallery);
+        roundRepository.save(round);
+    }
+
     public void delete(Long id){
         roundRepository.delete(id);
     }
@@ -235,7 +274,17 @@ public class RoundService {
             float driver2ChampPoints = getChampionshipPoints(q2);
             return ((driver2ChampPoints - driver1ChampPoints) > 0) ? 1 : -1;
         });
-        return RoundMapper.map(round, qualifiers, results);
+        Map<Person, Float> partialScores = new HashMap<>();
+        List<RoundDriverResult> pastResults = roundDriverResultRepository.findResultsBeforeDate(round.getEndDate());
+        for (RoundDriverResult driverResult : pastResults) {
+            if (partialScores.get(driverResult.getPerson()) == null) {
+                partialScores.put(driverResult.getPerson(), driverResult.getRoundScore());
+            } else {
+                partialScores.put(driverResult.getPerson(), partialScores.get(driverResult.getPerson()) + driverResult.getRoundScore());
+            }
+        }
+
+        return RoundMapper.map(round, qualifiers, results, partialScores);
     }
 
     public boolean finishQualifiers(Long roundId) {

@@ -3,7 +3,7 @@ package com.driftdirect.service.championship;
 import com.driftdirect.domain.championship.Championship;
 import com.driftdirect.domain.championship.ChampionshipRules;
 import com.driftdirect.domain.championship.driver.DriverParticipation;
-import com.driftdirect.domain.news.News;
+import com.driftdirect.domain.news.ImageLink;
 import com.driftdirect.domain.person.Person;
 import com.driftdirect.domain.user.User;
 import com.driftdirect.dto.championship.ChampionshipCreateDTO;
@@ -12,7 +12,7 @@ import com.driftdirect.dto.championship.ChampionshipShortShowDto;
 import com.driftdirect.dto.championship.driver.DriverParticipationDto;
 import com.driftdirect.dto.championship.judge.JudgeParticipationCreateDto;
 import com.driftdirect.dto.championship.judge.JudgeParticipationDto;
-import com.driftdirect.dto.news.NewsCreateDto;
+import com.driftdirect.dto.news.ImageLinkCreateDto;
 import com.driftdirect.dto.person.PersonShortShowDto;
 import com.driftdirect.dto.round.RoundCreateDto;
 import com.driftdirect.mapper.ChampionshipMapper;
@@ -160,17 +160,17 @@ public class ChampionshipService{
                 .collect(Collectors.toList());
     }
 
-    public void addNews(Long championshipId, NewsCreateDto newsDto) {
-        News news = new News();
-        news.setName(newsDto.getName());
-        news.setDescription(newsDto.getDescrption());
-        news.setUrl(newsDto.getUrl());
+    public void addNews(Long championshipId, ImageLinkCreateDto newsDto) {
+        ImageLink imageLink = new ImageLink();
+        imageLink.setName(newsDto.getName());
+        imageLink.setDescription(newsDto.getDescription());
+        imageLink.setUrl(newsDto.getUrl());
         if (newsDto.getLogo() != null) {
 
-            news.setLogo(fileRepository.findOne(newsDto.getLogo()));
+            imageLink.setLogo(fileRepository.findOne(newsDto.getLogo()));
         }
         Championship c = championshipRepository.findOne(championshipId);
-        c.addNews(news);
+        c.addNews(imageLink);
         championshipRepository.save(c);
     }
 

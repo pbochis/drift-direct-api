@@ -3,7 +3,7 @@ package com.driftdirect.domain.championship;
 import com.driftdirect.domain.championship.driver.DriverParticipation;
 import com.driftdirect.domain.championship.judge.JudgeParticipation;
 import com.driftdirect.domain.file.File;
-import com.driftdirect.domain.news.News;
+import com.driftdirect.domain.news.ImageLink;
 import com.driftdirect.domain.person.Person;
 import com.driftdirect.domain.round.Round;
 import com.driftdirect.domain.sponsor.Sponsor;
@@ -58,7 +58,7 @@ public class Championship{
     private Set<Sponsor> sponsors = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<News> news = new HashSet<>();
+    private Set<ImageLink> news = new HashSet<>();
 
     //todo: make this customizable in future versions;
     private Integer playoffSize = 32;
@@ -159,11 +159,11 @@ public class Championship{
         this.sponsors.addAll(sponsors);
     }
 
-    public Set<News> getNews() {
+    public Set<ImageLink> getNews() {
         return news;
     }
 
-    public void setNews(Set<News> news) {
+    public void setNews(Set<ImageLink> news) {
         this.news.clear();
         this.news.addAll(news);
     }
@@ -175,7 +175,7 @@ public class Championship{
         this.sponsors.add(sponsor);
     }
 
-    public void addNews(News news) {
+    public void addNews(ImageLink news) {
         if (this.news == null) {
             this.news = new HashSet<>();
         }
