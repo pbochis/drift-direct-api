@@ -100,12 +100,13 @@ public class ChampionshipService{
                 .collect(Collectors.toList());
     }
 
-    public List<ChampionshipShortShowDto> getShortChampionshipList(boolean publishedOnly) {
+    public List<ChampionshipShortShowDto> getShortChampionshipList(User currentUser) {
         List<Championship> championships;
-        if (publishedOnly)
+        if (currentUser == null) {
             championships = championshipRepository.findPublishedChampionships();
-        else
-            championships = championshipRepository.findAll();
+        } else {
+            championships = championshipRepository.findPublicAndEditableChampionships(currentUser.getPerson());
+        }
         return championships
                 .stream()
                 .map(ChampionshipMapper::mapShort)

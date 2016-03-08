@@ -46,19 +46,13 @@ public class ChampionshipController {
     @RequestMapping(path = RestUrls.CHAMPIONSHIP_SHORT, method = RequestMethod.GET)
     public ResponseEntity<List<ChampionshipShortShowDto>> listShort(@RequestParam(name = "onlyEditable", required = false) Boolean onlyEditable,
                                                                     @AuthenticationPrincipal User currentUser) {
-        boolean publishedOnly = true;
-        if (securityService.isAdmin(currentUser) ||
-                securityService.isOrganizer(currentUser) ||
-                securityService.isJudge(currentUser)) {
-            publishedOnly = false;
-        }
         if (onlyEditable != null) {
-            if (currentUser != null) {
-                return new ResponseEntity<>(championshipService.getEditableChampionships(currentUser.getPerson(), securityService.isAdmin(currentUser)), HttpStatus.OK);
+            if (currentUser == null) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(championshipService.getEditableChampionships(currentUser.getPerson(), securityService.isAdmin(currentUser)), HttpStatus.OK);
         }
-        return new ResponseEntity<>(championshipService.getShortChampionshipList(publishedOnly), HttpStatus.OK);
+        return new ResponseEntity<>(championshipService.getShortChampionshipList(currentUser), HttpStatus.OK);
     }
 
     @Secured({Authorities.ROLE_ORGANIZER, Authorities.ROLE_ADMIN})
