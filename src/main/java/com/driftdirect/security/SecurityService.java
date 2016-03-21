@@ -107,6 +107,9 @@ public class SecurityService {
     }
 
     public boolean canDeleteQualifier(User user, Long qualifierId) throws NoSuchElementException {
+        if (user == null) {
+            return false;
+        }
         Qualifier qualifier = qualifierRepository.findOne(qualifierId);
         Championship championship = qualifier.getRound().getChampionship();
         return isChampionshipJudge(user, championship) || isChampionshipOrganizer(user, championship.getId()) || isAdmin(user);

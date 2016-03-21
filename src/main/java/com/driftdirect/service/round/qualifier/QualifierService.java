@@ -91,7 +91,7 @@ public class QualifierService {
     }
 
     public void deleteQualifier(Long qualifierId) throws QualifierAlreadyJudgeException {
-        Qualifier qualifier = qualifierRepository.findOne(qualifierId);
+        Qualifier qualifier = qualifierRepository.findOneWithRound(qualifierId);
         if (qualifier == null)
             return;
         if (qualifier.getFirstRun().getJudgings().size() > 0) {
@@ -99,6 +99,11 @@ public class QualifierService {
         }
         if (qualifier.getSecondRun().getJudgings().size() > 0) {
             throw new QualifierAlreadyJudgeException("This qualifier is already being judged");
+        }
+        Round round = qualifier.getRound();
+        if (round.getCurrentDriver().equals(qualifier)) {
+            round.setCurrentDriver(null);
+            roundRepository.save(round);
         }
         qualifierRepository.delete(qualifier);
     }
