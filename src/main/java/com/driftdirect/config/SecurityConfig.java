@@ -52,7 +52,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .and()
                 .addFilterBefore(new CorsFilter(), ChannelProcessingFilter.class)
                 .authorizeRequests()
-                    .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .antMatchers(HttpMethod.OPTIONS).permitAll()
                 .antMatchers(HttpMethod.GET,
                         RestUrls.CHAMPIONSHIP,
                         RestUrls.CHAMPIONSHIP_SHORT,
@@ -66,7 +66,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                         RestUrls.PERSON_ID,
                         RestUrls.FILE_ID,
                         RestUrls.ROUND_ID_PLAYOFF,
-                        RestUrls.PLAYOFF_BATTLE_ID).permitAll()
+                        RestUrls.PLAYOFF_BATTLE_ID,
+                        RestUrls.PERMISSION_ROUND_GENERATE_BATTLE_TREE).permitAll()
                 .antMatchers(HttpMethod.POST,
                         RestUrls.GCM_REGISTER).permitAll()
                 .antMatchers(HttpMethod.GET, "/testTime").permitAll()

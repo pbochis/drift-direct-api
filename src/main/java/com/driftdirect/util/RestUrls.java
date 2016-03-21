@@ -57,5 +57,7 @@ public class RestUrls {
 
     public static final String COUNTRY = "/country";
 
+    public static final String PERMISSION_ROUND_GENERATE_BATTLE_TREE = "/permissions/round/{roundId}/generate";
+
     public static final String GCM_REGISTER = "/gcm/register";
 }
