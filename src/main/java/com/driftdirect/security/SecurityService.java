@@ -1,6 +1,7 @@
 package com.driftdirect.security;
 
 import com.driftdirect.domain.championship.Championship;
+import com.driftdirect.domain.championship.judge.JudgeType;
 import com.driftdirect.domain.round.Round;
 import com.driftdirect.domain.round.battle.Battle;
 import com.driftdirect.domain.round.qualifiers.Qualifier;
@@ -106,6 +107,9 @@ public class SecurityService {
     }
 
     public boolean canDeleteQualifier(User user, Long qualifierId) throws NoSuchElementException {
+        if (user == null) {
+            return false;
+        }
         Qualifier qualifier = qualifierRepository.findOne(qualifierId);
         Championship championship = qualifier.getRound().getChampionship();
         return isChampionshipJudge(user, championship) || isChampionshipOrganizer(user, championship.getId()) || isAdmin(user);
@@ -146,25 +150,26 @@ public class SecurityService {
     }
 
     public boolean canGeneratePlayoffs(User user, Long roundId) {
-        if (isAdmin(user)) {
-            return true;
-        }
         if (user == null) {
             return false;
         }
-        Round round = roundRepository.findOne(roundId);
+        if (isAdmin(user)) {
+            return true;
+        }
+        Round round = roundRepository.findOneWithChampionship(roundId);
+
         if (round == null) {
             return false;
         }
-        if (user.getPerson().equals(round.getChampionship().getOrganizer())) {
-            return true;
-        }
-        return round
+        //should be discussed
+//        if (user.getPerson().equals(round.getChampionship().getOrganizer())) {
+//            return true;
+//        }
+        return round.getPlayoffTree() == null &&
+                round
                 .getChampionship()
                 .getJudges()
                 .stream()
-                .anyMatch(judgeParticipation -> judgeParticipation.getJudge().equals(user.getPerson()));
-
-
+                        .anyMatch(judgeParticipation -> judgeParticipation.getJudge().equals(user.getPerson()) && judgeParticipation.getJudgeType().equals(JudgeType.LINE));
     }
 }
