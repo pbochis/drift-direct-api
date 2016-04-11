@@ -34,6 +34,7 @@ public class ChampionshipMapper {
         dto.setId(c.getId());
         dto.setName(c.getName());
         dto.setTicketsUrl(c.getTicketsUrl());
+        dto.setWebsite(c.getWebsite());
         dto.setBackgroundImage(c.getBackgroundImage().getId());
         dto.setLogo(c.getLogo().getId());
         dto.setPublished(c.isPublished());

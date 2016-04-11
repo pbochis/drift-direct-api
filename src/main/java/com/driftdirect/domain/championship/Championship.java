@@ -24,6 +24,7 @@ public class Championship{
     private String name;
     //will be a url -> where to buy ticketsUrl
     private String ticketsUrl;
+    private String website;
 
     @ManyToOne(optional = false)
     private Person organizer;
@@ -203,6 +204,14 @@ public class Championship{
 
     public void setPlayoffSize(Integer playoffSize) {
         this.playoffSize = playoffSize;
+    }
+
+    public String getWebsite() {
+        return website;
+    }
+
+    public void setWebsite(String website) {
+        this.website = website;
     }
 
     @Override

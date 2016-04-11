@@ -17,6 +17,7 @@ public class ChampionshipFullDto {
     private String name;
     private ChampionshipRulesDto rules;
     private String ticketsUrl;
+    private String website;
 
     private boolean published;
     private PersonShortShowDto organizer;
@@ -34,11 +35,11 @@ public class ChampionshipFullDto {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -137,4 +138,13 @@ public class ChampionshipFullDto {
     public void setOrganizer(PersonShortShowDto organizer) {
         this.organizer = organizer;
     }
+
+    public String getWebsite() {
+        return website;
+    }
+
+    public void setWebsite(String website) {
+        this.website = website;
+    }
 }
+
